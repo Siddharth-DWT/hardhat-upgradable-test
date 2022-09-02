@@ -9,8 +9,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "./SignatureChecker.sol";
 import "hardhat/console.sol";
 
 interface IIngredientERC1155{
@@ -35,10 +36,10 @@ interface IBossCardERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
 }
 
-contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
-    using ECDSA for bytes32;
-    uint nonce = 1;
-    uint ceilSuccessNo = 10000;
+contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable, SignatureChecker, Initializable, UUPSUpgradeable{
+    
+    uint nonce;
+    uint ceilSuccessNo;
 
     // for stake
     IERC721 private powerPlinsGen0;
@@ -48,6 +49,8 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
     //for reward
     address gen1ERC1155;
     address pancakeERC1155;
+    
+    address private _owner;
 
     //recipe info
     struct RecipeStake{
@@ -72,9 +75,8 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
     mapping(address => IngredientStaker) private IngredientStakers;
     mapping(address => LastClaimed) private userLastClaim;
 
-
-    uint256 public _timeForReward = 2 hours;
-    uint StakeId = 1;
+    uint256 public _timeForReward;
+    uint StakeId;
 
     struct IngredientChance{
         uint chance;
@@ -82,31 +84,29 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
     }
 
     //ingredient types
-    uint[] common = [1,2,3,4,5];
-    uint[] uncommon = [6,7,8];
-    uint[] rare = [9,10,11,12,13,14,15,16,17,18,19];
-    uint[] epic = [20,21,22,23,24];
-    uint[] legendary = [25];
+    uint[] common;
+    uint[] uncommon;
+    uint[] rare;
+    uint[] epic;
+    uint[] legendary;
 
-    IngredientChance chance1 =  IngredientChance(2,common);
-    IngredientChance chance2 =  IngredientChance(5,uncommon);
-    IngredientChance chance3 =  IngredientChance(12,rare);
-    IngredientChance chance4 =  IngredientChance(30,epic);
-    IngredientChance chance5 =  IngredientChance(120,legendary);
+    IngredientChance chance1;
+    IngredientChance chance2;
+    IngredientChance chance3;
+    IngredientChance chance4;
+    IngredientChance chance5;
 
     //boss card ids
-    uint[] bossCard = [13, 29, 43, 14, 30, 44, 59, 65, 75, 85, 60, 66, 76, 86, 17, 25, 87, 18, 26, 88,
-    11, 41, 105, 12, 42, 106, 5, 21, 71, 93, 6, 22, 72, 94, 57, 81, 91, 58, 82, 92,
-    37, 63, 97, 38, 94, 98];
+    uint[] bossCard;
 
     //boost category
-    uint[] additiveBoost =[13,29,43,14,30,44];
-    uint[] commonIngBoost = [59,65,75,85,60,66,76,86];
-    uint[] uncommonIngBoost = [17,25,87,18,26,88];
-    uint[] rareIngBoost = [11,41,105,12,42,106];
-    uint[] epicIngBoost = [5,21,71,93,6,22,72,94];
-    uint[] legendaryIngBoost = [57,81,91,58,82,92];
-    uint[] cooldownBoost = [37,63,97,38,94,98];
+    uint[] additiveBoost;
+    uint[] commonIngBoost;
+    uint[] uncommonIngBoost;
+    uint[] rareIngBoost;
+    uint[] epicIngBoost;
+    uint[] legendaryIngBoost;
+    uint[] cooldownBoost;
 
     //bosscard info
     struct BossCardStakers{
@@ -115,11 +115,6 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
         uint value;
     }
     mapping(address => BossCardStakers) private bossCardStakers;
-
-    //for signature verification
-    address private validatorAddr = 0x404F0fA265E92198B7E3D332163AeECeE0CFfA95;
-    bool public checkSignatureFlag = true;
-
 
     function setTimeForReward(uint256 _time) public {
         _timeForReward = _time;
@@ -194,12 +189,41 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
         return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
     }
 
-    constructor(address _powerPlinsGen0, address _ingredientsERC1155, address _bossCardERC1155, address _gen1ERC1155, address _pancakeERC1155){
+    function initialize(address _powerPlinsGen0, address _ingredientsERC1155, address _bossCardERC1155, address _gen1ERC1155, address _pancakeERC1155) external initializer {
+        
         powerPlinsGen0 = IERC721(_powerPlinsGen0);
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155 = _bossCardERC1155;
         gen1ERC1155 = _gen1ERC1155;
         pancakeERC1155 = _pancakeERC1155;
+        _owner = msg.sender;
+        nonce = 1;
+        ceilSuccessNo = 10000;
+        _timeForReward = 2 hours;
+        StakeId = 1;
+        common = [1,2,3,4,5];
+        uncommon = [6,7,8];
+        rare = [9,10,11,12,13,14,15,16,17,18,19];
+        epic = [20,21,22,23,24];
+        legendary = [25];
+
+        chance1 =  IngredientChance(2,common);
+        chance2 =  IngredientChance(5,uncommon);
+        chance3 =  IngredientChance(12,rare);
+        chance4 =  IngredientChance(30,epic);
+        chance5 =  IngredientChance(120,legendary);
+
+        bossCard = [13, 29, 43, 14, 30, 44, 59, 65, 75, 85, 60, 66, 76, 86, 17, 25, 87, 18, 26, 88,
+        11, 41, 105, 12, 42, 106, 5, 21, 71, 93, 6, 22, 72, 94, 57, 81, 91, 58, 82, 92,
+        37, 63, 97, 38, 94, 98];
+
+        additiveBoost =[13,29,43,14,30,44];
+        commonIngBoost = [59,65,75,85,60,66,76,86];
+        uncommonIngBoost = [17,25,87,18,26,88];
+        rareIngBoost = [11,41,105,12,42,106];
+        epicIngBoost = [5,21,71,93,6,22,72,94];
+        legendaryIngBoost = [57,81,91,58,82,92];
+        cooldownBoost = [37,63,97,38,94,98];
     }
 
 
@@ -211,23 +235,15 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
         pancakeERC1155 = _pancakeERC1155;
     }
 
-    function setValidatorAddress(address _validatorAddr) public onlyOwner {
-        validatorAddr = _validatorAddr;
+    function owner() public view override virtual returns (address) {
+        return _owner;
     }
 
-    function setSignatureFlag(bool _value) public onlyOwner {
-        checkSignatureFlag = _value;
-    }
-
-    function verifyMessage(bytes32 _signedhashMessage, bytes memory _signature) private view returns (bool) {
-        address signer = _signedhashMessage.toEthSignedMessageHash().recover(_signature);
-        return (signer == validatorAddr);
-    }
-
-    function stakeRecipeERC721(uint _tokenId, uint _boostValue, bytes32 _signedhashMessage, bytes memory _signature) external nonReentrant {
+    function stakeRecipeERC721(uint _tokenId, uint _boostValue, bytes memory _signature) external nonReentrant {
         require(_tokenId >= 0, "Staking: No tokenIds provided");
-        bool Signer = verifyMessage(_signedhashMessage, _signature);
-        require(Signer, "Staking: Invalid signer");
+        bytes32 message = keccak256(abi.encodePacked(_tokenId, _boostValue, msg.sender));
+        bool isSender = checkSignature(message, _signature);
+        require(isSender, "Staking: Invalid sender");
         powerPlinsGen0.safeTransferFrom(msg.sender, address(this), _tokenId);
         recipeStake[msg.sender].tokenId = _tokenId;
         recipeStake[msg.sender].boostValue = _boostValue;
@@ -235,12 +251,13 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
         emit Staked(msg.sender, _tokenId);
     }
 
-    function unStakeRecipeERC721(uint _tokenId, bytes32 _signedhashMessage, bytes memory _signature) public nonReentrant {
+    function unStakeRecipeERC721(uint _tokenId, bytes memory _signature) public nonReentrant {
         require(_tokenId >= 0, "unStack: No tokenId found");
         require(recipeStake[msg.sender].tokenId >= 0, "unStack: No tokenId found");
         require(!anyClaimInProgress(),"Reward in progress");
-        bool Signer = verifyMessage(_signedhashMessage, _signature);
-        require(Signer, "unStack: Invalid signer");
+        bytes32 message = keccak256(abi.encodePacked(_tokenId, msg.sender));
+        bool isSender = checkSignature(message, _signature);
+        require(isSender, "unStack: Invalid sender");
         powerPlinsGen0.safeTransferFrom(address(this), msg.sender, _tokenId);
         delete recipeStake[msg.sender].tokenId;
         delete recipeStake[msg.sender].boostValue;
@@ -248,7 +265,7 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
         emit UnStaked(msg.sender, _tokenId);
     }
 
-    function stakeIngredientsERC1155(uint[] memory _tokenIds, uint[] memory _amounts, bytes32 _signedhashMessage, bytes memory _signature) external nonReentrant {
+    function stakeIngredientsERC1155(uint[] memory _tokenIds, uint[] memory _amounts, bytes memory _signature) external nonReentrant {
         require(recipeStake[msg.sender].tokenId > 0, "claimReward: First stake 721 Nft!");
         require(_tokenIds.length == _amounts.length, "stake: length mismatch");
         uint countAmount = 0;
@@ -256,8 +273,9 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
             countAmount = countAmount + _amounts[i];
         }
         require(countAmount >= 5 && countAmount <= 100, "stake: minimum 5 and maximum 100 can stake");
-        bool Signer = verifyMessage(_signedhashMessage, _signature);
-        require(Signer, "stake: Invalid signer");
+        bytes32 message = keccak256(abi.encodePacked(_tokenIds, _amounts, msg.sender));
+        bool isSender = checkSignature(message, _signature);
+        require(isSender, "stake: Invalid sender");
 
         for(uint i=0; i < _tokenIds.length; i++){
             IIngredientERC1155(ingredientsERC1155).safeTransferFrom(msg.sender, address(this), _tokenIds[i], _amounts[i],'');
@@ -270,7 +288,7 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
         StakeId++;
     }
 
-    function bossCardStake(uint _tokenId, string memory _traitType, uint _value, bytes32 _signedhashMessage, bytes memory _signature) external{
+    function bossCardStake(uint _tokenId, string memory _traitType, uint _value, bytes memory _signature) external{
         bool exist;
         for(uint i=0; i< bossCard.length; i++){
             if(bossCard[i] == _tokenId){
@@ -279,8 +297,9 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
             }
         }
         require(exist, "can't stake this token");
-        bool Signer = verifyMessage(_signedhashMessage, _signature);
-        require(Signer, "Invalid signer");
+        bytes32 message = keccak256(abi.encodePacked(_tokenId, _traitType, _value, msg.sender));
+        bool isSender = checkSignature(message, _signature);
+        require(isSender, "Invalid sender");
         bossCardStakers[msg.sender] = BossCardStakers({
         tokenId: _tokenId,
         traitType: _traitType,
@@ -289,7 +308,7 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
         IBossCardERC1155(bossCardERC1155).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }
 
-    function unStakeBoostCard(uint _tokenId, bytes32 _signedhashMessage, bytes memory _signature) external{
+    function unStakeBoostCard(uint _tokenId, bytes memory _signature) external{
         require(
             !anyClaimInProgress(),
             "Claim in progress"
@@ -302,8 +321,9 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
             }
         }
         require(exist, "Not valid boost token for unstake");
-        bool Signer = verifyMessage(_signedhashMessage, _signature);
-        require(Signer, "Invalid signer");
+        bytes32 message = keccak256(abi.encodePacked(_tokenId, msg.sender));
+        bool isSender = checkSignature(message, _signature);
+        require(isSender, "Invalid sender");
         IBossCardERC1155(bossCardERC1155).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
         delete bossCardStakers[msg.sender];
     }
@@ -388,15 +408,16 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
 
 
     //Claim rewards for IngredientsERC1155
-    function claimRewards(bytes32 _signedhashMessage, bytes memory _signature) public returns(uint[] memory) {
+    function claimRewards(bytes memory _signature) public returns(uint[] memory) {
         uint256[] memory tokenIds = IngredientStakers[msg.sender].tokenIds;
         uint256[] memory amounts = IngredientStakers[msg.sender].amounts;
         uint256 stakeTime = IngredientStakers[msg.sender].stakeTime;
 
         require(tokenIds.length != 0, "claimReward: No claimReward found");
         require(canAvailableClaim(stakeTime), "claimReward: stake not available for claim");
-        bool Signer = verifyMessage(_signedhashMessage, _signature);
-        require(Signer, "claimReward: Invalid signer");
+        bytes32 message = keccak256(abi.encodePacked(msg.sender));
+        bool isSender = checkSignature(message, _signature);
+        require(isSender, "claimReward: Invalid sender");
 
         uint successNo = getClaimSuccessNumber();
         uint randomId = random(1, ceilSuccessNo);
@@ -461,6 +482,8 @@ contract ShrineStake is ERC721Holder, ReentrancyGuard, Ownable{
         return userLastClaim[msg.sender];
     }
 
+    function _authorizeUpgrade(address) internal override onlyOwner {}
+    
     event Staked(address indexed user, uint256 tokenId);
     event UnStaked(address indexed user, uint256 tokenId);
     event RewardClaimed(

@@ -67,12 +67,15 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
         _mintBatch(to, tokenIds, amounts, "");
     }
 
-    function batchMintToken(address to, uint[] memory tokenIds, uint[] memory amounts) public onlyOwner existIds(tokenIds){
-        _mintBatch(to, tokenIds, amounts, "");
+    function mintToken(address account, uint256 id, uint256 amount) public  existId(id) onlyOwner
+    {
+        _mint(account, id, amount, "");
     }
 
-    function mintToken(uint tokenId, uint amount) public onlyOwner existId(tokenId){
-        _mint(msg.sender, tokenId, amount, "");
+    function mintBatchToken(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)  public
+    existIds(ids) onlyOwner
+    {
+        _mintBatch(to, ids, amounts, data);
     }
 
     function setTokenSize(uint _collectionCount) public onlyOwner{

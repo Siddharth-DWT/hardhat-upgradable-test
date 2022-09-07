@@ -71,15 +71,15 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
         _mintBatch(to, tokenIds, amounts, "");
     }
 
-    // owner mint function
-    function mintToken(uint tokenId, uint amount) public existId(tokenId) onlyOwner{
-        _mint(msg.sender, tokenId, amount, "");
+    function mintToken(address account, uint256 id, uint256 amount) public  existId(id) onlyOwner
+    {
+        _mint(account, id, amount, "");
     }
 
-    function batchMint(address to, uint[] memory tokenIds, uint[] memory amounts) public existIds(tokenIds) onlyOwner{
-        for(uint i=0;i<tokenIds.length;i++){
-            _mint(to, tokenIds[i], amounts[i], "");
-        }
+    function mintBatchToken(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)  public
+    existIds(ids) onlyOwner
+    {
+        _mintBatch(to, ids, amounts, data);
     }
 
     function setTokenSize(uint _tokensCount) public onlyOwner{

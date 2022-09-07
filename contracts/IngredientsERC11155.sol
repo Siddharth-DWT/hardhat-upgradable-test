@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "hardhat/console.sol";
 
 contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownable, Pausable {
-    uint collectionCount = 25;
+    uint public tokensCount = 25;
     string private _uri;
     mapping(uint256 => string) private _uris;
     mapping(address =>  bool) private _mintApprovals;
@@ -24,13 +24,13 @@ contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownab
         _uri = _baseUri;
     }
     modifier existId(uint _tokenid) {
-        require(_tokenid <= collectionCount, "Invalid token id");
+        require(_tokenid <= tokensCount, "Invalid token id");
         _;
     }
 
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
-            require(_tokenIds[i] <= collectionCount, "Invalid token id");
+            require(_tokenIds[i] <= tokensCount, "Invalid token id");
         }
         _;
     }
@@ -64,16 +64,16 @@ contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownab
         _mintBatch(to, tokenIds, amounts, "");
     }
 
-    function getTokenCount() public view returns(uint[] memory){
-        uint256[] memory tokens = new uint256[](collectionCount);
-        for(uint256 i = 0; i < collectionCount; i++ ){
+    function getWalletToken() public view returns(uint[] memory){
+        uint256[] memory tokens = new uint256[](tokensCount);
+        for(uint256 i = 0; i < tokensCount; i++ ){
             tokens[i] =  balanceOf(msg.sender, i+1);
         }
         return(tokens);
     }
 
-    function setTokenSize(uint _collectionCount) public onlyOwner{
-        collectionCount = _collectionCount;
+    function setTokenSize(uint _tokensCount) public onlyOwner{
+        tokensCount = _tokensCount;
     }
 
     function setTokenUri(uint tokenId_, string memory uri_) public onlyOwner {

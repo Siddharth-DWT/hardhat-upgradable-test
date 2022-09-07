@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "hardhat/console.sol";
 
 contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
-    uint tokensCount = 110;
+    uint public tokensCount = 110;
     mapping(address =>  bool) private _mintApprovals;
 
     string private _uri;

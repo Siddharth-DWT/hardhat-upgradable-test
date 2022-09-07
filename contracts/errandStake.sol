@@ -2,12 +2,8 @@
 pragma solidity 0.8.11;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -21,11 +17,11 @@ interface IBossCardERC1155{
 }
 
 interface IIngredientsERC1155{
-    function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
+    //function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
     function mint(address to, uint256 id, uint256 value) external;
 }
  
-contract ErrandStake is Initializable, ERC1155BurnableUpgradeable, ERC721HolderUpgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
+contract ErrandStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
     uint collectionCount;
     uint nonce;
     uint256 stakeIdCount;
@@ -113,7 +109,7 @@ contract ErrandStake is Initializable, ERC1155BurnableUpgradeable, ERC721HolderU
     }
 
     function initialize(address _powerPlinsGen0, address _ingredientsERC1155, address _bossCard) external initializer {
-        __ERC1155Burnable_init();
+        
         __ERC721Holder_init();
         __Ownable_init();
         __ReentrancyGuard_init();
@@ -319,6 +315,7 @@ contract ErrandStake is Initializable, ERC1155BurnableUpgradeable, ERC721HolderU
         }
         return flag;
     }
+    
     function printBossCardStakes() public  view returns (uint) {
         return(bossCardStakers[msg.sender].tokenId);
     }

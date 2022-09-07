@@ -3,11 +3,8 @@ pragma solidity 0.8.11;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
@@ -18,18 +15,13 @@ import "hardhat/console.sol";
 interface IIngredientERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
     function burn(address account, uint256 id, uint256 value) external;
-    function mint(address account, uint256 id, uint256 amount) external;
 }
 
 interface IGen1ERC1155{
-    function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
-    function burn(address account, uint256 id, uint256 value) external;
     function mint(address account, uint256 id, uint256 amount) external;
 }
 
 interface IPancakeERC1155{
-    function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
-    function burn(address account, uint256 id, uint256 value) external;
     function mint(address account, uint256 id, uint256 amount) external;
 }
 
@@ -89,22 +81,22 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
     uint[] epic;
     uint[] legendary;
 
-    IngredientChance chance1;
-    IngredientChance chance2;
-    IngredientChance chance3;
-    IngredientChance chance4;
-    IngredientChance chance5;
+    // IngredientChance chance1;
+    // IngredientChance chance2;
+    // IngredientChance chance3;
+    // IngredientChance chance4;
+    // IngredientChance chance5;
 
     //boss card ids
     uint[] bossCard;
 
     //boost category
-    uint[] additiveBoost;
-    uint[] commonIngBoost;
-    uint[] uncommonIngBoost;
-    uint[] rareIngBoost;
-    uint[] epicIngBoost;
-    uint[] legendaryIngBoost;
+    // uint[] additiveBoost;
+    // uint[] commonIngBoost;
+    // uint[] uncommonIngBoost;
+    // uint[] rareIngBoost;
+    // uint[] epicIngBoost;
+    // uint[] legendaryIngBoost;
     uint[] cooldownBoost;
 
     //bosscard info
@@ -192,7 +184,6 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
     function initialize(address _powerPlinsGen0, address _ingredientsERC1155, address _bossCardERC1155, address _gen1ERC1155, address _pancakeERC1155) external initializer { 
         __ERC721Holder_init();
         __Ownable_init();
-        __ERC1155Burnable_init();
         __ReentrancyGuard_init();
         __UUPSUpgradeable_init();
         __SigChecker_init();
@@ -210,20 +201,20 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         rare = [9,10,11,12,13,14,15,16,17,18,19];
         epic = [20,21,22,23,24];
         legendary = [25];
-        chance1 =  IngredientChance(2,common);
-        chance2 =  IngredientChance(5,uncommon);
-        chance3 =  IngredientChance(12,rare);
-        chance4 =  IngredientChance(30,epic);
-        chance5 =  IngredientChance(120,legendary);
+        // chance1 =  IngredientChance(2,common);
+        // chance2 =  IngredientChance(5,uncommon);
+        // chance3 =  IngredientChance(12,rare);
+        // chance4 =  IngredientChance(30,epic);
+        // chance5 =  IngredientChance(120,legendary);
         bossCard = [13, 29, 43, 14, 30, 44, 59, 65, 75, 85, 60, 66, 76, 86, 17, 25, 87, 18, 26, 88,
         11, 41, 105, 12, 42, 106, 5, 21, 71, 93, 6, 22, 72, 94, 57, 81, 91, 58, 82, 92,
         37, 63, 97, 38, 94, 98];
-        additiveBoost =[13,29,43,14,30,44];
-        commonIngBoost = [59,65,75,85,60,66,76,86];
-        uncommonIngBoost = [17,25,87,18,26,88];
-        rareIngBoost = [11,41,105,12,42,106];
-        epicIngBoost = [5,21,71,93,6,22,72,94];
-        legendaryIngBoost = [57,81,91,58,82,92];
+        // additiveBoost =[13,29,43,14,30,44];
+        // commonIngBoost = [59,65,75,85,60,66,76,86];
+        // uncommonIngBoost = [17,25,87,18,26,88];
+        // rareIngBoost = [11,41,105,12,42,106];
+        // epicIngBoost = [5,21,71,93,6,22,72,94];
+        // legendaryIngBoost = [57,81,91,58,82,92];
         cooldownBoost = [37,63,97,38,94,98];
     }
 

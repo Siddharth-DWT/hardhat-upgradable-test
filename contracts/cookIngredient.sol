@@ -1,11 +1,7 @@
  // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -28,12 +24,12 @@ interface IPancakeERC1155{
     function mint(address account, uint256 id, uint256 amount) external;
 }
 
-contract CookIngredients is  Initializable, ERC1155BurnableUpgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
+contract CookIngredients is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
     uint256 stakeIdCount;
-    uint256  _timeForReward;
+    uint256 _timeForReward;
 
-    address  ingredientsERC1155;
-    address  bossCardERC1155Address;
+    address ingredientsERC1155;
+    address bossCardERC1155Address;
     address pancakeERC1155;
 
     uint[] legendryBoost;
@@ -55,7 +51,6 @@ contract CookIngredients is  Initializable, ERC1155BurnableUpgradeable, OwnableU
 
 
     function initialize(address _ingredientsERC1155, address _bossCard, address _pancakeERC1155) external initializer {
-        __ERC1155Burnable_init();
         __Ownable_init();
         __ReentrancyGuard_init();
         __Pausable_init();

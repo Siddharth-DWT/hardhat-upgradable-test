@@ -11,8 +11,6 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-import "hardhat/console.sol";
-
 contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
     uint public tokensCount = 510;
     string private _uri;

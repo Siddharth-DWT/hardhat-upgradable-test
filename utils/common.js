@@ -62,12 +62,28 @@ async function deployWithVerifyContract(contractName,params){
 
 }
 
+async function verifyContract(contractName,address,params){
+    console.log("contractName,address,params",contractName,address,params)
+    console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
+    try{
+        await hardhat.run('verify:verify', {
+            address: address,
+            constructorArguments: params,
+            contract: `contracts/${contractName}.sol:${contractName}`
+        });
+    }
+    catch (e){
+        console.log("error",e)
+    }
+}
+
 module.exports = {
     getMerkleRoot,
     CONTRACT_NAME_MAP,
     scan_link,
     writeAddress,
-    deployWithVerifyContract
+    deployWithVerifyContract,
+    verifyContract
 }
 
 

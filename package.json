@@ -8,7 +8,8 @@
     "deploy_contract": "hardhat run --network arbitrum_rinkeby scripts/deploy_contract.js",
     "upgrade_contract": "hardhat run --network arbitrum_rinkeby scripts/upgrade_contract.js",
     "deploy_gen0": "hardhat run --network arbitrum_rinkeby scripts/deploy_gen0.js",
-    "deploy_all1155": "hardhat run --network arbitrum_rinkeby scripts/deploy_all1155.js"
+    "deploy_all1155": "hardhat run --network arbitrum_rinkeby scripts/deploy_all1155.js",
+    "verify_all1155": "hardhat run --network arbitrum_rinkeby scripts/verify_all1155.js"
   },
   "author": "",
   "license": "ISC",

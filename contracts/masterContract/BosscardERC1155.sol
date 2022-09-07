@@ -6,18 +6,22 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
-import "hardhat/console.sol";
 
 contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
-   
+
     uint tokensCount = 110;
     mapping(address =>  bool) private _mintApprovals;
 
     string private _uri;
     mapping(uint256 => string) private _uris;
 
-    constructor() ERC1155("https://ipfs.io/ipfs/bafybeicg2xxubrxepe4amujl7tmyok52juxsz534kk3skmdsq62w53fezy/{id}.json") {
-
+    constructor(string memory _baseUri) ERC1155(string(
+            abi.encodePacked(
+                _baseUri,
+                "{id}.json"
+            )
+        )) {
+        _uri = _baseUri;
     }
 
     modifier existId(uint _tokenid) {
@@ -28,7 +32,7 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
             require(_tokenIds[i] <= tokensCount, "Invalid token id");
-        } 
+        }
         _;
     }
 
@@ -38,7 +42,7 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
 
     function setTokenUri(uint tokenId_, string memory uri_) public onlyOwner {
         require(bytes(_uris[tokenId_]).length == 0, "Cannot set uri twice");
-        _uris[tokenId_] = uri_; 
+        _uris[tokenId_] = uri_;
     }
 
     function setMintApprovalForAll(address operator, bool approved) public {
@@ -66,15 +70,15 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
         _mintBatch(to, tokenIds, amounts, "");
     }
 
-    // owner mint function
-    function mintToken(uint tokenId, uint amount) public existId(tokenId) onlyOwner{
-        _mint(msg.sender, tokenId, amount, "");
+    function mintToken(address account, uint256 id, uint256 amount) public  existId(id) onlyOwner
+    {
+        _mint(account, id, amount, "");
     }
-    
-    function batchMint(address to, uint[] memory tokenIds, uint[] memory amounts) public existIds(tokenIds) onlyOwner{
-        for(uint i=0;i<tokenIds.length;i++){
-            _mint(to, tokenIds[i], amounts[i], "");
-        }
+
+    function mintBatchToken(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)  public
+    existIds(ids) onlyOwner
+    {
+        _mintBatch(to, ids, amounts, data);
     }
 
     function setTokenSize(uint _tokensCount) public onlyOwner{
@@ -89,23 +93,16 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
         return(tokens);
     }
 
-    function uri(uint256 _tokenid) override public view existId(_tokenid) returns (string memory) {
-        if(bytes(_uris[_tokenid]).length > 0){
-            return _uris[_tokenid];
-        } 
-        string memory URI;
-        bytes memory tempStringUri = bytes(_uri); 
-        if (tempStringUri.length == 0) {
-           URI = "https://ipfs.io/ipfs/bafybeicg2xxubrxepe4amujl7tmyok52juxsz534kk3skmdsq62w53fezy/";
-        } else {
-            URI = _uri;
+    function uri(uint256 _tokenId) override public view existId(_tokenId) returns (string memory) {
+        if(bytes(_uris[_tokenId]).length > 0){
+            return _uris[_tokenId];
         }
         return string(
             abi.encodePacked(
-                URI,
-                Strings.toString(_tokenid),".json"
+                _uri,
+                Strings.toString(_tokenId),".json"
             )
-        );      
+        );
     }
 }
 

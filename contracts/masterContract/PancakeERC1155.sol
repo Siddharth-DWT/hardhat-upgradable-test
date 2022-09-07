@@ -8,17 +8,19 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-import "hardhat/console.sol";
-
 contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable, Pausable {
-
     uint collectionCount = 19;
     string private _uri;
     mapping(uint256 => string) private _uris;
-
     mapping(address =>  bool) private _mintApprovals;
 
-    constructor() ERC1155("https://gateway.pinata.cloud/ipfs/QmfQCdUSMGyhZWwfJLP4dABhWysiGPuaoQ9cAJofAhGHJs/{id}.json") {
+    constructor(string memory _baseUri) ERC1155(string(
+            abi.encodePacked(
+                _baseUri,
+                "{id}.json"
+            )
+        )) {
+        _uri = _baseUri;
     }
 
     modifier existId(uint _tokenid) {
@@ -29,7 +31,7 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
             require(_tokenIds[i] <= collectionCount, "Invalid token id");
-        } 
+        }
         _;
     }
 
@@ -63,12 +65,15 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
         _mintBatch(to, tokenIds, amounts, "");
     }
 
-    function batchMintToken(address to, uint[] memory tokenIds, uint[] memory amounts) public onlyOwner existIds(tokenIds){
-        _mintBatch(to, tokenIds, amounts, "");
+    function mintToken(address account, uint256 id, uint256 amount) public  existId(id) onlyOwner
+    {
+        _mint(account, id, amount, "");
     }
 
-    function mintToken(uint tokenId, uint amount) public onlyOwner existId(tokenId){
-        _mint(msg.sender, tokenId, amount, "");
+    function mintBatchToken(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)  public
+    existIds(ids) onlyOwner
+    {
+        _mintBatch(to, ids, amounts, data);
     }
 
     function setTokenSize(uint _collectionCount) public onlyOwner{
@@ -83,27 +88,20 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
         return(tokens);
     }
 
-    function uri(uint256 _tokenid) override public view existId(_tokenid) returns (string memory) {
-        if(bytes(_uris[_tokenid]).length > 0){
-            return _uris[_tokenid];
-        } 
-        string memory URI;
-        bytes memory tempStringUri = bytes(_uri); 
-        if (tempStringUri.length == 0) {
-           URI = "https://gateway.pinata.cloud/ipfs/QmfQCdUSMGyhZWwfJLP4dABhWysiGPuaoQ9cAJofAhGHJs/";
-        } else {
-            URI = _uri;
+    function setTokenUri(uint tokenId_, string memory uri_) public onlyOwner {
+        require(bytes(_uris[tokenId_]).length == 0, "Cannot set uri twice");
+        _uris[tokenId_] = uri_;
+    }
+
+    function uri(uint256 _tokenId) override public view existId(_tokenId) returns (string memory) {
+        if(bytes(_uris[_tokenId]).length > 0){
+            return _uris[_tokenId];
         }
         return string(
             abi.encodePacked(
-                URI,
-                Strings.toString(_tokenid),".json"
+                _uri,
+                Strings.toString(_tokenId),".json"
             )
-        );      
-    }
-
-    function setTokenUri(uint tokenId_, string memory uri_) public onlyOwner {
-        require(bytes(_uris[tokenId_]).length == 0, "Cannot set uri twice");
-        _uris[tokenId_] = uri_; 
+        );
     }
 }

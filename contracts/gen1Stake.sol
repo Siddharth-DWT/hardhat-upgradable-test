@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./SignatureChecker.sol";
@@ -18,17 +18,15 @@ interface IGen1ERC1155{
 
 interface IIngredientsERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
-    function mint(address to, uint256 id, uint256 value) external returns(address);
+    function mint(address to, uint256 id, uint256 value) external;
 }
 
-contract Gen1Stake is ReentrancyGuard, Ownable, Pausable, SignatureChecker, Initializable, UUPSUpgradeable{
-
-    address private powerPlinsGen1;
-    address private ingredientsERC1155;
-    address private _owner;
+contract Gen1Stake1 is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
     uint nonce;
     uint256 stakeIdCount;
     uint256  _timeForReward;
+    address private powerPlinsGen1;
+    address private ingredientsERC1155;
 
     struct CategoryGen1 {
         uint from;
@@ -55,6 +53,7 @@ contract Gen1Stake is ReentrancyGuard, Ownable, Pausable, SignatureChecker, Init
     mapping(address => Gen1Staker[]) gen1Stakers;
     mapping(address => mapping(uint256 => uint256))  tokenIdToRewardsClaimed;
 
+
     function random(uint from, uint to) internal returns (uint) {
         uint randomnumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % to;
         randomnumber = from + randomnumber ;
@@ -76,9 +75,13 @@ contract Gen1Stake is ReentrancyGuard, Ownable, Pausable, SignatureChecker, Init
     }
 
     function initialize(address _powerPlinsGen1, address _ingredientsERC1155) external initializer {
+        __Ownable_init();
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
+        __SigChecker_init();
         powerPlinsGen1 = _powerPlinsGen1;
         ingredientsERC1155 = _ingredientsERC1155;
-        _owner = msg.sender;
         nonce = 1;
         stakeIdCount = 1; 
         _timeForReward = 24 hours;
@@ -98,19 +101,15 @@ contract Gen1Stake is ReentrancyGuard, Ownable, Pausable, SignatureChecker, Init
         powerPlinsGen1 = _powerPlinsGen1;
         ingredientsERC1155 = _ingredientsERC1155;
     }
-    
-    function owner() public view override virtual returns (address) {
-        return _owner;
-    }
 
-    function setTimeForReward(uint256 timeForReward) public onlyOwner{
+    function setTimeForReward(uint256 timeForReward) public{
         _timeForReward = timeForReward;
     }
 
-    function stake(uint256[] memory tokenIds, bytes memory _signature) external nonReentrant whenNotPaused{
+    function stake(uint256[] memory tokenIds, bytes memory signature) external nonReentrant whenNotPaused{
         require(tokenIds.length != 0, "Staking: No tokenIds provided");
-        bytes32 message = keccak256(abi.encodePacked(tokenIds, msg.sender));
-        bool isSender = checkSignature(message, _signature);
+        bytes32 message = keccak256(abi.encodePacked(msg.sender));
+        bool isSender = checkSignature(message, signature);
         require(isSender, "Staking: Invalid sender");
         uint256 amount;
         for (uint256 i = 0; i < tokenIds.length; i += 1) {
@@ -130,12 +129,12 @@ contract Gen1Stake is ReentrancyGuard, Ownable, Pausable, SignatureChecker, Init
         Gen1Staker memory staker = gen1Stakers[msg.sender][findIndex(_stakeId)];
         // console.log(staker.tokenIds.length);
         require(staker.tokenIds.length != 0, "unStack: No tokenIds found");
+        bytes32 message = keccak256(abi.encodePacked(msg.sender));
+        bool isSender = checkSignature(message, _signature);
+        require(isSender, "unStack: Invalid sender");
         uint256[] memory tokenIds =  staker.tokenIds;
         uint _numberToClaim =  numberOfRewardsToClaim(_stakeId, staker.time, staker.tokenIds.length);
         require( _numberToClaim == 0,"Rewards left unclaimed!");
-        bytes32 message = keccak256(abi.encodePacked(_stakeId, msg.sender));
-        bool isSender = checkSignature(message, _signature);
-        require(isSender, "unStack: Invalid sender");
         uint256 amount = staker.tokenIds.length;
         for (uint256 i = 0; i < amount; i += 1) {
             IGen1ERC1155(powerPlinsGen1).safeTransferFrom(address(this),msg.sender, tokenIds[i], 1, '');
@@ -168,18 +167,16 @@ contract Gen1Stake is ReentrancyGuard, Ownable, Pausable, SignatureChecker, Init
         return totalCount;
     }
 
-
     function claimReward(uint256 _stakeId, bytes memory _signature) public {
         Gen1Staker memory staker = gen1Stakers[msg.sender][findIndex(_stakeId)];
         uint256[] memory tokenIds = staker.tokenIds;
         uint256 stakeTime = staker.time;
+        bytes32 message = keccak256(abi.encodePacked(msg.sender));
+        bool isSender = checkSignature(message, _signature);
+        require(isSender, "claimReward: Invalid sender");
         require(tokenIds.length != 0, "claimReward: No token Found for claim");
         uint _numberToClaim =  numberOfRewardsToClaim(_stakeId, stakeTime,1);
         require(_numberToClaim != 0, "claimReward: No claim pending");
-        bytes32 message = keccak256(abi.encodePacked(_stakeId, msg.sender));
-        bool isSender = checkSignature(message, _signature);
-        require(isSender, "claimReward: Invalid sender");
-        
         _claimReward(_numberToClaim*tokenIds.length, _stakeId, _stakeId);
         tokenIdToRewardsClaimed[msg.sender][_stakeId] += _numberToClaim;
     }
@@ -225,6 +222,7 @@ contract Gen1Stake is ReentrancyGuard, Ownable, Pausable, SignatureChecker, Init
         }
         return flag;
     }
+
     function getTimeForReward() public view returns(uint256){
         return _timeForReward;
     }

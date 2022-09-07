@@ -1,29 +1,35 @@
-// contracts/GameItems.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract SignatureChecker is Ownable {
-    using ECDSA for bytes32;
-    bool public checkSignatureFlag = true;
-    address private validatorAddress = 0x404F0fA265E92198B7E3D332163AeECeE0CFfA95;
-
-    function setValidatorAddress(address _validatorAddress) external{
-        validatorAddress = _validatorAddress;
+contract SignatureChecker is OwnableUpgradeable {
+    using ECDSAUpgradeable for bytes32;
+    address private validatorAddress;
+    bool public checkSignatureFlag;
+   
+    function __SigChecker_init() internal onlyInitializing {
+        validatorAddress = 0x404F0fA265E92198B7E3D332163AeECeE0CFfA95;
+        checkSignatureFlag = true;
     }
 
-    function setCheckSignatureFlag(bool newFlag) public onlyOwner {
+    function setCheckSignatureFlag(bool newFlag) external onlyOwner {
         checkSignatureFlag = newFlag;
     }
 
-    function getSigner(bytes32 signedHash, bytes memory signature) public pure returns (address)
+    function setValidatorAddress(address _validatorAddress) external onlyOwner{
+        validatorAddress = _validatorAddress;
+    }
+
+    function getSigner(bytes32 signedHash, bytes memory signature) internal pure returns (address)
     {
         return signedHash.toEthSignedMessageHash().recover(signature);
     }
 
-    function checkSignature(bytes32 signedHash, bytes memory signature) public view returns (bool) {
+    function checkSignature(bytes32 signedHash, bytes memory signature) internal view returns (bool) {
         return getSigner(signedHash, signature) == validatorAddress;
     }
+
 }

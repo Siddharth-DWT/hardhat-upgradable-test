@@ -17,17 +17,19 @@ const getMerkleRoot = (addresses)=>{
     console.log(buf2hex(tree.getRoot()))
     return root;
 }
-
+const scan_link=  "https://testnet.arbiscan.io/address/"
 
 const writeAddress = async (key,address) =>{
+    const link = scan_link+address;
     const configJson = await readFile('address.json', 'utf-8');
     const config = JSON.parse(configJson);
-    Object.assign(config, {[key]:address});
+    Object.assign(config, {[key]:address},{[key+"_LINK"]:link});
     await writeFile(
         'address.json',
         JSON.stringify(config, null, 2)
     );
 }
+
 
 
 async function main() {

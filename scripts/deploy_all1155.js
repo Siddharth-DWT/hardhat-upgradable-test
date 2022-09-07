@@ -25,7 +25,8 @@ async function main() {
     await bosscard.deployTransaction.wait(10);
     console.log("BosscardERC1155 deployed to:", bosscard.address);
     writeAddress("BossCardERC1155",bosscard.address)
-    console.log('Verifying BosscardERC1155 on Rinkeby...');
+    //console.log('Verifying BosscardERC1155 on Rinkeby...');
+    console.log(`Verifying BosscardERC1155 on ${process.env.DEPLOY_ENV}...`);
     try{
         await hardhat.run('verify:verify', {
             address: bosscard.address,
@@ -37,13 +38,14 @@ async function main() {
     }
 
     console.log("Deploying Gen11155...");
-    const Gen11155 = await ethers.getContractFactory("Gen11155");
+    const Gen11155 = await ethers.getContractFactory("Gen1ERC1155");
     const gen1 = await Gen11155.deploy(GEN1_URI);
     await gen1.deployTransaction.wait(10);
     console.log("Gen11155 deployed to:", gen1.address);
-    writeAddress("Gen11155",gen1.address)
+    writeAddress("Gen1ERC1155",gen1.address)
 
-    console.log('Verifying Gen11155 on Rinkeby...');
+    //console.log('Verifying Gen11155 on Rinkeby...');
+    console.log(`Verifying Gen11155 on ${process.env.DEPLOY_ENV}...`);
     try{
         await hardhat.run('verify:verify', {
         address: gen1.address,
@@ -55,12 +57,13 @@ async function main() {
     }
 
     console.log("Deploying IngredientERC1155...");
-    const IngredientERC1155 = await ethers.getContractFactory("IngredientERC1155");
+    const IngredientERC1155 = await ethers.getContractFactory("IngredientsERC11155");
     const ingredient = await IngredientERC1155.deploy(INGREDIENT_URI);
     await ingredient.deployTransaction.wait(10);
-    console.log("IngredientERC1155 deployed to:", ingredient.address);
-    writeAddress("IngredientERC1155",ingredient.address)
-    console.log('Verifying IngredientERC1155 on Rinkeby...');
+    console.log("IngredientsERC11155 deployed to:", ingredient.address);
+    writeAddress("IngredientsERC11155",ingredient.address)
+    //console.log('Verifying IngredientERC1155 on Rinkeby...');
+    console.log(`Verifying IngredientERC1155 on ${process.env.DEPLOY_ENV}...`);
     try{
         await hardhat.run('verify:verify', {
             address: ingredient.address,
@@ -71,12 +74,13 @@ async function main() {
     }
 
     console.log("Deploying PancakeERC1155...");
-    const PancakeERC1155 = await ethers.getContractFactory("PancakeERC1155");
+    const PancakeERC1155 = await ethers.getContractFactory("PancakeNftERC11155");
     const pancake = await PancakeERC1155.deploy(PANCAKE_URI);
     await pancake.deployTransaction.wait(10);
-    console.log("PancakeERC1155 deployed to:", pancake.address);
-    writeAddress("PancakeERC1155",pancake.address)
-    console.log('Verifying PancakeERC1155 on Rinkeby...');
+    console.log("PancakeNftERC11155 deployed to:", pancake.address);
+    writeAddress("PancakeNftERC11155",pancake.address)
+    //console.log('Verifying PancakeERC1155 on Rinkeby...');
+    console.log(`Verifying PancakeNftERC11155 on ${process.env.DEPLOY_ENV}...`);
     try{
         await hardhat.run('verify:verify', {
             address: pancake.address,

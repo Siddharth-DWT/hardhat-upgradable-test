@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy_contract": "hardhat run --network rinkeby scripts/deploy_contract.js",
-    "upgrade_contract": "hardhat run --network rinkeby scripts/upgrade_contract.js",
-    "deploy_gen0": "hardhat run --network rinkeby scripts/deploy_gen0.js",
-    "deploy_all1155": "hardhat run --network rinkeby scripts/deploy_all1155.js"
+    "deploy_contract": "hardhat run --network arbitrum_rinkeby scripts/deploy_contract.js",
+    "upgrade_contract": "hardhat run --network arbitrum_rinkeby scripts/upgrade_contract.js",
+    "deploy_gen0": "hardhat run --network arbitrum_rinkeby scripts/deploy_gen0.js",
+    "deploy_all1155": "hardhat run --network arbitrum_rinkeby scripts/deploy_all1155.js"
   },
   "author": "",
   "license": "ISC",

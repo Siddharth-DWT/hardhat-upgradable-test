@@ -32,9 +32,7 @@ const writeAddress = async (key,address) =>{
 
 async function main() {
     const [name, symbol, presaleCost, maxSupply, hiddenUri] = process.env.GEN0_PARAMS.split(",")
-   // console.log("process.env -ame, symbol, presaleCost, maxSupply, hiddenUri",name, symbol, presaleCost, maxSupply, hiddenUri)
     const merkleRoot = getMerkleRoot(process.env.WHITELIST_ADDRESSES)
-    //console.log("merkleRoot",merkleRoot)
     console.log("Deploying...");
     writeAddress("PowerPlinsGen0ERC721","gen0.address")
     const PowerPlinsGen0 = await ethers.getContractFactory("PowerPlinsGen0ERC721");
@@ -54,7 +52,7 @@ async function main() {
     /**
      * Verify Contracts
      */
-    console.log('Verifying PowerPlinsGen0ERC721 on Rinkeby...');
+    console.log(`Verifying PowerPlinsGen0ERC721 on ${process.env.DEPLOY_ENV}...`);
     try{
         await hardhat.run('verify:verify', {
             address: gen0.address,

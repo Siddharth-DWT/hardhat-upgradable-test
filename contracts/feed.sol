@@ -179,7 +179,6 @@ contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
         emit RewardClaimed(msg.sender, ingredientNftIds,ingredientBftAmounts, _bossCards,_bossCardAmounts);
     }
 
-
     function getTimeForReward() public view returns(uint256){
         return _timeForReward;
     }

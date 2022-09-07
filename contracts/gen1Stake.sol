@@ -51,7 +51,6 @@ contract Gen1Stake is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradea
     mapping(address => Gen1Staker[]) gen1Stakers;
     mapping(address => mapping(uint256 => uint256))  tokenIdToRewardsClaimed;
 
-
     function random(uint from, uint to) internal returns (uint) {
         uint randomnumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % to;
         randomnumber = from + randomnumber ;

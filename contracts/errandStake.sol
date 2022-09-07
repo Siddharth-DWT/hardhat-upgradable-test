@@ -109,7 +109,6 @@ contract ErrandStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
     }
 
     function initialize(address _powerPlinsGen0, address _ingredientsERC1155, address _bossCard) external initializer {
-        
         __ERC721Holder_init();
         __Ownable_init();
         __ReentrancyGuard_init();

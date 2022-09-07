@@ -49,7 +49,6 @@ contract CookIngredients is  Initializable, OwnableUpgradeable, ReentrancyGuardU
     }
     mapping(address => BossCardStaker)  bossCardStakers;
 
-
     function initialize(address _ingredientsERC1155, address _bossCard, address _pancakeERC1155) external initializer {
         __Ownable_init();
         __ReentrancyGuard_init();

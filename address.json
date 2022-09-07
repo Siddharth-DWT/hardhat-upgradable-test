@@ -1,12 +1,12 @@
 {
-  "BossCardERC1155": "0x1f6aD99875Ff44841e3e90939187c3BF3e2CE294",
-  "BossCardERC1155_LINK": "https://testnet.arbiscan.io/address/0x1f6aD99875Ff44841e3e90939187c3BF3e2CE294",
-  "Gen1ERC1155": "0x9800dfA199ada44d4a2b534Ef2D9fEc8AFddd81D",
-  "Gen1ERC1155_LINK": "https://testnet.arbiscan.io/address/0x9800dfA199ada44d4a2b534Ef2D9fEc8AFddd81D",
-  "IngredientsERC11155": "0x610082494673E8e0Fc6527D0517091FAbab10b33",
-  "IngredientsERC11155_LINK": "https://testnet.arbiscan.io/address/0x610082494673E8e0Fc6527D0517091FAbab10b33",
-  "PancakeNftERC11155": "0xfa56B65271a9B78d685c59E6B1Ce65F346Cde6eD",
-  "PancakeNftERC11155_LINK": "https://testnet.arbiscan.io/address/0xfa56B65271a9B78d685c59E6B1Ce65F346Cde6eD",
+  "BossCardERC1155": "0x462d60D9010e58530Ad7dE70e4BC5e01ce3E23B6",
+  "BossCardERC1155_LINK": "https://testnet.arbiscan.io/address/0x462d60D9010e58530Ad7dE70e4BC5e01ce3E23B6",
+  "Gen1ERC1155": "0xD9E58e6e82f5a913357C504886A9fdA97740E0fB",
+  "Gen1ERC1155_LINK": "https://testnet.arbiscan.io/address/0xD9E58e6e82f5a913357C504886A9fdA97740E0fB",
+  "IngredientsERC11155": "0x12FDC9C2247EECe815ab29aaC6e831435e2b0229",
+  "IngredientsERC11155_LINK": "https://testnet.arbiscan.io/address/0x12FDC9C2247EECe815ab29aaC6e831435e2b0229",
+  "PancakeNftERC11155": "0xA4A00F588c9407ff0497065EA5B39b9348E2e4Ae",
+  "PancakeNftERC11155_LINK": "https://testnet.arbiscan.io/address/0xA4A00F588c9407ff0497065EA5B39b9348E2e4Ae",
   "PowerPlinsGen0ERC721": "0x63012F1F3964b0dD96c91662Ce0F7A80406f20bC",
   "PowerPlinsGen0ERC721_LINK": "https://testnet.arbiscan.io/address/0x63012F1F3964b0dD96c91662Ce0F7A80406f20bC"
 }

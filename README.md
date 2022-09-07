@@ -4,13 +4,13 @@ This project demonstrates a basic Hardhat use case. It comes with a sample contr
 
 
 Deploy all ERC1155
-
+```shell
 npm run deploy_all1155
-
+```
 Deploy ERC721 Gen0
-
+```shell
 npm run deploy_gen0
-
+```
 
 Try running some of the following tasks:
 

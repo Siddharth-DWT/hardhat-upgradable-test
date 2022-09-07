@@ -10,7 +10,6 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "hardhat/console.sol";
 
 contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownable, Pausable {
-
     uint collectionCount = 25;
     string private _uri;
     mapping(uint256 => string) private _uris;
@@ -48,31 +47,21 @@ contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownab
         return _mintApprovals[operator];
     }
 
-    // contract mint function
-    function mint(address to, uint tokenId, uint amount) public existId(tokenId) {
+    // contract or owner mint function
+    function mint(address to, uint tokenId, uint amount) public existId(tokenId){
         require(
-            isMintApprovedForAll(msg.sender),
+            isMintApprovedForAll(msg.sender) || owner() == msg.sender,
             "ERC1155: caller is not owner nor approved"
         );
         _mint(to, tokenId, amount, "");
-
     }
 
     function mintBatch(address to, uint[] memory tokenIds, uint[] memory amounts) public existIds(tokenIds) {
         require(
-            isMintApprovedForAll(msg.sender),
+            isMintApprovedForAll(msg.sender) || owner() == msg.sender,
             "ERC1155: caller is not owner nor approved"
         );
         _mintBatch(to, tokenIds, amounts, "");
-    }
-
-    // owner mint function
-    function mintToken(uint tokenId, uint amount) public onlyOwner existId(tokenId){
-        _mint(msg.sender, tokenId, amount, "");
-    }
-
-    function batchMintTokens(uint[] memory tokenIds, uint[] memory amounts) public onlyOwner existIds(tokenIds){
-        _mintBatch(msg.sender, tokenIds, amounts, "");
     }
 
     function getTokenCount() public view returns(uint[] memory){

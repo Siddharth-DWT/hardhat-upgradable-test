@@ -52,27 +52,18 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
     // contract mint function
     function mint(address to, uint tokenId, uint amount) public existId(tokenId){
         require(
-            isMintApprovedForAll(msg.sender),
+            isMintApprovedForAll(msg.sender) || owner() == msg.sender,
             "ERC1155: caller is not owner nor approved"
         );
         _mint(to, tokenId, amount, "");
-
     }
 
-    function mintBatch(address to, uint[] memory tokenIds, uint[] memory amounts) public existIds(tokenIds){
+    function mintBatch(address to, uint[] memory tokenIds, uint[] memory amounts) public existIds(tokenIds) {
         require(
-            isMintApprovedForAll(msg.sender),
+            isMintApprovedForAll(msg.sender) || owner() == msg.sender,
             "ERC1155: caller is not owner nor approved"
         );
         _mintBatch(to, tokenIds, amounts, "");
-    }
-
-    function batchMintToken(address to, uint[] memory tokenIds, uint[] memory amounts) public onlyOwner existIds(tokenIds){
-        _mintBatch(to, tokenIds, amounts, "");
-    }
-
-    function mintToken(uint tokenId, uint amount) public onlyOwner existId(tokenId){
-        _mint(msg.sender, tokenId, amount, "");
     }
 
     function setTokenSize(uint _collectionCount) public onlyOwner{

@@ -1,35 +1,23 @@
-const { ethers} = require("hardhat");
-const hardhat = require("hardhat");
+const {deployWithVerifyContract,CONTRACT_NAME_MAP} = require("../utils/common")
 
-const promisify = require('util').promisify;
-const fs = require('fs');
-const writeFile = promisify(fs.writeFile);
-const readFile = promisify(fs.readFile);
-
-const scan_link=  "https://testnet.arbiscan.io/address/"
-
-const writeAddress = async (key,address) =>{
-    const link = scan_link+address;
-    const configJson = await readFile('address.json', 'utf-8');
-    const config = JSON.parse(configJson);
-    Object.assign(config, {[key]:address},{[key+"_LINK"]:link});
-    await writeFile(
-        'address.json',
-        JSON.stringify(config, null, 2)
-    );
+async function main(){
+    const {BOSS_CARD_URI,GEN1_URI,INGREDIENT_URI,PANCAKE_URI} = process.env
+    await deployWithVerifyContract(CONTRACT_NAME_MAP.BossCardERC1155,[BOSS_CARD_URI])
+    await deployWithVerifyContract(CONTRACT_NAME_MAP.Gen1ERC1155,[GEN1_URI])
+    await deployWithVerifyContract(CONTRACT_NAME_MAP.IngredientsERC11155,[INGREDIENT_URI])
+    await deployWithVerifyContract(CONTRACT_NAME_MAP.PancakeNftERC11155,[PANCAKE_URI])
 }
 
-
-
-async function main() {
+/*async function main() {
+    console.log("CONTRACT_NAME_MAP",CONTRACT_NAME_MAP)
     const {BOSS_CARD_URI,GEN1_URI,INGREDIENT_URI,PANCAKE_URI} = process.env;
     console.log("Deploying BosscardERC1155...");
+
     const BossCardERC1155 = await ethers.getContractFactory("BossCardERC1155");
     const bosscard = await BossCardERC1155.deploy(BOSS_CARD_URI);
     await bosscard.deployTransaction.wait(10);
     console.log("BosscardERC1155 deployed to:", bosscard.address);
-    writeAddress("BossCardERC1155",bosscard.address)
-    //console.log('Verifying BosscardERC1155 on Rinkeby...');
+    writeAddress(CONTRACT_NAME_MAP.BossCardERC1155,bosscard.address)
     console.log(`Verifying BosscardERC1155 on ${process.env.DEPLOY_ENV}...`);
     try{
         await hardhat.run('verify:verify', {
@@ -95,7 +83,7 @@ async function main() {
         console.log("error",e)
     }
 
-}
+}*/
 
 main();
 

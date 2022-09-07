@@ -18,7 +18,13 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
     mapping(uint256 => string) private _uris;
     mapping(address =>  bool) private _mintApprovals;
 
-    constructor() ERC1155("https://gateway.pinata.cloud/ipfs/QmfQCdUSMGyhZWwfJLP4dABhWysiGPuaoQ9cAJofAhGHJs/{id}.json") {
+    constructor(string memory _baseUri) ERC1155(string(
+            abi.encodePacked(
+                _baseUri,
+                "{id}.json"
+            )
+        )) {
+        _uri = _baseUri;
     }
 
     modifier existId(uint _tokenid) {
@@ -29,7 +35,7 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
             require(_tokenIds[i] <= collectionCount, "Invalid token id");
-        } 
+        }
         _;
     }
 
@@ -39,9 +45,9 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
 
     function setTokenUri(uint tokenId_, string memory uri_) public onlyOwner {
         require(bytes(_uris[tokenId_]).length == 0, "Cannot set uri twice");
-        _uris[tokenId_] = uri_; 
+        _uris[tokenId_] = uri_;
     }
-    
+
     function setMintApprovalForAll(address operator, bool approved) public {
         _mintApprovals[operator] = approved;
     }
@@ -70,7 +76,7 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
 
     function mintToken(address account, uint256 id, uint256 amount)
     public
-    existId(id) onlyOwner 
+    existId(id) onlyOwner
     {
         _mint(account, id, amount, "");
     }
@@ -85,26 +91,6 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
     function setTokenSize(uint _collectionCount) public onlyOwner{
         collectionCount = _collectionCount;
     }
-
-    function uri(uint256 _tokenid) override public view existId(_tokenid) returns (string memory) {
-        if(bytes(_uris[_tokenid]).length > 0){
-            return _uris[_tokenid];
-        } 
-        string memory URI;
-        bytes memory tempStringUri = bytes(_uri); 
-        if (tempStringUri.length == 0) {
-           URI = "https://gateway.pinata.cloud/ipfs/QmfQCdUSMGyhZWwfJLP4dABhWysiGPuaoQ9cAJofAhGHJs/";
-        } else {
-            URI = _uri;
-        }
-        return string(
-            abi.encodePacked(
-                URI,
-                Strings.toString(_tokenid),".json"
-            )
-        );      
-    }
-
     function getTokenCount() public view returns(uint[] memory){
         uint256[] memory tokens = new uint256[](collectionCount);
         for(uint256 i = 0; i < collectionCount; i++ ){
@@ -112,4 +98,16 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
         }
         return(tokens);
     }
+    function uri(uint256 _tokenId) override public view existId(_tokenId) returns (string memory) {
+        if(bytes(_uris[_tokenId]).length > 0){
+            return _uris[_tokenId];
+        }
+        return string(
+            abi.encodePacked(
+                _uri,
+                Strings.toString(_tokenId),".json"
+            )
+        );
+    }
+
 }

@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy_contract": "hardhat run --network rinkeby scripts/deploy_contract.js",
-    "upgrade_contract": "hardhat run --network rinkeby scripts/upgrade_contract.js"
+    "upgrade_contract": "hardhat run --network rinkeby scripts/upgrade_contract.js",
+    "deploy_gen0": "hardhat run --network rinkeby scripts/deploy_gen0.js",
+    "deploy_all1155": "hardhat run --network rinkeby scripts/deploy_all1155.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +22,9 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.1",
     "@openzeppelin/contracts-upgradeable": "^4.4.1",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "erc721a": "^3.3.0",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.2.32"
   }
 }

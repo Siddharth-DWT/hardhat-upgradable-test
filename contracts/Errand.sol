@@ -10,7 +10,6 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "./SignatureChecker.sol";
 import "./CommonConst.sol";
 import "hardhat/console.sol";
 
@@ -23,7 +22,7 @@ interface IIngredientsERC1155{
     function mint(address to, uint256 id, uint256 value) external returns(address);
 }
 
-contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable,UUPSUpgradeable, CommonConst,SignatureChecker{
+contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable,UUPSUpgradeable, CommonConst{
     IERC721Upgradeable private powerPlinsGen0;
     address private bossCardERC1155;
     address private ingredientsERC1155;
@@ -62,7 +61,7 @@ contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgrade
         bossCardERC1155 = _bossCard;
         stakeIdCount = 1;
         _timeForReward = 8 hours;
-
+        __Common_init();
     }
 
     function setTimeForReward(uint256 timeForReward) public{
@@ -153,11 +152,7 @@ contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgrade
         return totalCount;
     }
 
-    function claimReward(uint256 _stakeId,bytes memory _signature) public {
-        bytes32 message = keccak256(abi.encodePacked(_stakeId, msg.sender));
-        bool isSender = checkSignature(message, _signature);
-        require(isSender, "claimReward: Invalid sender");
-
+    function claimReward(uint256 _stakeId) public {
         RecipeStaker memory staker = recipeStakers[msg.sender][findIndex(_stakeId)];
         uint256[] memory tokenIds = staker.tokenIds;
         uint256 stakeTime = staker.time;

@@ -1,170 +1,131 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.9 <0.9.0;
+pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./CommonConst.sol";
 import "hardhat/console.sol";
 
-interface IBossCardERC1155{
+interface IGen1ERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
 }
 
 interface IIngredientsERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
-    function mint(address to, uint256 id, uint256 value) external returns(address);
+    function mint(address to, uint256 id, uint256 value) external;
 }
 
-contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable,UUPSUpgradeable, CommonConst{
-    IERC721Upgradeable private powerPlinsGen0;
-    address private bossCardERC1155;
+contract ErrandGen1 is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, CommonConst {
+    uint256 stakeIdCount;
+    uint256  _timeForReward;
+    address private powerPlinsGen1;
     address private ingredientsERC1155;
 
-    uint256 stakeIdCount;
-    uint256  public _timeForReward;
-
-    struct BossCardStaker{
-        uint tokenId;
-        bool isLegendary;
-        uint256  time;
-    }
-    mapping(address => BossCardStaker)  public bossCardStakers;
-
-    struct RecipeStaker {
+    struct Gen1Staker {
         uint256 stakeId;
         uint[] tokenIds;
         uint256  time;
     }
 
-    mapping(address => RecipeStaker[]) public recipeStakers;
+    mapping(address => Gen1Staker[]) gen1Stakers;
     mapping(address => mapping(uint256 => uint256))  tokenIdToRewardsClaimed;
+
 
     function findIndex(uint value) internal view returns(uint) {
         uint i = 0;
-        RecipeStaker[] memory stakers = recipeStakers[msg.sender];
+        Gen1Staker[] memory stakers = gen1Stakers[msg.sender];
         while (stakers[i].stakeId != value) {
             i++;
         }
         return i;
     }
 
-    function initialize(address _powerPlinsGen0, address _ingredientsERC1155,address _bossCard) external initializer {
-        powerPlinsGen0 = IERC721Upgradeable(_powerPlinsGen0);
+    function initialize(address _powerPlinsGen1, address _ingredientsERC1155) external initializer {
+        __Ownable_init();
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
+        powerPlinsGen1 = _powerPlinsGen1;
         ingredientsERC1155 = _ingredientsERC1155;
-        bossCardERC1155 = _bossCard;
+        __Common_initGen1();
         stakeIdCount = 1;
-        _timeForReward = 8 hours;
-        __Common_init();
+        _timeForReward = 24 hours;
     }
 
     function setTimeForReward(uint256 timeForReward) public{
         _timeForReward = timeForReward;
     }
 
-    function stake(uint256[] memory tokenIds) external nonReentrant{
+    function stake(uint256[] memory tokenIds) external nonReentrant whenNotPaused{
         require(tokenIds.length != 0, "Staking: No tokenIds provided");
         uint256 amount;
-        for (uint i = 0; i < tokenIds.length; i++) {
+        for (uint256 i = 0; i < tokenIds.length; i += 1) {
             amount += 1;
-            powerPlinsGen0.safeTransferFrom(msg.sender, address(this), tokenIds[i]);
+            IGen1ERC1155(powerPlinsGen1).safeTransferFrom(msg.sender, address(this), tokenIds[i],1,'');
+
         }
-        recipeStakers[msg.sender].push(RecipeStaker({
+        gen1Stakers[msg.sender].push(Gen1Staker({
             stakeId:stakeIdCount++,
             tokenIds:tokenIds,
             time: block.timestamp
         }));
-
         emit Staked(msg.sender, amount, tokenIds);
     }
 
     function unStack(uint256 _stakeId) public nonReentrant {
-        RecipeStaker memory staker = recipeStakers[msg.sender][findIndex(_stakeId)];
+        Gen1Staker memory staker = gen1Stakers[msg.sender][findIndex(_stakeId)];
         require(staker.tokenIds.length != 0, "unStack: No tokenIds found");
 
         uint256[] memory tokenIds =  staker.tokenIds;
         uint _numberToClaim =  numberOfRewardsToClaim(_stakeId, staker.time, staker.tokenIds.length);
         require( _numberToClaim == 0,"Rewards left unclaimed!");
 
-
         uint256 amount = staker.tokenIds.length;
         for (uint256 i = 0; i < amount; i += 1) {
-            powerPlinsGen0.safeTransferFrom(address(this),msg.sender, tokenIds[i]);
+            IGen1ERC1155(powerPlinsGen1).safeTransferFrom(address(this),msg.sender, tokenIds[i], 1, '');
         }
         delete tokenIdToRewardsClaimed[msg.sender][_stakeId];
-        RecipeStaker[] memory stakers = recipeStakers[msg.sender];
+        Gen1Staker[] memory stakers = gen1Stakers[msg.sender];
         for(uint i=0;i<stakers.length;i++){
             if(stakers[i].stakeId == _stakeId){
-                while (i<recipeStakers[msg.sender].length-1) {
-                    recipeStakers[msg.sender][i] = recipeStakers[msg.sender][i+1];
+                while (i<gen1Stakers[msg.sender].length-1) {
+                    gen1Stakers[msg.sender][i] = gen1Stakers[msg.sender][i+1];
                     i++;
                 }
-                recipeStakers[msg.sender].pop();
+                gen1Stakers[msg.sender].pop();
             }
         }
         emit Withdrawn(msg.sender, amount, tokenIds);
     }
 
-    function bossCardStake(uint _tokenId, bool _isLegendary) external{
-        require(
-            bossCardStakers[msg.sender].tokenId ==0,
-            "Boost token already stake"
-        );
-        bossCardStakers[msg.sender] = BossCardStaker({
-            tokenId: _tokenId,
-            isLegendary:_isLegendary,
-            time: block.timestamp
-        });
-        IBossCardERC1155(bossCardERC1155).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
-    }
 
-    function bossCardWithdraw(uint _tokenId) external nonReentrant{
-        require(!anyClaimInProgress(), "Claim in progress");
-        IBossCardERC1155(bossCardERC1155).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
-        delete bossCardStakers[msg.sender];
-    }
 
-    function getBossCountClaim(uint256 stakedTime) public view returns(uint){
-        uint bossCount = 0;
-        if(bossCardStakers[msg.sender].tokenId !=0){
-            uint bossNumber = 2;
-            if(bossCardStakers[msg.sender].isLegendary){
-                bossNumber = 1;
-            }
-            bossCount = (((block.timestamp - stakedTime ) / (_timeForReward * 3))) * bossNumber;
-        }
-        return bossCount;
-
-    }
     function numberOfRewardsToClaim(uint256 _stakeId, uint256 stakeTime , uint tokens) public  view returns (uint) {
         uint256 stakedTime = stakeTime +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * _timeForReward);
         if(stakedTime == 0) {
             return 0;
         }
+
         uint count = (block.timestamp - stakedTime)  / _timeForReward;
-        uint totalCount = count > 0 ? (count* tokens) + getBossCountClaim(stakedTime): 0;
+        uint totalCount = count > 0 ? (count* tokens) : 0;
         return totalCount;
     }
 
     function claimReward(uint256 _stakeId) public {
-        RecipeStaker memory staker = recipeStakers[msg.sender][findIndex(_stakeId)];
+        Gen1Staker memory staker = gen1Stakers[msg.sender][findIndex(_stakeId)];
         uint256[] memory tokenIds = staker.tokenIds;
         uint256 stakeTime = staker.time;
         require(tokenIds.length != 0, "claimReward: No token Found for claim");
-
         uint _numberToClaim =  numberOfRewardsToClaim(_stakeId, stakeTime,1);
         require(_numberToClaim != 0, "claimReward: No claim pending");
-
-
         _claimReward(_numberToClaim*tokenIds.length, _stakeId);
-        uint256 lastClaimTime = stakeTime +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * _timeForReward);
-        tokenIdToRewardsClaimed[msg.sender][_stakeId] += (_numberToClaim - getBossCountClaim(lastClaimTime));
+        tokenIdToRewardsClaimed[msg.sender][_stakeId] += _numberToClaim;
     }
 
     function _claimReward(uint _numClaim, uint _stakeId) private {
@@ -175,12 +136,12 @@ contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgrade
             console.log("claim Id -1",nftId);
             IIngredientsERC1155(ingredientsERC1155).mint(msg.sender,nftId, 1);
         }
-        emit RewardClaimed(msg.sender, _stakeId, ingredientNftIds);
+        emit RewardClaimed(msg.sender,  _stakeId, ingredientNftIds);
     }
 
     function anyClaimInProgress() public  view returns (bool) {
         bool flag = false;
-        RecipeStaker[] memory stakers = recipeStakers[msg.sender];
+        Gen1Staker[] memory stakers = gen1Stakers[msg.sender];
         for(uint256 i =0; i < stakers.length; i++ ){
             uint256 stakeTime =  stakers[i].time;
             uint256 count = numberOfRewardsToClaim(stakers[i].stakeId, stakeTime,stakers[i].tokenIds.length);
@@ -188,12 +149,17 @@ contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgrade
                 flag = true;
                 break;
             }
+
         }
         return flag;
     }
 
-    function printUserClaims() public  view returns (uint256[] memory, uint[] memory) {
-        RecipeStaker[] memory stakers = recipeStakers[msg.sender];
+    function getTimeForReward() public view returns(uint256){
+        return _timeForReward;
+    }
+
+    function printUserGen1Claims() public  view returns (uint256[] memory, uint[] memory) {
+        Gen1Staker[] memory stakers = gen1Stakers[msg.sender];
         uint256[] memory stakeIds = new uint256[](stakers.length);
         uint256[] memory claims = new uint256[](stakers.length);
         for(uint256 i =0; i < stakers.length; i++ ){
@@ -201,12 +167,11 @@ contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgrade
             uint256 stakeTime =  stakers[i].time;
             claims[i] =  numberOfRewardsToClaim(stakers[i].stakeId, stakeTime,  stakers[i].tokenIds.length);
         }
-
         return(stakeIds, claims);
     }
 
-    function printUserStakes() public  view returns (RecipeStaker[] memory) {
-        return recipeStakers[msg.sender];
+    function printUserGen1Stakes() public view returns(Gen1Staker[] memory){
+        return gen1Stakers[msg.sender];
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}

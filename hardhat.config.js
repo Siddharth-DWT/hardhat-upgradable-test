@@ -7,6 +7,12 @@ require('dotenv').config();
 
 module.exports = {
   solidity: "0.8.10",
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 1000,
+    },
+  },
   networks: {
     ropsten: {
       url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,

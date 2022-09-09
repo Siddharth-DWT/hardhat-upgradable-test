@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.11;
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
@@ -170,22 +170,11 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         IBossCardERC1155(bossCardERC1155).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }
 
-    function unStakeBoostCard(uint _tokenId, bytes calldata _signature) external{
-        bytes32 message = keccak256(abi.encodePacked(msg.sender));
-        bool isSender = checkSignature(message, _signature);
-        require(isSender, "Invalid sender");
+    function unStakeBoostCard(uint _tokenId) external{
         require(
             !anyClaimInProgress(),
             "Claim in progress"
         );
-        bool exist;
-        for(uint i=0; i< bossCard.length; i++){
-            if(bossCard[i] == _tokenId){
-                exist = true;
-                break;
-            }
-        }
-        require(exist, "Not valid boost token for unstake");
         IBossCardERC1155(bossCardERC1155).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
         delete bossCardStakers[msg.sender];
     }
@@ -211,7 +200,7 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         return flag;
     }
 
-    function getBoostValue(uint _mulValue, string calldata _mulName) internal view returns(uint){
+    function getBoostValue(uint _mulValue, string memory _mulName) internal view returns(uint){
         string memory boostType =  bossCardStakers[msg.sender].traitType;
         if( bossCardStakers[msg.sender].tokenId == 0  || !compareStrings(boostType,_mulName)){
             return _mulValue;
@@ -222,15 +211,13 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         return (_mulValue + value);
     }
 
-    function prepareNumber( uint[] calldata ids,uint[] calldata amounts ) internal view returns(uint){
+    function prepareNumber( uint[] memory ids,uint[] memory amounts ) internal view returns(uint){
         uint commonIng =0;
         uint uncommonIng= 0;
         uint rareIng = 0;
         uint epicIng =0;
         uint legendaryIng = 0;
-
         //console.log("step1");
-
         for(uint i=0;i<ids.length;i++){
             if(isCommon(ids[i])){
                 commonIng += 1*amounts[i];

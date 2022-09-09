@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.11;
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
@@ -53,7 +53,7 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
         __ReentrancyGuard_init();
         __Pausable_init();
         __UUPSUpgradeable_init();
-        __SigChecker_init();
+        //__SigChecker_init();
         stakeIdCount = 1;
         _timeForReward = 2 hours;
         ingredientsERC1155 = _ingredientsERC1155;
@@ -107,10 +107,10 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
             bossCardStakers[msg.sender].tokenId ==0,
             "Boost token already stake"
         );
-        require(
+        /*require(
             isLegendryBoost(_tokenId) || isShinyBoost(_tokenId),
             "Not valid boost token for stake"
-        );
+        );*/
         bossCardStakers[msg.sender] = BossCardStaker({
             tokenId: _tokenId,
             time: block.timestamp
@@ -136,10 +136,6 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
             !anyClaimInProgress(),
             "Claim in progress"
         );
-        require(
-            isLegendryBoost(_tokenId) || isShinyBoost(_tokenId),
-            "Not valid boost token for unstake"
-        );
         IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
         delete bossCardStakers[msg.sender];
     }
@@ -149,9 +145,9 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
         if(bossCardStakers[msg.sender].tokenId == 0){
             return rewardTime;
         }
-        if(isLegendryBoost(bossCardStakers[msg.sender].tokenId)){
+        /*if(isLegendryBoost(bossCardStakers[msg.sender].tokenId)){
             rewardTime = rewardTime - _timeForReward/4;
-        }
+        }*/
         else{
             rewardTime = rewardTime - _timeForReward/2;
         }

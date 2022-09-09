@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity >=0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgra
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./CommonConst.sol";
@@ -61,6 +62,10 @@ contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgrade
         stakeIdCount = 1;
         _timeForReward = 8 hours;
         __Common_init();
+        __ERC721Holder_init();
+        __Ownable_init();
+        __ReentrancyGuard_init();
+        __UUPSUpgradeable_init();
     }
 
     function setTimeForReward(uint256 timeForReward) public{
@@ -70,16 +75,18 @@ contract Errand is Initializable,ERC721HolderUpgradeable, ReentrancyGuardUpgrade
     function stake(uint256[] memory tokenIds) external nonReentrant{
         require(tokenIds.length != 0, "Staking: No tokenIds provided");
         uint256 amount;
+         console.log("step1");
         for (uint i = 0; i < tokenIds.length; i++) {
             amount += 1;
             powerPlinsGen0.safeTransferFrom(msg.sender, address(this), tokenIds[i]);
         }
+        console.log("step2");
         recipeStakers[msg.sender].push(RecipeStaker({
             stakeId:stakeIdCount++,
             tokenIds:tokenIds,
             time: block.timestamp
         }));
-
+         console.log("step3");
         emit Staked(msg.sender, amount, tokenIds);
     }
 

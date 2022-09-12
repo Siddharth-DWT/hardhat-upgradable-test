@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.9 <0.9.0;
-
+import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
@@ -26,7 +26,7 @@ interface IPancakeERC1155{
     function mint(address account, uint256 id, uint256 amount) external;
 }
 
-contract Cook is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
+contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
     address public ingredientsERC1155;
     address public  bossCardERC1155Address;
     address public  pancakeERC1155;
@@ -77,6 +77,7 @@ contract Cook is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
         __ReentrancyGuard_init();
         __Pausable_init();
         __UUPSUpgradeable_init();
+        __ERC1155Holder_init();
         stakeIdCount = 1;
         timeForReward = 2 hours;
         plainCakeCookIds=[1,2,3,4,5,6,7,8];
@@ -110,12 +111,12 @@ contract Cook is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
         return found;
     }
 
-    function onERC1155Received(address, address, uint256, uint256, bytes memory)  virtual public returns (bytes4) {
+   /* function onERC1155Received(address, address, uint256, uint256, bytes memory)  virtual public returns (bytes4) {
         return this.onERC1155Received.selector;
     }
     function onERC1155BatchReceived(address, address, uint256[] memory, uint256[] memory, bytes memory) public virtual returns (bytes4) {
         return this.onERC1155BatchReceived.selector;
-    }
+    }*/
 
     function isValidStake(StakeIngredient[] memory _stakeIngredients) internal view returns (bool){
         bool flag = true;

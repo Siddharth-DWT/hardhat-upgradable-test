@@ -16,7 +16,8 @@
     "deploy_cook": "hardhat run --network arbitrum_rinkeby scripts/deploy_cook.js",
     "verify_cook": "hardhat run --network arbitrum_rinkeby scripts/verify_cook.js",
     "mint_token": "hardhat run --network arbitrum_rinkeby scripts/mint_token.js",
-    "errand_methods": "hardhat run --network arbitrum_rinkeby scripts/errand_methods.js"
+    "errand_methods": "hardhat run --network arbitrum_rinkeby scripts/errand_methods.js",
+    "mint_aproval": "hardhat run --network arbitrum_rinkeby scripts/mint_aproval.js"
   },
   "author": "",
   "license": "ISC",

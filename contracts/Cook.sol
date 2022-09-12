@@ -15,7 +15,9 @@ interface IBossCardERC1155{
 
 interface IIngredientsERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
+    function safeBatchTransferFrom(address from, address to, uint[] memory ids, uint[] memory amounts, bytes memory data) external;
     function burn(address account, uint256 id, uint256 value) external;
+    function burnBatch(address account, uint[] memory  id, uint[] memory value) external;
 }
 
 interface IPancakeERC1155{
@@ -25,105 +27,156 @@ interface IPancakeERC1155{
 }
 
 contract Cook is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
+    address public ingredientsERC1155;
+    address public  bossCardERC1155Address;
+    address public  pancakeERC1155;
+
     uint256 stakeIdCount;
-    uint256 _timeForReward;
-    uint plaincake;
-    uint pancake;
-
-    address ingredientsERC1155;
-    address bossCardERC1155Address;
-    address pancakeERC1155;
-
-    uint[] legendryBoost;
-    uint[] shinyBoost;
+    uint256 timeForReward;
+    uint[] plainCakeCookIds;
     uint legendaryIngredientId;
-    uint8 basiPancakeRecipeId;
+    uint8 plainPancakeId;
 
-    mapping(address => mapping(uint256 => uint256[]))  userIngredientStakes;
+    struct StakeIngredient{
+        uint[] ids;
+        uint[] amounts;
+        uint pancakeId;
+    }
+
+    mapping(address => mapping(uint256 => StakeIngredient))  userIngredientStakes;
     mapping(address => mapping(uint256 => uint256))  userIngredientStakesTime;
-    mapping(address => mapping(uint256 => uint8))  userRecipeClaimTokenId;
     mapping(address => uint256[])  recipeStakes;
 
+    uint[] legendaryBoost;
+    uint[] shinyBoost;
+
     // boss card stake
-    struct BossCardStaker{
+    struct BossCardStake{
         uint tokenId;
         uint256  time;
-        bool isLegendary;
     }
-    mapping(address => BossCardStaker) bossCardStakers;
+    mapping(address => BossCardStake) bossCardStakes;
 
-    function initialize(address _ingredientsERC1155, address _bossCard, address _pancakeERC1155) external initializer {
+    // ========== EVENTS ========== //
+    event Staked(address indexed user, StakeIngredient[]);
+    event RewardClaimed(
+        address indexed user,
+        uint256 indexed _stakeId,
+        uint256[] BurnTokenIds,
+        uint256 _claimedRewardId,
+        uint256 _amount
+    );
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address _ingredientsERC1155, address _bossCard, address _pancakeERC1155) public initializer {
         __Ownable_init();
         __ReentrancyGuard_init();
         __Pausable_init();
         __UUPSUpgradeable_init();
         stakeIdCount = 1;
-        _timeForReward = 2 hours;
-        plaincake = 8;
-        pancake = 9;
+        timeForReward = 2 hours;
+        plainCakeCookIds=[1,2,3,4,5,6,7,8];
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155Address = _bossCard;
         pancakeERC1155 =_pancakeERC1155;
         legendaryIngredientId = 25;
-        basiPancakeRecipeId = 1;
+        plainPancakeId = 1;
+        legendaryBoost =[1,23,53];
+        shinyBoost = [2,24,54];
+    }
+
+    function isLegendaryBoost(uint tokenId) internal view  returns (bool){
+        bool found= false;
+        for (uint i=0; i<legendaryBoost.length; i++) {
+            if(legendaryBoost[i]==tokenId){
+                found=true;
+                break;
+            }
+        }
+        return found;
+    }
+    function isShinyBoost(uint tokenId) internal view returns (bool){
+        bool found= false;
+        for (uint i=0; i<shinyBoost.length; i++) {
+            if(shinyBoost[i]==tokenId){
+                found=true;
+                break;
+            }
+        }
+        return found;
     }
 
     function onERC1155Received(address, address, uint256, uint256, bytes memory)  virtual public returns (bytes4) {
         return this.onERC1155Received.selector;
     }
+    function onERC1155BatchReceived(address, address, uint256[] memory, uint256[] memory, bytes memory) public virtual returns (bytes4) {
+        return this.onERC1155BatchReceived.selector;
+    }
 
-    function isValidStake(uint[] memory tokenIds, uint8 pancakeId) internal view returns (bool){
+    function isValidStake(StakeIngredient[] memory _stakeIngredients) internal view returns (bool){
         bool flag = true;
-        uint checkLength = pancakeId == 1? plaincake: pancake;
-        if(tokenIds.length == 1 && tokenIds[0] == legendaryIngredientId){
-            return true;
-        }
-        if(tokenIds.length<checkLength){
-            flag = false;
-        }
-        else{
-            for(uint i=0;i<tokenIds.length;i++){
-                if(tokenIds[i] == 0){
-                    flag = false;
-                    break;
-                }
+        for(uint i=0;i<_stakeIngredients.length;i++){
+            StakeIngredient memory si = _stakeIngredients[i];
+            if(si.ids.length == plainCakeCookIds.length && si.pancakeId != plainPancakeId){
+                flag = false;
+            }
+            else if(si.ids.length == 1 && si.ids[0] == legendaryIngredientId && si.pancakeId != plainPancakeId){
+                flag = false;
+            }
+            else if(si.ids.length != si.amounts.length){
+                flag = false;
+            }
+            for(uint j=0;j<si.ids.length;j++){
+              if(si.ids[j] == 0 || si.amounts[j] ==0){
+                  flag= false;
+              }
             }
         }
         return flag;
     }
 
-    function stake(uint256[] memory tokenIds, uint8 claimTokenId) external nonReentrant whenNotPaused{
-        require(tokenIds.length != 0, "Staking: No tokenIds provided");
-        require(isValidStake(tokenIds, claimTokenId), "Staking: all ingredients not provided");
-        uint256 amount;
-        for (uint256 i = 0; i < tokenIds.length; i += 1) {
-            amount += 1;
-            userIngredientStakes[msg.sender][stakeIdCount].push(tokenIds[i]);
-            IIngredientsERC1155(ingredientsERC1155).safeTransferFrom(msg.sender, address(this), tokenIds[i], 1,'');
+    function stake(StakeIngredient[] memory _stakeIngredients) external nonReentrant whenNotPaused{
+        require(_stakeIngredients.length != 0, "Staking: No ingredientIds provided");
+        require(isValidStake(_stakeIngredients), "Staking: all ingredients not provided");
+
+        for (uint256 i = 0; i < _stakeIngredients.length; i += 1) {
+            StakeIngredient memory si = _stakeIngredients[i];
+            IIngredientsERC1155(ingredientsERC1155).safeBatchTransferFrom(msg.sender, address(this), si.ids, si.amounts,'');
+            recipeStakes[msg.sender].push(stakeIdCount);
+            userIngredientStakes[msg.sender][stakeIdCount].ids = si.ids;
+            userIngredientStakes[msg.sender][stakeIdCount].amounts = si.amounts;
+            userIngredientStakes[msg.sender][stakeIdCount].pancakeId = si.pancakeId;
+            userIngredientStakesTime[msg.sender][stakeIdCount++] = block.timestamp;
         }
-        userRecipeClaimTokenId[msg.sender][stakeIdCount] = claimTokenId;
-        recipeStakes[msg.sender].push(stakeIdCount);
-        userIngredientStakesTime[msg.sender][stakeIdCount++] = block.timestamp;
-        emit Staked(msg.sender, amount, tokenIds, stakeIdCount);
+        emit Staked(msg.sender,_stakeIngredients);
     }
 
-    function bossCardStake(uint _tokenId, bool _flag, bytes memory _signature) external{
+    function bossCardStake(uint _tokenId) external{
         require(
-            bossCardStakers[msg.sender].tokenId == 0,
+            bossCardStakes[msg.sender].tokenId == 0,
             "Boost token already stake"
         );
-        bytes32 message = keccak256(abi.encodePacked(msg.sender));
-        bool isSender = checkSignature(message, _signature);
-        require(isSender, "Invalid sender");
-
-        bossCardStakers[msg.sender] = BossCardStaker({
-            tokenId: _tokenId,
-            time: block.timestamp,
-            isLegendary: _flag
-        });
+        require(
+            isLegendaryBoost(_tokenId) || isShinyBoost(_tokenId),
+            "Not valid boost token for stake"
+        );
+        bossCardStakes[msg.sender].tokenId = _tokenId;
+        bossCardStakes[msg.sender].time= block.timestamp;
         IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }
 
+    function bossCardWithdraw(uint _tokenId) external{
+        require(
+            !anyClaimInProgress(),
+            "Claim in progress"
+        );
+        IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
+        delete bossCardStakes[msg.sender];
+    }
     function anyClaimInProgress() public  view returns (bool) {
         bool flag = false;
         uint256[] memory stakeIds = recipeStakes[msg.sender];
@@ -136,24 +189,15 @@ contract Cook is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
         return flag;
     }
 
-    function bossCardWithdraw(uint _tokenId) external{
-        require(
-            !anyClaimInProgress(),
-            "Claim in progress"
-        );
-        IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
-        delete bossCardStakers[msg.sender];
-    }
-
     function getTimeForReward() public view returns (uint256){
-        uint256 rewardTime = _timeForReward;
-        if(bossCardStakers[msg.sender].tokenId == 0){
-            return rewardTime;
+        if(bossCardStakes[msg.sender].tokenId == 0){
+            return timeForReward;
         }
-        else{
-            rewardTime = rewardTime - _timeForReward/2;
+        uint8 timeReduceBy =2;
+        if(isShinyBoost(bossCardStakes[msg.sender].tokenId)){
+            timeReduceBy = 4;
         }
-        return rewardTime;
+        return timeForReward - timeForReward/timeReduceBy;
     }
 
     function canAvailClaim(uint256 _stakeId) public  view returns (bool) {
@@ -165,29 +209,20 @@ contract Cook is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
     }
 
     function claimReward(uint256 _stakeId) public {
-        uint8 claimId = userRecipeClaimTokenId[msg.sender][_stakeId];
         require(canAvailClaim(_stakeId), "claimReward: stake not available for claim");
-        require(claimId != 0, "claimReward: No claim Reward found");
-        uint256[] memory tokenIds = userIngredientStakes[msg.sender][_stakeId];
+        StakeIngredient memory si = userIngredientStakes[msg.sender][_stakeId];
         uint amount = 1;
-        if(tokenIds.length ==1 && tokenIds[0]==legendaryIngredientId){
+        if(si.ids.length ==1 && si.ids[0]==legendaryIngredientId){
             amount = 3;
-            claimId = basiPancakeRecipeId;
         }
-        IPancakeERC1155(pancakeERC1155).mint(msg.sender, claimId, 1);
-        for(uint i=0; i< tokenIds.length; i++){
-            IIngredientsERC1155(ingredientsERC1155).burn(address(this), tokenIds[i], 1);
-            console.log("burn token", tokenIds[i]);
-        }
-        delete userRecipeClaimTokenId[msg.sender][_stakeId];
+        IPancakeERC1155(pancakeERC1155).mint(msg.sender, si.pancakeId, 1);
+        IIngredientsERC1155(ingredientsERC1155).burnBatch(address(this), si.ids, si.amounts);
         delete userIngredientStakes[msg.sender][_stakeId];
         delete userIngredientStakesTime[msg.sender][_stakeId];
-        emit RewardClaimed(msg.sender, _stakeId, tokenIds, claimId, 1);
+        emit RewardClaimed(msg.sender, _stakeId, si.ids, si.pancakeId, 1);
     }
 
-    function printUserIngredientStakes() public view returns(
-        uint256[] memory,
-        uint256[] memory,
+    function printUserIngredientStakes() public view returns(uint256[] memory, uint256[] memory,
         uint256[] memory,
         uint256[] memory
     ) {
@@ -195,17 +230,15 @@ contract Cook is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
         uint256[] memory claimIds = new uint256[](stakeIds.length);
         uint256[] memory stakeTimes = new uint256[](stakeIds.length);
         uint256[] memory claimTimeRemains = new uint256[](stakeIds.length);
-
         for(uint32 i =0; i < stakeIds.length; i++ ){
             if(userIngredientStakesTime[msg.sender][stakeIds[i]] !=0){
-                claimIds[i] =  userRecipeClaimTokenId[msg.sender][stakeIds[i]];
+                claimIds[i] =  userIngredientStakes[msg.sender][stakeIds[i]].pancakeId;
                 stakeTimes[i] = userIngredientStakesTime[msg.sender][stakeIds[i]];
                 uint whenToClaim = userIngredientStakesTime[msg.sender][stakeIds[i]] + getTimeForReward();
                 uint256 remainTime = 0;
                 if( whenToClaim > block.timestamp){
                     remainTime = whenToClaim -  block.timestamp;
                 }
-
                 claimTimeRemains[i] =  remainTime;
             }
         }
@@ -213,23 +246,13 @@ contract Cook is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
     }
 
     function printBossCardStake() public  view returns (uint) {
-        return(bossCardStakers[msg.sender].tokenId);
+        return(bossCardStakes[msg.sender].tokenId);
     }
 
-    function setTimeForReward(uint256 timeForReward) public{
-        _timeForReward = timeForReward;
+    function setTimeForReward(uint256 _timeForReward) public onlyOwner{
+        timeForReward = _timeForReward;
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
-    // ========== EVENTS ========== //
-
-    event Staked(address indexed user, uint256 amount, uint256[] tokenIds, uint256 stakeId);
-    event RewardClaimed(
-        address indexed user,
-        uint256 indexed _stakeId,
-        uint256[] BurnTokenIds,
-        uint256 _claimedRewardId,
-        uint256 _amount
-    );
 }

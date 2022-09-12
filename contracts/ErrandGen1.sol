@@ -4,6 +4,7 @@ pragma solidity >=0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
@@ -31,7 +32,7 @@ interface IErrandBossCardStake {
     function getUserStakeBossCardId(address _account) external view returns(uint);
 }
 
-contract ErrandGen1 is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable{
+contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable{
     uint256 stakeIdCount;
     uint256 public _timeForReward;
     address private powerPlinsGen1;
@@ -55,6 +56,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ReentrancyGuardUpgrade
         __ReentrancyGuard_init();
         __Pausable_init();
         __UUPSUpgradeable_init();
+        __ERC1155Holder_init();
         powerPlinsGen1 = _powerPlinsGen1;
         ingredientsERC1155 = _ingredientsERC1155;
         commonConst = ICommonConst(_commonConstGen1);
@@ -80,8 +82,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ReentrancyGuardUpgrade
         }
         gen1Stakes[stakeIdCount].tokenIds = _tokenIds;
         gen1Stakes[stakeIdCount].time = block.timestamp;
-        userGen1StakeIds[msg.sender].push(stakeIdCount);
-        stakeIdCount++;
+        userGen1StakeIds[msg.sender].push(stakeIdCount++);
         emit Staked(msg.sender, amount, _tokenIds);
     }
 

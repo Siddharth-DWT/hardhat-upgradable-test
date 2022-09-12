@@ -74,7 +74,6 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         _timeForReward = 8 hours;
         commonConst = ICommonConst(_commonConst);
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
-        __Ownable_init();
     }
 
     function setTimeForReward(uint256 timeForReward) public onlyOwner {

@@ -43,32 +43,9 @@ const getMerkleRoot = (addresses)=>{
     CommonConstGen0:"CommonConstGen0",
     CommonConstGen1:"CommonConstGen1",
     ErrandBossCardStake:"ErrandBossCardStake",
+    Cook:"Cook"
  }
-async function deployProxyContract(contractName, params){
-    console.log(`Deploying ${contractName}...`);
-    const Contract = await ethers.getContractFactory(contractName);
-    const deployedContract = await upgrades.deployProxy(Contract,[...params],{
-        initializer: "initialize", kind: "uups" });
 
-    //const deployedContract = await Contract.deploy();
-    await deployedContract.deployTransaction.wait(10);
-    console.log("deployedContract",deployedContract);
-
-    console.log(`${contractName} deployed to:`, deployedContract.address);
-    writeAddress(contractName,deployedContract.address)
-    console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
-    try{
-        await hardhat.run('verify:verify', {
-            address: deployedContract.address,
-            constructorArguments: [...params],
-           // {initializer: "initialize", kind: "uups"}
-        });
-
-    }
-    catch (e){
-        console.log("error",e)
-    }
-}
 
 async function deployWithVerifyContract(contractName,params){
     console.log(`Deploying ${contractName}...`);
@@ -82,7 +59,8 @@ async function deployWithVerifyContract(contractName,params){
     try{
         await hardhat.run('verify:verify', {
             address: deployedContract.address,
-            constructorArguments: [...params]
+            constructorArguments: [...params],
+            contract: `contracts/${contractName}.sol:${contractName}`,
         });
     }
     catch (e){
@@ -92,6 +70,22 @@ async function deployWithVerifyContract(contractName,params){
 
 }
 
+async function deployProxyContract(contractName, params){
+    console.log(`Deploying ${contractName}...`);
+    const Contract = await ethers.getContractFactory(contractName);
+    const deployedContract = await upgrades.deployProxy(Contract,[...params]);
+    await deployedContract.deployTransaction.wait(10);
+    console.log(deployedContract.address,` ${contractName}(proxy) address`)
+    const implementationAddress = await upgrades.erc1967.getImplementationAddress(deployedContract.address)
+    console.log(implementationAddress," getImplementationAddress")
+    console.log(await upgrades.erc1967.getAdminAddress(deployedContract.address)," getAdminAddress")
+
+    await writeAddress(contractName,deployedContract.address)
+    await writeAddress(contractName+"_IMP",implementationAddress)
+
+    //console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
+
+}
 async function verifyContract(contractName,address,params){
     console.log("contractName,address,params",contractName,address,params)
     console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
@@ -106,27 +100,17 @@ async function verifyContract(contractName,address,params){
         console.log("error",e)
     }
 }
-
-async function deployContractWithOpt(contractName,params,opt){
-    console.log(`Deploying ${contractName}...`);
-    const Contract = await ethers.getContractFactory(contractName,opt);
-    const deployedContract = await Contract.deploy(...params);
-    await deployedContract.deployTransaction.wait(10);
-
-    console.log(`${contractName} deployed to:`, deployedContract.address);
-    writeAddress(contractName,deployedContract.address)
+async function verifyProxyContract(contractName,address,params){
+    console.log("contractName,address,params",contractName,address,params)
     console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
-    try{
-        await hardhat.run('verify:verify', {
-            address: deployedContract.address,
-            constructorArguments: [...params]
-        });
-    }
-    catch (e){
-        console.log("error",e)
-    }
-    return deployedContract.address;
 
+    const Contract = await ethers.getContractFactory(contractName);
+    const DeployedContract = Contract.attach(address);
+
+    const res1 = await DeployedContract.ingredientsERC1155()
+    const res2 = await DeployedContract.bossCardERC1155Address()
+    console.log("res-----",res1);
+    console.log("res-----",res2);
 }
 
 module.exports = {
@@ -137,7 +121,8 @@ module.exports = {
     deployWithVerifyContract,
     verifyContract,
     deployProxyContract,
-    deployContractWithOpt
+    verifyProxyContract
+
 }
 
 

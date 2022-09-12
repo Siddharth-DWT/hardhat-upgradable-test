@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "hardhat/console.sol";
+import "./SignatureChecker.sol";
 
 interface IBossCardERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
@@ -23,9 +24,11 @@ interface IPancakeERC1155{
     function mint(address account, uint256 id, uint256 amount) external;
 }
 
-contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable {
+contract Cook is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
     uint256 stakeIdCount;
     uint256 _timeForReward;
+    uint plaincake;
+    uint pancake;
 
     address ingredientsERC1155;
     address bossCardERC1155Address;
@@ -45,17 +48,19 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
     struct BossCardStaker{
         uint tokenId;
         uint256  time;
+        bool isLegendary;
     }
-    mapping(address => BossCardStaker)  bossCardStakers;
+    mapping(address => BossCardStaker) bossCardStakers;
 
     function initialize(address _ingredientsERC1155, address _bossCard, address _pancakeERC1155) external initializer {
         __Ownable_init();
         __ReentrancyGuard_init();
         __Pausable_init();
         __UUPSUpgradeable_init();
-        //__SigChecker_init();
         stakeIdCount = 1;
         _timeForReward = 2 hours;
+        plaincake = 8;
+        pancake = 9;
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155Address = _bossCard;
         pancakeERC1155 =_pancakeERC1155;
@@ -69,7 +74,7 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
 
     function isValidStake(uint[] memory tokenIds, uint8 pancakeId) internal view returns (bool){
         bool flag = true;
-        uint checkLength = pancakeId == 1? 8: 9;
+        uint checkLength = pancakeId == 1? plaincake: pancake;
         if(tokenIds.length == 1 && tokenIds[0] == legendaryIngredientId){
             return true;
         }
@@ -102,18 +107,19 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
         emit Staked(msg.sender, amount, tokenIds, stakeIdCount);
     }
 
-    function bossCardStake(uint _tokenId) external{
+    function bossCardStake(uint _tokenId, bool _flag, bytes memory _signature) external{
         require(
-            bossCardStakers[msg.sender].tokenId ==0,
+            bossCardStakers[msg.sender].tokenId == 0,
             "Boost token already stake"
         );
-        /*require(
-            isLegendryBoost(_tokenId) || isShinyBoost(_tokenId),
-            "Not valid boost token for stake"
-        );*/
+        bytes32 message = keccak256(abi.encodePacked(msg.sender));
+        bool isSender = checkSignature(message, _signature);
+        require(isSender, "Invalid sender");
+
         bossCardStakers[msg.sender] = BossCardStaker({
             tokenId: _tokenId,
-            time: block.timestamp
+            time: block.timestamp,
+            isLegendary: _flag
         });
         IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }
@@ -126,7 +132,6 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
                 flag = true;
                 break;
             }
-
         }
         return flag;
     }
@@ -140,14 +145,11 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
         delete bossCardStakers[msg.sender];
     }
 
-    function getTimeForReward() public  view returns (uint256){
+    function getTimeForReward() public view returns (uint256){
         uint256 rewardTime = _timeForReward;
         if(bossCardStakers[msg.sender].tokenId == 0){
             return rewardTime;
         }
-        /*if(isLegendryBoost(bossCardStakers[msg.sender].tokenId)){
-            rewardTime = rewardTime - _timeForReward/4;
-        }*/
         else{
             rewardTime = rewardTime - _timeForReward/2;
         }
@@ -173,7 +175,6 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
             claimId = basiPancakeRecipeId;
         }
         IPancakeERC1155(pancakeERC1155).mint(msg.sender, claimId, 1);
-        //_mint(msg.sender,claimId,1,"");
         for(uint i=0; i< tokenIds.length; i++){
             IIngredientsERC1155(ingredientsERC1155).burn(address(this), tokenIds[i], 1);
             console.log("burn token", tokenIds[i]);

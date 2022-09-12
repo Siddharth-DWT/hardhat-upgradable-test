@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+
+pragma solidity >=0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
@@ -8,8 +9,19 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./SignatureChecker.sol";
-import "./CommonConst.sol";
+//import "./CommonConstGen0.sol";
 //import "hardhat/console.sol";
+
+interface ICommonConst {
+    function revealIngredientNftId() external returns(uint256);
+}
+
+library Array {
+    function indexOf(uint[] storage self, uint value) public view returns (int) {
+        for (uint i = 0; i < self.length; i++)if (self[i] == value) return int(i);
+        return -1;
+    }
+}
 
 interface IIngredientERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
@@ -29,7 +41,8 @@ interface IBossCardERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
 }
 
-contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable, UUPSUpgradeable, CommonConst,SignatureChecker {
+contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable, UUPSUpgradeable,SignatureChecker {
+    uint256 public nonce;
     uint ceilSuccessNo;
     uint256 public _timeForReward;
     uint StakeId;
@@ -70,6 +83,13 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         uint value;
     }
     mapping(address => BossCardStakers) private bossCardStakers;
+
+    uint[] private common;
+    uint[] private uncommon;
+    uint[] private rare;
+    uint[] private epic;
+    uint[] private legendary;
+
     function initialize(address _powerPlinsGen0, address _ingredientsERC1155, address _bossCardERC1155, address _gen1ERC1155, address _pancakeERC1155) external initializer {
         __ERC721Holder_init();
         __Ownable_init();
@@ -89,6 +109,20 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         11, 41, 105, 12, 42, 106, 5, 21, 71, 93, 6, 22, 72, 94, 57, 81, 91, 58, 82, 92,
         37, 63, 97, 38, 94, 98];
         cooldownBoost = [37,63,97,38,94,98];
+        common = [1,2,3,4,5];
+        uncommon = [6,7,8];
+        rare = [9,10,11,12,13,14,15,16,17,18,19];
+        epic = [20,21,22,23,24];
+        legendary = [25];
+    }
+    function random(uint8 from, uint256 to)  private  returns (uint8) {
+        uint256 randomnumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % to;
+        randomnumber = from + randomnumber;
+        nonce++;
+        return uint8(randomnumber);
+    }
+    function compareStrings(string memory a, string memory b) internal pure returns (bool) {
+        return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
     }
 
     function setTimeForReward(uint256 _time) public {
@@ -163,9 +197,9 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         bool isSender = checkSignature(message, _signature);
         require(isSender, "Invalid sender");
         bossCardStakers[msg.sender] = BossCardStakers({
-            tokenId: _tokenId,
-            traitType: _traitType,
-            value: _value
+        tokenId: _tokenId,
+        traitType: _traitType,
+        value: _value
         });
         IBossCardERC1155(bossCardERC1155).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }
@@ -219,19 +253,19 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         uint legendaryIng = 0;
         //console.log("step1");
         for(uint i=0;i<ids.length;i++){
-            if(isCommon(ids[i])){
+            if(Array.indexOf(common,ids[i]) >=0){
                 commonIng += 1*amounts[i];
             }
-            else if(isUncommon(ids[i])){
+            else if(Array.indexOf(uncommon,ids[i]) >=0){
                 uncommonIng += 1*amounts[i];
             }
-            else if(isRare(ids[i])){
+            else if(Array.indexOf(rare,ids[i]) >=0 ){
                 rareIng += 1*amounts[i];
             }
-            else if(isEpic(ids[i])){
+            else if(Array.indexOf(epic,ids[i]) >=0){
                 epicIng += 1*amounts[i];
             }
-            else if(ids[i] == legendary[0]){
+            else if(Array.indexOf(legendary,ids[i]) >=0){
                 legendaryIng += 1*amounts[i];
             }
         }

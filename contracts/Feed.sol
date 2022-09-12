@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+
+pragma solidity >=0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
@@ -8,8 +9,11 @@ import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./SignatureChecker.sol";
-import "./CommonConst.sol";
 import "hardhat/console.sol";
+
+interface ICommonConst {
+    function getIngredientNftId(uint id) external returns(uint256);
+}
 
 interface IPancakeERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
@@ -29,11 +33,12 @@ interface IBossCardERC1155{
     function mintBatch(address to, uint[] memory tokenIds, uint[] memory amounts) external;
 }
 
-contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, CommonConst,SignatureChecker {
+contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable,SignatureChecker {
     uint256  _timeForReward;
     address private pancakeERC1155;
     address private ingredientsERC1155;
     address private bossCardERC1155;
+    ICommonConst commonConst;
 
     struct FeedStaker {
         uint[] tokenIds;
@@ -51,7 +56,7 @@ contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
     }
     mapping(address => BossCardStakers) private bossCardStakers;
 
-    function initialize(address _pancakeERC1155, address _ingredientsERC1155, address _bossCardERC1155) external initializer {
+    function initialize(address _pancakeERC1155, address _ingredientsERC1155, address _bossCardERC1155, address _commonConstGen0) external initializer {
         __Ownable_init();
         __ReentrancyGuard_init();
         __Pausable_init();
@@ -61,6 +66,7 @@ contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
         pancakeERC1155 = _pancakeERC1155;
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155 = _bossCardERC1155;
+        commonConst = ICommonConst(_commonConstGen0);
     }
 
     function setTimeForReward(uint256 timeForReward) public{
@@ -120,7 +126,7 @@ contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
         uint counter = 0;
         for(uint i=0;i<_ingredients.length;i++){
             for(uint j=0;j<_ingredients[i];j++){
-                uint nftId = getIngredientNftId(i+1);
+                uint nftId = commonConst.getIngredientNftId(i+1);
                 console.log("nftId---",nftId);
                 ingredientNftIds[counter] = nftId;
                 ingredientBftAmounts[counter++] = 1;

@@ -8,5 +8,17 @@
   "PancakeNftERC11155": "0x779a244338889F287758F9688C4b90D9a23563Ee",
   "PancakeNftERC11155_LINK": "https://testnet.arbiscan.io/address/0x779a244338889F287758F9688C4b90D9a23563Ee",
   "PowerPlinsGen0ERC721": "0x49d13fa27956944BB4Ea631FCF55E90EECeF79DF",
-  "PowerPlinsGen0ERC721_LINK": "https://testnet.arbiscan.io/address/0x49d13fa27956944BB4Ea631FCF55E90EECeF79DF"
+  "PowerPlinsGen0ERC721_LINK": "https://testnet.arbiscan.io/address/0x49d13fa27956944BB4Ea631FCF55E90EECeF79DF",
+  "CommonConstGen0": "0x16E18dFB6dB3d673c7d4fab2e44428ff9AB5c398",
+  "CommonConstGen0_LINK": "https://testnet.arbiscan.io/address/0x16E18dFB6dB3d673c7d4fab2e44428ff9AB5c398",
+  "CommonConstGen1": "0xDbF158b7FA0C221aEe25665E98aA7CB7a740C68B",
+  "CommonConstGen1_LINK": "https://testnet.arbiscan.io/address/0xDbF158b7FA0C221aEe25665E98aA7CB7a740C68B",
+  "ErrandGen0": "0xf96c77C2681ca73817E838921a84b4082ea13b3c",
+  "ErrandGen0_Proxy": "0x263Be9EcCf26C2D8bFd64f715E9958CE2654bFe3",
+  "ErrandGen0_Proxy_LINK": "https://testnet.arbiscan.io/address/0x263Be9EcCf26C2D8bFd64f715E9958CE2654bFe3",
+  "ErrandGen1": "0xf99b3b3f2109cec58c2380d4d19acc914d295af0",
+  "ErrandGen1_proxy": "0xb9544cF96ddBEeF0cb6E071C780B09B9d0169E78",
+  "ErrandGen1_Proxy_LINK": "https://testnet.arbiscan.io/address/0xb9544cF96ddBEeF0cb6E071C780B09B9d0169E78",
+  "ErrandBossCardStake": "0xe86452D427b55Fb7AB9ED34B63A803db0498A32B",
+  "ErrandBossCardStake_LINK": "https://testnet.arbiscan.io/address/0xe86452D427b55Fb7AB9ED34B63A803db0498A32B"
 }

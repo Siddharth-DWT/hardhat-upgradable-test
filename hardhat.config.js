@@ -6,7 +6,7 @@ require('dotenv').config();
 
 
 module.exports = {
-  solidity: "0.8.10",
+  solidity: "0.8.9",
   settings: {
     optimizer: {
       enabled: true,
@@ -30,6 +30,11 @@ module.exports = {
   etherscan: {
     apiKey: process.env.ARBISCAN_API_KEY,
   },
+  /*etherscan: {
+    apiKey: {
+      rinkeby:process.env.ARBISCAN_API_KEY,
+    }
+  }*/
 };
 
 

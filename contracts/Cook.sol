@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity >=0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
@@ -69,7 +69,7 @@ contract Cook is  Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable,
 
     function isValidStake(uint[] memory tokenIds, uint8 pancakeId) internal view returns (bool){
         bool flag = true;
-        uint checkLength = pancakeId ==1? 8: 9;
+        uint checkLength = pancakeId == 1? 8: 9;
         if(tokenIds.length == 1 && tokenIds[0] == legendaryIngredientId){
             return true;
         }

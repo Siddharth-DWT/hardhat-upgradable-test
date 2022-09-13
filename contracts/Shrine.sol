@@ -8,7 +8,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "./SignatureChecker.sol";
+//import "./SignatureChecker.sol";
 //import "./CommonConstGen0.sol";
 //import "hardhat/console.sol";
 
@@ -16,17 +16,14 @@ interface ICommonConst {
     function revealIngredientNftId() external returns(uint256);
 }
 
-library Array {
-    function indexOf(uint[] storage self, uint value) public view returns (int) {
-        for (uint i = 0; i < self.length; i++)if (self[i] == value) return int(i);
-        return -1;
-    }
-}
-
 interface IIngredientERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
     function burn(address account, uint256 id, uint256 value) external;
     function burnBatch(address account, uint256[] memory ids, uint256[] memory values) external;
+}
+
+interface ISignatureChecker{
+    function checkSignature(bytes32 signedHash, bytes memory signature) external view returns (bool);
 }
 
 interface IGen1ERC1155{
@@ -41,8 +38,8 @@ interface IBossCardERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
 }
 
-contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable, UUPSUpgradeable,SignatureChecker {
-    uint256 public nonce;
+contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable, UUPSUpgradeable {
+    uint256 nonce;
     uint ceilSuccessNo;
     uint256 public _timeForReward;
     uint StakeId;
@@ -51,6 +48,7 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
     IERC721Upgradeable private powerPlinsGen0;
     address ingredientsERC1155;
     address bossCardERC1155;
+    address sigChecker;
 
     //for reward
     address gen1ERC1155;
@@ -90,17 +88,18 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
     uint[] private epic;
     uint[] private legendary;
 
-    function initialize(address _powerPlinsGen0, address _ingredientsERC1155, address _bossCardERC1155, address _gen1ERC1155, address _pancakeERC1155) external initializer {
+    function initialize(address _powerPlinsGen0, address _ingredientsERC1155, address _bossCardERC1155, address _gen1ERC1155, address _pancakeERC1155, address _sigChecker) external initializer {
         __ERC721Holder_init();
         __Ownable_init();
         __ReentrancyGuard_init();
         __UUPSUpgradeable_init();
-        __SigChecker_init();
+        //__SigChecker_init();
         nonce = 1;
         ceilSuccessNo = 10000;
         _timeForReward = 2 hours;
         StakeId = 1;
         powerPlinsGen0 = IERC721Upgradeable(_powerPlinsGen0);
+        sigChecker = _sigChecker;
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155 = _bossCardERC1155;
         gen1ERC1155 = _gen1ERC1155;
@@ -115,7 +114,8 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         epic = [20,21,22,23,24];
         legendary = [25];
     }
-    function random(uint8 from, uint256 to)  private  returns (uint8) {
+
+    function random(uint8 from, uint256 to) private  returns (uint8) {
         uint256 randomnumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % to;
         randomnumber = from + randomnumber;
         nonce++;
@@ -161,9 +161,10 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         emit UnStaked(msg.sender, _tokenId);
     }
 
-    function stakeIngredientsERC1155(uint[] memory _tokenIds, uint[] memory _amounts, bytes memory _signature) external nonReentrant {
+    function stakeIngredientsERC1155(uint[] calldata _tokenIds, uint[] calldata _amounts, bytes calldata _signature) external nonReentrant {
         bytes32 message = keccak256(abi.encodePacked(msg.sender));
-        bool isSender = checkSignature(message, _signature);
+        bool isSender = ISignatureChecker(sigChecker).checkSignature(message, _signature);
+    
         require(isSender, "stake: Invalid sender");
         require(recipeStake[msg.sender].tokenId > 0, "stake: First stake 721 Nft!");
         require(_tokenIds.length == _amounts.length, "stake: length mismatch");
@@ -175,6 +176,7 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
 
         for(uint i=0; i < _tokenIds.length; i++){
             IIngredientERC1155(ingredientsERC1155).safeTransferFrom(msg.sender, address(this), _tokenIds[i], _amounts[i],'');
+
         }
         IngredientStakers[msg.sender].tokenIds = _tokenIds;
         IngredientStakers[msg.sender].amounts = _amounts;
@@ -194,7 +196,7 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         }
         require(exist, "can't stake this token");
         bytes32 message = keccak256(abi.encodePacked(_tokenId,_traitType,_value,msg.sender));
-        bool isSender = checkSignature(message, _signature);
+        bool isSender =  ISignatureChecker(sigChecker).checkSignature(message, _signature);
         require(isSender, "Invalid sender");
         bossCardStakers[msg.sender] = BossCardStakers({
         tokenId: _tokenId,
@@ -245,6 +247,11 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         return (_mulValue + value);
     }
 
+     function indexOf(uint[] storage self, uint value) internal view returns (int) {
+        for (uint i = 0; i < self.length; i++)if (self[i] == value) return int(i);
+        return -1;
+    }
+
     function prepareNumber( uint[] memory ids,uint[] memory amounts ) internal view returns(uint){
         uint commonIng =0;
         uint uncommonIng= 0;
@@ -253,19 +260,19 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         uint legendaryIng = 0;
         //console.log("step1");
         for(uint i=0;i<ids.length;i++){
-            if(Array.indexOf(common,ids[i]) >=0){
+            if(indexOf(common,ids[i]) >=0){
                 commonIng += 1*amounts[i];
             }
-            else if(Array.indexOf(uncommon,ids[i]) >=0){
+            else if(indexOf(uncommon,ids[i]) >=0){
                 uncommonIng += 1*amounts[i];
             }
-            else if(Array.indexOf(rare,ids[i]) >=0 ){
+            else if(indexOf(rare,ids[i]) >=0 ){
                 rareIng += 1*amounts[i];
             }
-            else if(Array.indexOf(epic,ids[i]) >=0){
+            else if(indexOf(epic,ids[i]) >=0){
                 epicIng += 1*amounts[i];
             }
-            else if(Array.indexOf(legendary,ids[i]) >=0){
+            else if(indexOf(legendary,ids[i]) >=0){
                 legendaryIng += 1*amounts[i];
             }
         }
@@ -282,11 +289,7 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
         //console.log("step3");
         return number;
     }
-
-    function getClaimSuccessNumber() internal view returns(uint){
-        return prepareNumber(IngredientStakers[msg.sender].tokenIds, IngredientStakers[msg.sender].amounts);
-    }
-
+    
     //Claim rewards for IngredientsERC1155
     function claimRewards(bytes calldata _signature) public{
         uint256[] memory tokenIds = IngredientStakers[msg.sender].tokenIds;
@@ -295,11 +298,11 @@ contract ShrineStake is Initializable, ERC721HolderUpgradeable, OwnableUpgradeab
 
         require(tokenIds.length != 0, "claimReward: No claimReward found");
         bytes32 message = keccak256(abi.encodePacked(msg.sender));
-        bool isSender = checkSignature(message, _signature);
+        bool isSender =  ISignatureChecker(sigChecker).checkSignature(message, _signature);
         require(isSender, "claimReward: Invalid sender");
         require(canAvailableClaim(stakeTime), "claimReward: stake not available for claim");
 
-        uint successNo = getClaimSuccessNumber();
+        uint successNo = getClaimSuccessNumber(tokenIds,amounts);
         uint genrateNumber = random(1, ceilSuccessNo);
         bool isChanceFail = genrateNumber > successNo;
         uint pancakeClaimId = 19;

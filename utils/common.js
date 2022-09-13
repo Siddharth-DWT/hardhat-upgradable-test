@@ -43,7 +43,8 @@ const getMerkleRoot = (addresses)=>{
     CommonConstGen0:"CommonConstGen0",
     CommonConstGen1:"CommonConstGen1",
     ErrandBossCardStake:"ErrandBossCardStake",
-    Cook:"Cook"
+    Cook:"Cook",
+    ShrineStake: "ShrineStake"
  }
 
 

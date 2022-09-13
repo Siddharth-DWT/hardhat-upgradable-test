@@ -50,6 +50,22 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
     mapping(address => uint[]) private userGen1StakeIds;
 
     mapping(address => mapping(uint256 => uint256))  private tokenIdToRewardsClaimed;
+    uint256 totalTokenStake;
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    /* ========== EVENTS ========== */
+
+    event Staked(address indexed user, uint256 amount, uint256[] tokenIds);
+    event Withdrawn(address indexed user, uint256 amount, uint256[] tokenIds);
+    event RewardClaimed(
+        address indexed user,
+        uint256 _claimedRewardId,
+        uint[] ingredientNftIds
+    );
 
     function initialize(address _powerPlinsGen1, address _ingredientsERC1155, address _commonConstGen1, address _errandBossCardStake) external initializer {
         __Ownable_init();
@@ -62,6 +78,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         commonConst = ICommonConst(_commonConstGen1);
         stakeIdCount = 1;
         _timeForReward = 24 hours;
+        totalTokenStake=0;
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
     }
 
@@ -83,6 +100,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         gen1Stakes[stakeIdCount].tokenIds = _tokenIds;
         gen1Stakes[stakeIdCount].time = block.timestamp;
         userGen1StakeIds[msg.sender].push(stakeIdCount++);
+        totalTokenStake += amount;
         emit Staked(msg.sender, amount, _tokenIds);
     }
 
@@ -109,6 +127,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
                 userGen1StakeIds[msg.sender].pop();
             }
         }
+        totalTokenStake -= amount;
         emit Withdrawn(msg.sender, amount, tokenIds);
     }
 
@@ -184,14 +203,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
-
-    /* ========== EVENTS ========== */
-
-    event Staked(address indexed user, uint256 amount, uint256[] tokenIds);
-    event Withdrawn(address indexed user, uint256 amount, uint256[] tokenIds);
-    event RewardClaimed(
-        address indexed user,
-        uint256 _claimedRewardId,
-        uint[] ingredientNftIds
-    );
+    function  printTotalTokenStake() public view returns(uint256){
+        return totalTokenStake;
+    }
 }

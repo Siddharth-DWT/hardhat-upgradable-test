@@ -57,6 +57,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
     }
     mapping(address => BossCardStake) bossCardStakes;
 
+
     // ========== EVENTS ========== //
     event Staked(address indexed user, StakeIngredient[]);
     event RewardClaimed(
@@ -189,7 +190,9 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         }
         return flag;
     }
-
+    function setTimeForReward(uint256 _timeForReward) public onlyOwner{
+        timeForReward = _timeForReward;
+    }
     function getTimeForReward() public view returns (uint256){
         if(bossCardStakes[msg.sender].tokenId == 0){
             return timeForReward;
@@ -248,10 +251,6 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
 
     function printBossCardStake() public  view returns (uint) {
         return(bossCardStakes[msg.sender].tokenId);
-    }
-
-    function setTimeForReward(uint256 _timeForReward) public onlyOwner{
-        timeForReward = _timeForReward;
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}

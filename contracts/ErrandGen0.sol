@@ -47,6 +47,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
     mapping(address => mapping(uint256 => uint256))  tokenIdToRewardsClaimed;
     uint256 stakeIdCount;
     uint256  public _timeForReward;
+    uint256 totalTokenStake;
 
     /* ========== EVENTS ========== */
 
@@ -74,6 +75,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         _timeForReward = 8 hours;
         commonConst = ICommonConst(_commonConst);
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
+        totalTokenStake=0;
     }
 
     function setTimeForReward(uint256 timeForReward) public onlyOwner {
@@ -84,19 +86,20 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         return -1;
     }
 
-    function stake(uint256[] memory tokenIds) external nonReentrant{
-        require(tokenIds.length != 0, "Errand:: invalid ids");
-        for (uint i = 0; i < tokenIds.length; i++) {
-            powerPlinsGen0.safeTransferFrom(msg.sender, address(this), tokenIds[i]);
+    function stake(uint256[] memory _tokenIds) external nonReentrant{
+        require(_tokenIds.length != 0, "Errand:: invalid ids");
+        for (uint i = 0; i < _tokenIds.length; i++) {
+            powerPlinsGen0.safeTransferFrom(msg.sender, address(this), _tokenIds[i]);
         }
         recipeStakers[stakeIdCount] = RecipeStaker({
-            tokenIds:tokenIds,
+            tokenIds:_tokenIds,
             time: block.timestamp
         });
         userStakeIds[msg.sender].push(stakeIdCount);
         stakeIdCount++;
+        totalTokenStake += _tokenIds.length;
 
-        emit Staked(msg.sender, tokenIds.length, tokenIds);
+        emit Staked(msg.sender, _tokenIds.length, _tokenIds);
     }
 
     function unStake(uint256 _stakeId) public nonReentrant {
@@ -121,6 +124,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
                 userStakeIds[msg.sender].pop();
             }
         }
+        totalTokenStake -= amount;
         emit Withdrawn(msg.sender, amount, staker.tokenIds);
     }
 
@@ -229,9 +233,9 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         return(stakeIds, stakes);
     }
 
-    /*function printBossCardStake() public  view returns (uint) {
-        return(bossCardStakers[msg.sender].tokenId);
-    }*/
+    function  printTotalTokenStake() public view returns(uint256){
+        return totalTokenStake;
+    }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
 }

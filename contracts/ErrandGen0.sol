@@ -46,7 +46,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
 
     mapping(address => mapping(uint256 => uint256))  tokenIdToRewardsClaimed;
     uint256 stakeIdCount;
-    uint256  public _timeForReward;
+    uint256  public timeForReward;
     uint256 totalTokenStake;
 
     /* ========== EVENTS ========== */
@@ -72,14 +72,14 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155 = _bossCard;
         stakeIdCount = 1;
-        _timeForReward = 8 hours;
+        timeForReward = 8 hours;
         commonConst = ICommonConst(_commonConst);
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
         totalTokenStake=0;
     }
 
-    function setTimeForReward(uint256 timeForReward) public onlyOwner {
-        _timeForReward = timeForReward;
+    function setTimeForReward(uint256 _timeForReward) public onlyOwner {
+        timeForReward = _timeForReward;
     }
     function indexOf(uint[] memory self, uint value) internal pure returns (int) {
         for (uint i = 0; i < self.length; i++)if (self[i] == value) return int(i);
@@ -104,14 +104,14 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
 
     function unStake(uint256 _stakeId) public nonReentrant {
         require(indexOf(userStakeIds[msg.sender],_stakeId) >=0,"Errand: not valid unstake id");
-        RecipeStaker memory staker = recipeStakers[_stakeId];
+        RecipeStaker memory recipeStake = recipeStakers[_stakeId];
 
-        uint _numberToClaim =  numberOfRewardsToClaim(_stakeId, staker.time, staker.tokenIds.length);
+        uint _numberToClaim =  numberOfRewardsToClaim(_stakeId, recipeStake.time, recipeStake.tokenIds.length);
         require( _numberToClaim == 0,"Errand:: rewards left unclaimed!");
 
-        uint256 amount = staker.tokenIds.length;
+        uint256 amount = recipeStake.tokenIds.length;
         for (uint256 i = 0; i < amount; i++) {
-            powerPlinsGen0.safeTransferFrom(address(this),msg.sender, staker.tokenIds[i]);
+            powerPlinsGen0.safeTransferFrom(address(this),msg.sender, recipeStake.tokenIds[i]);
         }
         delete tokenIdToRewardsClaimed[msg.sender][_stakeId];
         delete recipeStakers[_stakeId];
@@ -125,49 +125,17 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
             }
         }
         totalTokenStake -= amount;
-        emit Withdrawn(msg.sender, amount, staker.tokenIds);
+        emit Withdrawn(msg.sender, amount, recipeStake.tokenIds);
     }
 
- /*   function bossCardStake(uint _tokenId) external nonReentrant {
-        require(
-            indexOf(legendaryBoost,_tokenId) > 0 || indexOf(shinyBoost,_tokenId) >=0,
-            "Not valid boost token for stake"
-        );
-        require(
-            bossCardStakers[msg.sender].tokenId ==0,
-            "Boost token already stake"
-        );
-        bossCardStakers[msg.sender].tokenId = _tokenId;
-        bossCardStakers[msg.sender].time = block.timestamp;
-        IBossCardERC1155(bossCardERC1155).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
-    }*/
-
-  /*  function bossCardWithdraw(uint _tokenId) external nonReentrant{
-        require(!anyClaimInProgress(), "Claim in progress");
-        IBossCardERC1155(bossCardERC1155).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
-        delete bossCardStakers[msg.sender];
-    }*/
-
-    /*function getBossCountClaim(uint256 stakedTime) public view returns(uint){
-        uint bossCount = 0;
-        if(bossCardStakers[msg.sender].tokenId !=0){
-            uint bossNumber = 1;
-            if(indexOf(shinyBoost,bossCardStakers[msg.sender].tokenId) > 0){
-                bossNumber = 2;
-            }
-            bossCount = (((block.timestamp - stakedTime ) / (_timeForReward * 3))) * bossNumber;
-        }
-        return bossCount;
-
-    }*/
     function numberOfRewardsToClaim(uint256 _stakeId, uint256 stakeTime , uint tokens) public  view returns (uint) {
-        uint256 stakedTime = stakeTime +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * _timeForReward);
-        if(stakedTime == 0) {
+        uint256 lastClaimTime = stakeTime +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * timeForReward);
+        if(lastClaimTime == 0) {
             return 0;
         }
-        uint count = (block.timestamp - stakedTime)  / _timeForReward;
-        uint bossCount = errandBossCardStake.getBossCountClaim(stakedTime);
-        uint totalCount = count > 0 ? (count* tokens) + bossCount : 0;
+        uint count = (block.timestamp - lastClaimTime)  / (timeForReward * 3);
+        uint bossCount = errandBossCardStake.getBossCountClaim(lastClaimTime);
+        uint totalCount = count > 0 ? (count*3*tokens) + bossCount : 0;
         return totalCount;
     }
 
@@ -181,13 +149,16 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         require(_numberToClaim != 0, "claimReward: No claim pending");
 
         _claimReward(_numberToClaim*tokenIds.length, _stakeId);
-        uint256 lastClaimTime = recipeStakers[_stakeId].time +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * _timeForReward);
+        uint256 lastClaimTime = recipeStakers[_stakeId].time +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * timeForReward);
         uint bossCount = errandBossCardStake.getBossCountClaim(lastClaimTime);
         tokenIdToRewardsClaimed[msg.sender][_stakeId] += (_numberToClaim - bossCount);
     }
 
 
     function _claimReward(uint _numClaim, uint _stakeId) private {
+        if(_numClaim > 999){
+            _numClaim = 999;
+        }
         uint[] memory ingredientNftIds = new uint[](_numClaim);
         uint[] memory amounts = new uint[](_numClaim);
         for(uint i = 0; i<_numClaim;i++){
@@ -217,8 +188,8 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         uint[] memory stakeIds = userStakeIds[msg.sender];
         uint256[] memory claims = new uint256[](stakeIds.length);
         for(uint256 i =0; i < stakeIds.length; i++ ){
-            RecipeStaker memory staker = recipeStakers[stakeIds[i]];
-            claims[i] =  numberOfRewardsToClaim(stakeIds[i], staker.time,staker.tokenIds.length);
+            RecipeStaker memory recipeStake = recipeStakers[stakeIds[i]];
+            claims[i] =  numberOfRewardsToClaim(stakeIds[i], recipeStake.time,recipeStake.tokenIds.length);
         }
 
         return(stakeIds, claims);

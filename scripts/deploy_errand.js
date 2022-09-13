@@ -16,7 +16,7 @@ async function main() {
 
     // Deploying Gen1
     await deployProxyContract(CONTRACT_NAME_MAP.ErrandGen0,[PowerPlinsGen0ERC721,IngredientsERC11155,BossCardERC1155,CommonConstGen0,ErrandBossCardStake])
-    await deployProxyContract(CONTRACT_NAME_MAP.ErrandGen1,[Gen1ERC1155,IngredientsERC11155,CommonConstGen1,ErrandBossCardStake])
+    //await deployProxyContract(CONTRACT_NAME_MAP.ErrandGen1,[Gen1ERC1155,IngredientsERC11155,CommonConstGen1,ErrandBossCardStake])
 }
 main();
 

@@ -6,6 +6,7 @@ const keccak256 = require('keccak256');
 
 const promisify = require('util').promisify;
 const fs = require('fs');
+const address = require("../address.json");
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 
@@ -113,6 +114,17 @@ async function verifyProxyContract(contractName,address,params){
     console.log("res-----",res2);
 }
 
+async function approveContract(contractName,contractAddress, approvalAddress, isMint){
+    const Contract = await ethers.getContractFactory(contractName);
+    const DeployedContract = Contract.attach(contractAddress);
+    if(isMint){
+        await DeployedContract.setMintApprovalForAll(approvalAddress, true)
+    }else {
+        await DeployedContract.setApprovalForAll(approvalAddress, true)
+    }
+    console.log(`address ${approvalAddress} ${isMint?'mint':''} approved on ${contractName} `)
+}
+
 module.exports = {
     getMerkleRoot,
     CONTRACT_NAME_MAP,
@@ -121,7 +133,8 @@ module.exports = {
     deployWithVerifyContract,
     verifyContract,
     deployProxyContract,
-    verifyProxyContract
+    verifyProxyContract,
+    approveContract
 
 }
 

@@ -32,7 +32,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
     address public  pancakeERC1155;
 
     uint256 stakeIdCount;
-    uint256 timeForReward;
+    uint256 public timeForReward;
     uint[] plainCakeCookIds;
     uint legendaryIngredientId;
     uint8 plainPancakeId;
@@ -43,7 +43,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         uint pancakeId;
     }
 
-    mapping(address => mapping(uint256 => StakeIngredient))  userIngredientStakes;
+    mapping(address => mapping(uint256 => StakeIngredient[]))  userIngredientStakes;
     mapping(address => mapping(uint256 => uint256))  userIngredientStakesTime;
     mapping(address => uint256[])  recipeStakes;
 
@@ -63,9 +63,8 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
     event RewardClaimed(
         address indexed user,
         uint256 indexed _stakeId,
-        uint256[] BurnTokenIds,
-        uint256 _claimedRewardId,
-        uint256 _amount
+        uint[] pancakeIds,
+        uint[] amounts
     );
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -148,12 +147,15 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         for (uint256 i = 0; i < _stakeIngredients.length; i += 1) {
             StakeIngredient memory si = _stakeIngredients[i];
             IIngredientsERC1155(ingredientsERC1155).safeBatchTransferFrom(msg.sender, address(this), si.ids, si.amounts,'');
-            recipeStakes[msg.sender].push(stakeIdCount);
-            userIngredientStakes[msg.sender][stakeIdCount].ids = si.ids;
-            userIngredientStakes[msg.sender][stakeIdCount].amounts = si.amounts;
-            userIngredientStakes[msg.sender][stakeIdCount].pancakeId = si.pancakeId;
-            userIngredientStakesTime[msg.sender][stakeIdCount++] = block.timestamp;
+            userIngredientStakes[msg.sender][stakeIdCount]
+            .push(StakeIngredient({
+                ids:si.ids,
+                amounts:si.amounts,
+                pancakeId:si.pancakeId
+            }));
         }
+        recipeStakes[msg.sender].push(stakeIdCount);
+        userIngredientStakesTime[msg.sender][stakeIdCount++] = block.timestamp;
         emit Staked(msg.sender,_stakeIngredients);
     }
 
@@ -214,29 +216,44 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
 
     function claimReward(uint256 _stakeId) public {
         require(canAvailClaim(_stakeId), "claimReward: stake not available for claim");
-        StakeIngredient memory si = userIngredientStakes[msg.sender][_stakeId];
-        uint amount = 1;
-        if(si.ids.length ==1 && si.ids[0]==legendaryIngredientId){
-            amount = 3;
+        StakeIngredient[] memory sis = userIngredientStakes[msg.sender][_stakeId];
+        uint[] memory amounts = new uint[](sis.length);
+        uint[] memory  pancakeIds = new uint[](sis.length);
+        for(uint i=0;i<sis.length;i++){
+            uint amount = 1;
+            if(sis[i].ids.length ==1 && sis[i].ids[0]==legendaryIngredientId){
+                amount = 3;
+            }
+            amounts[i] = amount;
+            pancakeIds[i] = sis[i].pancakeId;
+            IPancakeERC1155(pancakeERC1155).mint(msg.sender, sis[i].pancakeId, amount);
+            IIngredientsERC1155(ingredientsERC1155).burnBatch(address(this), sis[i].ids, sis[i].amounts);
+            delete userIngredientStakes[msg.sender][_stakeId];
+            delete userIngredientStakesTime[msg.sender][_stakeId];
         }
-        IPancakeERC1155(pancakeERC1155).mint(msg.sender, si.pancakeId, 1);
-        IIngredientsERC1155(ingredientsERC1155).burnBatch(address(this), si.ids, si.amounts);
-        delete userIngredientStakes[msg.sender][_stakeId];
-        delete userIngredientStakesTime[msg.sender][_stakeId];
-        emit RewardClaimed(msg.sender, _stakeId, si.ids, si.pancakeId, 1);
+        emit RewardClaimed(msg.sender, _stakeId, pancakeIds, amounts);
     }
 
-    function printUserIngredientStakes() public view returns(uint256[] memory, uint256[] memory,
-        uint256[] memory,
-        uint256[] memory
+    function printUserIngredientStakes() public view returns(
+        uint[] memory,
+        uint[] memory,
+        uint[] memory,
+        uint[] memory,
+        uint[] memory
     ) {
-        uint256[] memory stakeIds = recipeStakes[msg.sender];
-        uint256[] memory claimIds = new uint256[](stakeIds.length);
-        uint256[] memory stakeTimes = new uint256[](stakeIds.length);
-        uint256[] memory claimTimeRemains = new uint256[](stakeIds.length);
+        uint[] memory stakeIds = recipeStakes[msg.sender];
+        uint[] memory claimIds = new uint256[](stakeIds.length);
+        uint[] memory stakeTimes = new uint256[](stakeIds.length);
+        uint[] memory claimTimeRemains = new uint256[](stakeIds.length);
+        uint[] memory claimAmounts = new uint256[](stakeIds.length);
         for(uint32 i =0; i < stakeIds.length; i++ ){
             if(userIngredientStakesTime[msg.sender][stakeIds[i]] !=0){
-                claimIds[i] =  userIngredientStakes[msg.sender][stakeIds[i]].pancakeId;
+                uint amount = 1;
+                if(userIngredientStakes[msg.sender][stakeIds[i]][0].ids.length ==1 && userIngredientStakes[msg.sender][stakeIds[i]][0].ids[0]==legendaryIngredientId){
+                    amount = 3;
+                }
+                claimIds[i] =  userIngredientStakes[msg.sender][stakeIds[i]][0].pancakeId;
+                claimAmounts[i] = userIngredientStakes[msg.sender][stakeIds[i]].length * amount;
                 stakeTimes[i] = userIngredientStakesTime[msg.sender][stakeIds[i]];
                 uint whenToClaim = userIngredientStakesTime[msg.sender][stakeIds[i]] + getTimeForReward();
                 uint256 remainTime = 0;
@@ -246,7 +263,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
                 claimTimeRemains[i] =  remainTime;
             }
         }
-        return(stakeIds, claimIds, stakeTimes, claimTimeRemains);
+        return(stakeIds, claimIds, stakeTimes, claimTimeRemains, claimAmounts);
     }
 
     function printBossCardStake() public  view returns (uint) {

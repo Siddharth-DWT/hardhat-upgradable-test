@@ -10,7 +10,7 @@ interface IBossCardERC1155{
 }
 
 contract ErrandBossCardStake is  ReentrancyGuard, Ownable{
-    uint256 private _timeForReward = 24 hours;
+    uint256 public timeForReward;
     address bossCardERC1155;
     struct BossStake {
         uint tokenId;
@@ -24,6 +24,7 @@ contract ErrandBossCardStake is  ReentrancyGuard, Ownable{
         bossCardERC1155 = _bossCardERC1155;
         legendaryBoost =[27,49,79];
         shinyBoost = [28,50,80];
+        timeForReward = 24 hours;
     }
 
     function onERC1155Received(address, address, uint256, uint256, bytes memory)  virtual public returns (bytes4) {
@@ -59,7 +60,7 @@ contract ErrandBossCardStake is  ReentrancyGuard, Ownable{
             if(indexOf(shinyBoost,bossStakes[msg.sender].tokenId) > 0){
                 bossNumber = 2;
             }
-            bossCount = (((block.timestamp - stakedTime ) / _timeForReward )) * bossNumber;
+            bossCount = (((block.timestamp - stakedTime ) / timeForReward )) * bossNumber;
         }
         return bossCount;
     }

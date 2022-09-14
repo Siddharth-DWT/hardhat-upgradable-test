@@ -31,5 +31,15 @@
   "ErrandGen1_IMP_LINK": "https://testnet.arbiscan.io/address/0x4ab70A537DE920ce64528818B88b618902CB21A0",
   "Cook_LINK": "https://testnet.arbiscan.io/address/0x746ce109d653D23b20060C19fb331E03DE0e1861",
   "Cook_IMP": "0x98e15bDD6512bC59e8D6b0fcbD59aDB1FCE0BdBF",
-  "Cook_IMP_LINK": "https://testnet.arbiscan.io/address/0x98e15bDD6512bC59e8D6b0fcbD59aDB1FCE0BdBF"
+  "Cook_IMP_LINK": "https://testnet.arbiscan.io/address/0x98e15bDD6512bC59e8D6b0fcbD59aDB1FCE0BdBF",
+  "ShrineConst": "0xfd8C2b1997EA0952F5a4E24D96A6cEFde28d0BFC",
+  "ShrineConst_LINK": "https://testnet.arbiscan.io/address/0xfd8C2b1997EA0952F5a4E24D96A6cEFde28d0BFC",
+  "SignatureChecker": "0x62AfDE7Feb8A3A97B0ce9CC78cF9c7758cFb0ffd",
+  "SignatureChecker_LINK": "https://testnet.arbiscan.io/address/0x62AfDE7Feb8A3A97B0ce9CC78cF9c7758cFb0ffd",
+  "Shrine": "0x22A48BD2234C578e9682D80A96CD80C882e81c1F",
+  "Shrine_LINK": "https://testnet.arbiscan.io/address/0x22A48BD2234C578e9682D80A96CD80C882e81c1F",
+  "Shrine_IMP": "0xdDaB143cD4BF6c5D4Aee066871D5589743e67e02",
+  "Shrine_IMP_LINK": "https://testnet.arbiscan.io/address/0xdDaB143cD4BF6c5D4Aee066871D5589743e67e02",
+  "SignatureChecker_IMP": "0x2E76C635799Aa54A04A9F49bA0d6c1C2A949873A",
+  "SignatureChecker_IMP_LINK": "https://testnet.arbiscan.io/address/0x2E76C635799Aa54A04A9F49bA0d6c1C2A949873A"
 }

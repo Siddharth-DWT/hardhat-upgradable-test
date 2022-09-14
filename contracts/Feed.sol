@@ -8,7 +8,7 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "./SignatureChecker.sol";
+//import "./SignatureChecker.sol";
 import "hardhat/console.sol";
 
 interface ICommonConst {
@@ -33,12 +33,17 @@ interface IBossCardERC1155{
     function mintBatch(address to, uint[] memory tokenIds, uint[] memory amounts) external;
 }
 
-contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable,SignatureChecker {
+interface ISignatureChecker {
+    function checkSignature(bytes32 signedHash, bytes memory signature) external returns(bool);
+}
+
+contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable {
     uint256  _timeForReward;
     address private pancakeERC1155;
     address private ingredientsERC1155;
     address private bossCardERC1155;
     ICommonConst commonConst;
+    address signatureChecker;
 
     struct FeedStaker {
         uint[] tokenIds;
@@ -56,17 +61,18 @@ contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
     }
     mapping(address => BossCardStakers) private bossCardStakers;
 
-    function initialize(address _pancakeERC1155, address _ingredientsERC1155, address _bossCardERC1155, address _commonConstGen0) external initializer {
+    function initialize(address _pancakeERC1155, address _ingredientsERC1155, address _bossCardERC1155, address _commonConstGen0, address _signatureChecker) external initializer {
         __Ownable_init();
         __ReentrancyGuard_init();
         __Pausable_init();
         __UUPSUpgradeable_init();
-        __SigChecker_init();
+        //__SigChecker_init();
         _timeForReward = 24 hours;
         pancakeERC1155 = _pancakeERC1155;
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155 = _bossCardERC1155;
         commonConst = ICommonConst(_commonConstGen0);
+        signatureChecker = _signatureChecker;
     }
 
     function setTimeForReward(uint256 timeForReward) public{
@@ -75,8 +81,8 @@ contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
 
     function stake(uint[] memory tokenIds, uint[] memory amounts, uint calories, bytes memory signature) external nonReentrant whenNotPaused{
         require(tokenIds.length != 0, "Staking: No tokenIds provided");
-        bytes32 message = keccak256(abi.encodePacked(msg.sender));
-        bool isSender = checkSignature(message, signature);
+        bytes32 message = keccak256(abi.encodePacked(msg.sender,calories));
+        bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, signature);
         require(isSender, "Staking: Invalid sender");
 
         uint256 amount;
@@ -85,10 +91,10 @@ contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
             IPancakeERC1155(pancakeERC1155).safeTransferFrom(msg.sender, address(this), tokenIds[i],amounts[i],'');
         }
         feedStakers[msg.sender].push(FeedStaker({
-        tokenIds:tokenIds,
-        amounts:amounts,
-        calories:calories,
-        time: block.timestamp
+            tokenIds:tokenIds,
+            amounts:amounts,
+            calories:calories,
+            time: block.timestamp
         }));
         emit Staked(msg.sender, amount, tokenIds);
     }
@@ -96,7 +102,7 @@ contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
 
     function bossCardStake(uint _tokenId, string memory _traitType, uint _value, bytes memory _signature) external{
         bytes32 message = keccak256(abi.encodePacked(msg.sender));
-        bool isSender = checkSignature(message, _signature);
+        bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, _signature);
         require(isSender, "Invalid sender");
 
         bossCardStakers[msg.sender] = BossCardStakers({
@@ -114,7 +120,7 @@ contract Feed is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable, 
 
     function reveal(uint[] memory _ingredients,  uint[] memory _bossCards, uint[] memory _bossCardAmounts, bytes memory sig) public {
         bytes32 message = keccak256(abi.encodePacked(msg.sender));
-        bool isSender = checkSignature(message, sig);
+        bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, sig);
         require(isSender, "Invalid Sender");
 
         uint length = 0;

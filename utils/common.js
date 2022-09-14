@@ -9,6 +9,7 @@ const fs = require('fs');
 const address = require("../address.json");
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
+const Web3 = require('web3');
 
 const scan_link=  "https://testnet.arbiscan.io/address/"
 
@@ -44,11 +45,14 @@ const getMerkleRoot = (addresses)=>{
     CommonConstGen0:"CommonConstGen0",
     CommonConstGen1:"CommonConstGen1",
     ErrandBossCardStake:"ErrandBossCardStake",
-    Cook:"Cook"
+    Cook:"Cook",
+    ShrineConst:"ShrineConst",
+    Shrine:"Shrine",
+    SignatureChecker:"SignatureChecker"
  }
 
 
-async function deployWithVerifyContract(contractName,params){
+async function deployWithVerifyContract(contractName,params, notVerify){
     console.log(`Deploying ${contractName}...`);
     const Contract = await ethers.getContractFactory(contractName);
     const deployedContract = await Contract.deploy(...params);
@@ -56,16 +60,18 @@ async function deployWithVerifyContract(contractName,params){
 
     console.log(`${contractName} deployed to:`, deployedContract.address);
     writeAddress(contractName,deployedContract.address)
-    console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
-    try{
-        await hardhat.run('verify:verify', {
-            address: deployedContract.address,
-            constructorArguments: [...params],
-            contract: `contracts/${contractName}.sol:${contractName}`,
-        });
-    }
-    catch (e){
-        console.log("error",e)
+    if(!notVerify){
+        console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
+        try{
+            await hardhat.run('verify:verify', {
+                address: deployedContract.address,
+                constructorArguments: [...params],
+                contract: `contracts/${contractName}.sol:${contractName}`,
+            });
+        }
+        catch (e){
+            console.log("error",e)
+        }
     }
     return deployedContract.address;
 
@@ -125,6 +131,31 @@ async function approveContract(contractName,contractAddress, approvalAddress, is
     console.log(`address ${approvalAddress} ${isMint?'mint':''} approved on ${contractName} `)
 }
 
+function generateSignature(sender,id,key,value){
+    console.log({sender,id,key,value})
+    const privateKey = process.env.PRI_KEY
+    let message;
+    if(sender && id && key && value){
+        message = Web3.utils.soliditySha3(sender,id,key,value);
+    }
+    else if(sender && id){
+        message = Web3.utils.soliditySha3(sender, id);
+    }
+    else if(sender){
+        message = Web3.utils.soliditySha3(sender);
+    }
+    const web3 = new Web3('');
+
+    const {signature} = web3.eth.accounts.sign(
+        message,
+        privateKey
+    );
+    console.log("---signature---", signature)
+    return {message,signature}
+
+}
+
+
 module.exports = {
     getMerkleRoot,
     CONTRACT_NAME_MAP,
@@ -134,7 +165,8 @@ module.exports = {
     verifyContract,
     deployProxyContract,
     verifyProxyContract,
-    approveContract
+    approveContract,
+    generateSignature
 
 }
 

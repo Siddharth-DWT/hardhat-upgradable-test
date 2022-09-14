@@ -18,7 +18,10 @@
     "mint_token": "hardhat run --network arbitrum_rinkeby scripts/mint_token.js",
     "errand_methods": "hardhat run --network arbitrum_rinkeby scripts/errand_methods.js",
     "mint_aproval": "hardhat run --network arbitrum_rinkeby scripts/mint_aproval.js",
-    "cook_methods": "hardhat run --network arbitrum_rinkeby scripts/cook_methods.js"
+    "cook_methods": "hardhat run --network arbitrum_rinkeby scripts/cook_methods.js",
+    "deploy_shrine": "hardhat run --network arbitrum_rinkeby scripts/deploy_shrine.js",
+    "shrine_methods": "hardhat run --network arbitrum_rinkeby scripts/shrine_methods.js",
+    "sig_methods": "hardhat run --network arbitrum_rinkeby scripts/sig_methods.js"
   },
   "author": "",
   "license": "ISC",
@@ -35,6 +38,7 @@
     "dotenv": "^16.0.0",
     "erc721a": "^3.3.0",
     "keccak256": "^1.0.6",
-    "merkletreejs": "^0.2.32"
+    "merkletreejs": "^0.2.32",
+    "web3": "^1.8.0"
   }
 }

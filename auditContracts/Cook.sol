@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.9 <0.9.0;
-
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
@@ -8,7 +7,7 @@ import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "hardhat/console.sol";
-
+import "./SignatureChecker.sol";
 
 interface IBossCardERC1155{
     function safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) external;
@@ -27,15 +26,15 @@ interface IPancakeERC1155{
     function mint(address account, uint256 id, uint256 amount) external;
 }
 
-contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable {
+contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, SignatureChecker {
     address public ingredientsERC1155;
     address public  bossCardERC1155Address;
     address public  pancakeERC1155;
 
-    uint256 stakeIdCount;
+    uint256  stakeIdCount;
     uint256 public timeForReward;
-    uint[] plainCakeCookIds;
-    uint legendaryIngredientId;
+    uint[]  plainCakeCookIds;
+    uint  legendaryIngredientId;
     uint8 plainPancakeId;
 
     struct StakeIngredient{
@@ -89,6 +88,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         plainPancakeId = 1;
         legendaryBoost =[1,23,53];
         shinyBoost = [2,24,54];
+        
     }
 
     function isLegendaryBoost(uint tokenId) internal view  returns (bool){
@@ -174,7 +174,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }
 
-    function bossCardWithdraw(uint _tokenId) external{
+    function bossCardWithdraw(uint _tokenId) external nonReentrant{
         require(
             !anyClaimInProgress(),
             "Claim in progress"
@@ -215,7 +215,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         return block.timestamp > stakedTime;
     }
 
-    function claimReward(uint256 _stakeId) public {
+    function claimReward(uint256 _stakeId) external {
         require(canAvailClaim(_stakeId), "claimReward: stake not available for claim");
         StakeIngredient[] memory sis = userIngredientStakes[msg.sender][_stakeId];
         uint[] memory amounts = new uint[](sis.length);
@@ -235,7 +235,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         emit RewardClaimed(msg.sender, _stakeId, pancakeIds, amounts);
     }
 
-    function printUserIngredientStakes() public view returns(
+    function printUserIngredientStakes() external view returns(
         uint[] memory,
         uint[] memory,
         uint[] memory,
@@ -267,7 +267,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         return(stakeIds, claimIds, stakeTimes, claimTimeRemains, claimAmounts);
     }
 
-    function printBossCardStake() public  view returns (uint) {
+    function printBossCardStake() external  view returns (uint) {
         return(bossCardStakes[msg.sender].tokenId);
     }
 

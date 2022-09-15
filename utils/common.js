@@ -131,15 +131,18 @@ async function approveContract(contractName,contractAddress, approvalAddress, is
     console.log(`address ${approvalAddress} ${isMint?'mint':''} approved on ${contractName} `)
 }
 
-function generateSignature(sender,id,key,value){
-    console.log({sender,id,key,value})
+function generateSignature(sender,val1,val2,val3){
+    console.log({sender,val1,val2,val3})
     const privateKey = process.env.PRI_KEY
     let message;
-    if(sender && id && key && value){
-        message = Web3.utils.soliditySha3(sender,id,key,value);
+    if(sender && val1 && val2 && val3){
+        message = Web3.utils.soliditySha3(sender,val1,val2,val3);
     }
-    else if(sender && id){
-        message = Web3.utils.soliditySha3(sender, id);
+    else if(sender && val1 && val2){
+        message = Web3.utils.soliditySha3(sender, val1,val2);
+    }
+    else if(sender && val1){
+        message = Web3.utils.soliditySha3(sender, val1);
     }
     else if(sender){
         message = Web3.utils.soliditySha3(sender);

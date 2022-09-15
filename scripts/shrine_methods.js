@@ -30,7 +30,7 @@ async function main(){
 
     }
     if(updateRewardTime){
-        await DeployedContract.setTimeForReward(60)
+        await DeployedContract.setTimeForReward(process.env.TIME_FOR_REWARD)
         const timeReward1 = await DeployedContract.timeForReward()
         console.log("timeReward1",timeReward1);
     }

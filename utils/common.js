@@ -34,7 +34,7 @@ const getMerkleRoot = (addresses)=>{
     return root;
 }
 
- const CONTRACT_NAME_MAP = {
+const CONTRACT_NAME_MAP = {
     PowerPlinsGen0ERC721: "PowerPlinsGen0ERC721",
     BossCardERC1155: "BossCardERC1155",
     Gen1ERC1155: "Gen1ERC1155",
@@ -48,7 +48,8 @@ const getMerkleRoot = (addresses)=>{
     Cook:"Cook",
     ShrineConst:"ShrineConst",
     Shrine:"Shrine",
-    SignatureChecker:"SignatureChecker"
+    SignatureChecker:"SignatureChecker",
+    PowerPlinsGen0ERC721Royalty:"PowerPlinsGen0ERC721Royalty"
  }
 
 
@@ -87,12 +88,17 @@ async function deployProxyContract(contractName, params){
     console.log(implementationAddress," getImplementationAddress")
     console.log(await upgrades.erc1967.getAdminAddress(deployedContract.address)," getAdminAddress")
 
+    await verifyContract(contractName,implementationAddress,params)
+    console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
+
     await writeAddress(contractName,deployedContract.address)
     await writeAddress(contractName+"_IMP",implementationAddress)
 
     //console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
 
+    
 }
+
 async function verifyContract(contractName,address,params){
     console.log("contractName,address,params",contractName,address,params)
     console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);

@@ -21,7 +21,8 @@
     "cook_methods": "hardhat run --network goerli scripts/cook_methods.js",
     "deploy_shrine": "hardhat run --network goerli scripts/deploy_shrine.js",
     "shrine_methods": "hardhat run --network goerli scripts/shrine_methods.js",
-    "sig_methods": "hardhat run --network goerli scripts/sig_methods.js"
+    "sig_methods": "hardhat run --network goerli scripts/sig_methods.js",
+    "deploy_royalty": "hardhat run --network goerli scripts/deploy_royalty.js"
   },
   "author": "",
   "license": "ISC",
@@ -35,6 +36,10 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.1",
     "@openzeppelin/contracts-upgradeable": "^4.4.1",
+    "@rarible/libraries": "^0.1.2",
+    "@rarible/royalties": "^0.7.4",
+    "@rarible/royalties-upgradeable": "^0.7.4",
+    "@rarible/sdk": "^0.9.29-hotfix.0",
     "dotenv": "^16.0.0",
     "erc721a": "^3.3.0",
     "keccak256": "^1.0.6",

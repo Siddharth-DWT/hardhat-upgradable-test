@@ -26,11 +26,15 @@ interface IPancakeERC1155{
     function burn(address account, uint256 id, uint256 value) external;
     function mint(address account, uint256 id, uint256 amount) external;
 }
+interface ICookConst {
+    function revealChance() external returns(uint256);
+}
 
 contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable {
     address public ingredientsERC1155;
     address public  bossCardERC1155Address;
     address public  pancakeERC1155;
+    ICookConst cookConst;
 
     uint256 stakeIdCount;
     uint256 public timeForReward;
@@ -48,8 +52,11 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
     mapping(address => mapping(uint256 => uint256))  userIngredientStakesTime;
     mapping(address => uint256[])  recipeStakes;
 
-    uint[] legendaryBoost;
-    uint[] shinyBoost;
+    uint[] legendaryTimeBoost;
+    uint[] shinyTimeBoost;
+    uint[] legendaryChanceBoost;
+    uint[] shinyChanceBoost;
+    uint[] cookBoosters;
 
     // boss card stake
     struct BossCardStake{
@@ -73,7 +80,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         _disableInitializers();
     }
 
-    function initialize(address _ingredientsERC1155, address _bossCard, address _pancakeERC1155) public initializer {
+    function initialize(address _ingredientsERC1155, address _bossCard, address _pancakeERC1155, address _cookConst) public initializer {
         __Ownable_init();
         __ReentrancyGuard_init();
         __Pausable_init();
@@ -85,39 +92,19 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155Address = _bossCard;
         pancakeERC1155 =_pancakeERC1155;
+        cookConst = ICookConst(_cookConst);
         legendaryIngredientId = 25;
         plainPancakeId = 1;
-        legendaryBoost =[1,23,53];
-        shinyBoost = [2,24,54];
+        legendaryTimeBoost =[1,23,53];
+        shinyTimeBoost = [2,24,54];
+        legendaryChanceBoost =[33,73,83,89];
+        shinyChanceBoost = [34,74,84,90];
+        cookBoosters=[1,23,53,2,24,54,33,73,83,89,34,74,84,90];
     }
-
-    function isLegendaryBoost(uint tokenId) internal view  returns (bool){
-        bool found= false;
-        for (uint i=0; i<legendaryBoost.length; i++) {
-            if(legendaryBoost[i]==tokenId){
-                found=true;
-                break;
-            }
-        }
-        return found;
+    function indexOf(uint[] memory self, uint value) internal pure returns (int) {
+        for (uint i = 0; i < self.length; i++)if (self[i] == value) return int(i);
+        return -1;
     }
-    function isShinyBoost(uint tokenId) internal view returns (bool){
-        bool found= false;
-        for (uint i=0; i<shinyBoost.length; i++) {
-            if(shinyBoost[i]==tokenId){
-                found=true;
-                break;
-            }
-        }
-        return found;
-    }
-
-   /* function onERC1155Received(address, address, uint256, uint256, bytes memory)  virtual public returns (bytes4) {
-        return this.onERC1155Received.selector;
-    }
-    function onERC1155BatchReceived(address, address, uint256[] memory, uint256[] memory, bytes memory) public virtual returns (bytes4) {
-        return this.onERC1155BatchReceived.selector;
-    }*/
 
     function isValidStake(StakeIngredient[] memory _stakeIngredients) internal view returns (bool){
         bool flag = true;
@@ -161,24 +148,15 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
     }
 
     function bossCardStake(uint _tokenId) external{
-        require(
-            bossCardStakes[msg.sender].tokenId == 0,
-            "Boost token already stake"
-        );
-        require(
-            isLegendaryBoost(_tokenId) || isShinyBoost(_tokenId),
-            "Not valid boost token for stake"
-        );
+        require(bossCardStakes[msg.sender].tokenId == 0,"Boost token already stake");
+        require(indexOf(cookBoosters,_tokenId) >=0,"Not valid boost token for stake");
         bossCardStakes[msg.sender].tokenId = _tokenId;
         bossCardStakes[msg.sender].time= block.timestamp;
         IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }
 
     function bossCardWithdraw(uint _tokenId) external{
-        require(
-            !anyClaimInProgress(),
-            "Claim in progress"
-        );
+        require(!anyClaimInProgress(),"Claim in progress");
         IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
         delete bossCardStakes[msg.sender];
     }
@@ -197,14 +175,14 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         timeForReward = _timeForReward;
     }
     function getTimeForReward() public view returns (uint256){
-        if(bossCardStakes[msg.sender].tokenId == 0){
-            return timeForReward;
+        uint boostId = bossCardStakes[msg.sender].tokenId;
+        if(indexOf(legendaryTimeBoost,boostId)>=0){
+            return timeForReward - timeForReward/4;
         }
-        uint8 timeReduceBy =2;
-        if(isShinyBoost(bossCardStakes[msg.sender].tokenId)){
-            timeReduceBy = 4;
+        if(indexOf(shinyTimeBoost,boostId)>=0){
+            return timeForReward - timeForReward/2;
         }
-        return timeForReward - timeForReward/timeReduceBy;
+        return timeForReward;
     }
 
     function canAvailClaim(uint256 _stakeId) public  view returns (bool) {
@@ -220,10 +198,23 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         StakeIngredient[] memory sis = userIngredientStakes[msg.sender][_stakeId];
         uint[] memory amounts = new uint[](sis.length);
         uint[] memory  pancakeIds = new uint[](sis.length);
+        uint boostId = bossCardStakes[msg.sender].tokenId;
+        uint8 chance = 0;
+        if(indexOf(legendaryChanceBoost,boostId)>=0){
+            chance = 1;
+        } else if(indexOf(shinyChanceBoost,boostId)>=0){
+            chance = 2;
+        }
         for(uint i=0;i<sis.length;i++){
             uint amount = 1;
             if(sis[i].ids.length ==1 && sis[i].ids[0]==legendaryIngredientId){
                 amount = 3;
+            }
+            if(chance >0){
+                uint number = cookConst.revealChance();
+                if(number<=chance){
+                    amount=amount+1;
+                }
             }
             amounts[i] = amount;
             pancakeIds[i] = sis[i].pancakeId;

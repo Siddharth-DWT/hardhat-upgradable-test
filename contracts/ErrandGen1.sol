@@ -28,13 +28,13 @@ interface IIngredientsERC1155{
 }
 
 interface IErrandBossCardStake {
-    function getBossCountClaim(uint256 time) external view returns(uint);
+    function getBossCountClaim(address account,uint256 time) external view returns(uint);
     function getUserStakeBossCardId(address _account) external view returns(uint);
 }
 
 contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable{
     uint256 stakeIdCount;
-    uint256 public _timeForReward;
+    uint256 public timeForReward;
     address private powerPlinsGen1;
     address private ingredientsERC1155;
     ICommonConst commonConst;
@@ -77,13 +77,13 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         ingredientsERC1155 = _ingredientsERC1155;
         commonConst = ICommonConst(_commonConstGen1);
         stakeIdCount = 1;
-        _timeForReward = 24 hours;
+        timeForReward = 24 hours;
         totalTokenStake=0;
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
     }
 
-    function setTimeForReward(uint256 timeForReward) public{
-        _timeForReward = timeForReward;
+    function setTimeForReward(uint256 _timeForReward) public{
+        timeForReward = _timeForReward;
     }
     function indexOf(uint[] memory self, uint value) internal pure returns (int) {
         for (uint i = 0; i < self.length; i++)if (self[i] == value) return int(i);
@@ -134,13 +134,13 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
 
 
     function numberOfRewardsToClaim(uint256 _stakeId, uint256 stakeTime , uint tokens) public  view returns (uint) {
-        uint256 stakedTime = stakeTime +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * _timeForReward);
+        uint256 stakedTime = stakeTime +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * timeForReward);
         if(stakedTime == 0) {
             return 0;
         }
-        uint count = (block.timestamp - stakedTime)  / _timeForReward;
-        uint bossCount = errandBossCardStake.getBossCountClaim(stakedTime);
-        uint totalCount = count > 0 ? (count* tokens) + bossCount : 0;
+        uint count = (block.timestamp - stakedTime)  / timeForReward;
+        uint bossCount = errandBossCardStake.getBossCountClaim(msg.sender,stakedTime);
+        uint totalCount = count > 0 ? (count* tokens) + bossCount*tokens : 0;
         return totalCount;
     }
 
@@ -150,8 +150,8 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         uint _numberToClaim =  numberOfRewardsToClaim(_stakeId, staker.time,1);
         require(_numberToClaim != 0, "claimReward: No claim pending");
         _claimReward(_numberToClaim*staker.tokenIds.length, _stakeId);
-        uint256 lastClaimTime = staker.time +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * _timeForReward);
-        uint bossCount = errandBossCardStake.getBossCountClaim(lastClaimTime);
+        uint256 lastClaimTime = staker.time +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * timeForReward);
+        uint bossCount = errandBossCardStake.getBossCountClaim(msg.sender,lastClaimTime);
         tokenIdToRewardsClaimed[msg.sender][_stakeId] += (_numberToClaim - bossCount);
         //tokenIdToRewardsClaimed[msg.sender][_stakeId] += _numberToClaim;
     }
@@ -172,13 +172,12 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         bool flag = false;
         uint[] memory stakeIds = userGen1StakeIds[msg.sender];
         for(uint i =0; i < stakeIds.length;i++){
-            Gen1Stake memory staker = gen1Stakes[stakeIds[i]];
-            uint256 count = numberOfRewardsToClaim(stakeIds[i], staker.time,staker.tokenIds.length);
+            Gen1Stake memory st = gen1Stakes[stakeIds[i]];
+            uint256 count = numberOfRewardsToClaim(stakeIds[i], st.time,st.tokenIds.length);
             if(count > 0){
                 flag = true;
                 break;
             }
-
         }
         return flag;
     }
@@ -187,8 +186,8 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         uint[] memory stakeIds = userGen1StakeIds[msg.sender];
         uint256[] memory claims = new uint256[](stakeIds.length);
         for(uint256 i =0; i < stakeIds.length; i++ ){
-            Gen1Stake memory staker = gen1Stakes[stakeIds[i]];
-            claims[i] =  numberOfRewardsToClaim(stakeIds[i], staker.time,staker.tokenIds.length);
+            Gen1Stake memory st = gen1Stakes[stakeIds[i]];
+            claims[i] =  numberOfRewardsToClaim(stakeIds[i], st.time,st.tokenIds.length);
         }
         return(stakeIds, claims);
     }

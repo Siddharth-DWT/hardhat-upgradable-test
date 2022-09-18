@@ -124,7 +124,7 @@ contract Shrine is Initializable, ERC721HolderUpgradeable,OwnableUpgradeable, Re
         timeForReward = _timeForReward;
     }
 
-    function stakeRecipe(uint _tokenId, uint _boostValue, bytes calldata _signature) external nonReentrant {
+    function stakeRecipe(uint _tokenId, uint _boostValue, bytes calldata _signature) external {
         require(_tokenId >= 0, "Staking: No tokenIds provided");
         bytes32 message = keccak256(abi.encodePacked(msg.sender,_tokenId,_boostValue));
         bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, _signature);
@@ -146,7 +146,7 @@ contract Shrine is Initializable, ERC721HolderUpgradeable,OwnableUpgradeable, Re
         emit UnStaked(msg.sender, _tokenId);
     }
 
-    function stakeIngredients(uint[] memory _tokenIds, uint[] memory _amounts) external nonReentrant {
+    function stakeIngredients(uint[] memory _tokenIds, uint[] memory _amounts) external {
         require(recipeStake[msg.sender].tokenId > 0, "stake: First stake recipe Nft!");
         require(_tokenIds.length == _amounts.length, "stake: length mismatch");
         uint countAmount = 0;

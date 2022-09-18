@@ -26,7 +26,7 @@ interface ICommonConst {
     function revealIngredientNftId() external returns(uint256);
 }
 interface IErrandBossCardStake {
-    function getBossCountClaim(uint256 time) external view returns(uint);
+    function getBossCountClaim(address account,uint256 time) external view returns(uint);
     function getUserStakeBossCardId(address _account) external returns(uint);
 }
 
@@ -134,8 +134,8 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
             return 0;
         }
         uint count = (block.timestamp - lastClaimTime)  / (timeForReward * 3);
-        uint bossCount = errandBossCardStake.getBossCountClaim(lastClaimTime);
-        uint totalCount = count > 0 ? (count*3*tokens) + bossCount : 0;
+        uint bossCount = errandBossCardStake.getBossCountClaim(msg.sender,lastClaimTime);
+        uint totalCount = count > 0 ? (count*3*tokens) + bossCount*tokens : 0;
         return totalCount;
     }
 
@@ -150,7 +150,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
 
         _claimReward(_numberToClaim*tokenIds.length, _stakeId);
         uint256 lastClaimTime = recipeStakers[_stakeId].time +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * timeForReward);
-        uint bossCount = errandBossCardStake.getBossCountClaim(lastClaimTime);
+        uint bossCount = errandBossCardStake.getBossCountClaim(msg.sender,lastClaimTime);
         tokenIdToRewardsClaimed[msg.sender][_stakeId] += (_numberToClaim - bossCount);
     }
 

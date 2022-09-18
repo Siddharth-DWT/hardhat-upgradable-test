@@ -10,7 +10,7 @@ contract SignatureChecker is Ownable {
     bool public checkSignatureFlag;
 
     constructor(){
-        validatorAddress = 0x404F0fA265E92198B7E3D332163AeECeE0CFfA95;
+        validatorAddress = 0xC47Ac3dD8b3fCd13C21D567D641A74b7272d5f78;
         checkSignatureFlag = true;
     }
 

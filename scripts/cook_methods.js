@@ -2,8 +2,8 @@ const {CONTRACT_NAME_MAP, approveContract} = require("../utils/common")
 const address= require("../address.json")
 const {ethers} = require("hardhat");
 const {parse} = require("dotenv");
-const executeBase = false;
-const stakes = [1,2], stakeData = true;
+const executeBase = true;
+const stakes = [1,2], stakeData = false;
 async function main(){
     const Contract = await ethers.getContractFactory(CONTRACT_NAME_MAP.Cook);
     const DeployedContract = Contract.attach(address.Cook);

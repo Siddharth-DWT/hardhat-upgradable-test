@@ -40,15 +40,17 @@ const getMerkleRoot = (addresses)=>{
     Gen1ERC1155: "Gen1ERC1155",
     IngredientsERC11155: "IngredientsERC11155",
     PancakeNftERC11155: "PancakeNftERC11155",
-    ErrandGen0:"ErrandGen0",
-    ErrandGen1:"ErrandGen1",
+    SignatureChecker:"SignatureChecker",
     CommonConstGen0:"CommonConstGen0",
     CommonConstGen1:"CommonConstGen1",
     ErrandBossCardStake:"ErrandBossCardStake",
+    ErrandGen0:"ErrandGen0",
+    ErrandGen1:"ErrandGen1",
+    CookConst:"CookConst",
     Cook:"Cook",
     ShrineConst:"ShrineConst",
     Shrine:"Shrine",
-    SignatureChecker:"SignatureChecker"
+    Feed:"Feed"
  }
 
 
@@ -131,6 +133,45 @@ async function approveContract(contractName,contractAddress, approvalAddress, is
     console.log(`address ${approvalAddress} ${isMint?'mint':''} approved on ${contractName} `)
 }
 
+function getHash(title, num, arr, num2) {
+    let args = []
+    arr.map((addr, index) => {
+        args[index] = {t: 'bytes', v: Web3.utils.leftPad(addr, 64)}
+    })
+    return web3.utils.soliditySha3(
+        {t: 'string', v: title},
+        {t: 'uint256', v: num},
+        ...args,
+        {t: 'uint256', v: num2}
+    );
+}
+function getArguments(arr){
+    let args = []
+    arr.map((num, index) => {
+        args[index] = {t: 'uint256', v: num}
+    })
+    return args;
+}
+function generateFeedRevealSignature(sender,val1,val2,val3){
+    console.log({sender,val1,val2,val3})
+    const privateKey = process.env.PRI_KEY
+   /* let message = Web3.utils.soliditySha3(sender,
+    ...getArguments(val1),
+    ...getArguments(val1),
+    ...getArguments(val3))*/
+    const web3 = new Web3('');
+
+    let message = web3.utils.keccak256(web3.eth.abi.encodeParameters(['address','uint', 'uint','uint'], [sender,val1,val2,val3]))
+
+    const {signature} = web3.eth.accounts.sign(
+        message,
+        privateKey
+    );
+    console.log("---signature---", signature)
+    return {message,signature}
+
+}
+
 function generateSignature(sender,val1,val2,val3){
     console.log({sender,val1,val2,val3})
     const privateKey = process.env.PRI_KEY
@@ -169,7 +210,8 @@ module.exports = {
     deployProxyContract,
     verifyProxyContract,
     approveContract,
-    generateSignature
+    generateSignature,
+    generateFeedRevealSignature
 
 }
 

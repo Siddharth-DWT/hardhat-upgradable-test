@@ -25,16 +25,32 @@ module.exports = {
     arbitrum_rinkeby: {
       url: `https://rinkeby.arbitrum.io/rpc`,
       accounts: [process.env.PRI_KEY]
+    },
+    arbitrum_gorli: {
+      url: `https://goerli-rollup.arbitrum.io/rpc/`,
+      accounts: [process.env.PRI_KEY]
+    },
+    arbitrum_mainnet: {
+      url: `https://arb1.arbitrum.io/rpc`,
+      accounts: [process.env.PRI_KEY]
     }
   },
   etherscan: {
-    apiKey: process.env.ARBISCAN_API_KEY,
-  },
-  /*etherscan: {
     apiKey: {
-      rinkeby:process.env.ARBISCAN_API_KEY,
+      arbitrumOne: process.env.ARBISCAN_API_KEY,
+      arbitrumTestnet: process.env.ARBISCAN_API_KEY
     }
-  }*/
+  },
+  customChains: [
+    {
+      network: "arbitrum_gorli",
+      chainId: 421613,
+      urls: {
+        apiURL: "https://api-rinkeby.etherscan.io/api",
+        browserURL: "https://goerli-rollup-explorer.arbitrum.io"
+      }
+    }
+  ]
 };
 
 

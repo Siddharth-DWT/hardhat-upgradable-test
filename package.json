@@ -21,7 +21,10 @@
     "shrine_methods": "hardhat run --network arbitrum_rinkeby scripts/shrine_methods.js",
     "sig_methods": "hardhat run --network arbitrum_rinkeby scripts/sig_methods.js",
     "feed_deploy": "hardhat run --network arbitrum_rinkeby scripts/feed_deploy.js",
-    "feed_methods": "hardhat run --network arbitrum_rinkeby scripts/feed_methods.js"
+    "feed_methods": "hardhat run --network arbitrum_rinkeby scripts/feed_methods.js",
+    "deploy_gen0_mainnet": "hardhat run --network arbitrum_mainnet scripts/deploy_gen0.js",
+    "deploy_gen0_gorli": "hardhat run --network arbitrum_gorli scripts/deploy_gen0.js",
+    "deploy_gen0": "hardhat run --network arbitrum_rinkeby scripts/deploy_gen0.js"
   },
   "author": "",
   "license": "ISC",

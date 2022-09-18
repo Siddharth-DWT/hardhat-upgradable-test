@@ -6,9 +6,10 @@ import 'erc721a/contracts/ERC721A.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/cryptography/MerkleProof.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
-import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import '@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol';
+import { IERC2981, IERC165 } from '@openzeppelin/contracts/interfaces/IERC2981.sol';
 
-contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard {
+contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard, IERC2981 {
 
     //using Strings for uint256;
     using StringsUpgradeable for uint256;
@@ -36,6 +37,12 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard {
     address public beneficiary;
     uint adminDefaultMint=90;
 
+    struct RoyaltyInfo{
+        address receiver;
+        uint96 royaltyFees;
+    }
+    RoyaltyInfo private royaltyInfos = RoyaltyInfo(_msgSender(), 10);
+
     constructor(
         string memory _tokenName,
         string memory _tokenSymbol,
@@ -43,7 +50,6 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard {
         uint256 _maxSupply,
         string memory _hiddenMetadataUri,
         bytes32 _merkleRoot
-
     ) ERC721A(_tokenName, _tokenSymbol) {
         setCost(_cost);
         maxSupply = _maxSupply;
@@ -179,6 +185,12 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard {
         beneficiary = _beneficiary;
     }
 
+    function setRoyaltyInfo(address _receiver, uint96 _royaltyFees) public onlyOwner {
+        require(_receiver != address(0), "Invalid parameters");
+        royaltyInfos.receiver = _receiver;
+        royaltyInfos.royaltyFees = _royaltyFees;
+    }
+
     function withdraw() public onlyOwner {
         payable(beneficiary).transfer(address(this).balance);
     }
@@ -191,4 +203,13 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard {
         return uriPrefix;
     }
 
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721A, IERC165) returns (bool) {
+        return interfaceId == type(IERC2981).interfaceId || super.supportsInterface(interfaceId);
+    }
+
+    function royaltyInfo(uint256 _tokenId, uint256 _salePrice) external view returns (address, uint256) {
+        _tokenId;
+        uint256 royaltyAmount = (_salePrice * royaltyInfos.royaltyFees) / 100;
+        return (royaltyInfos.receiver, royaltyAmount);
+    }
 }

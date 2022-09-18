@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "gen0_deploy": "hardhat run --network arbitrum_rinkeby scripts/gen0_deploy.js",
     "execute_allbase": "hardhat run --network arbitrum_rinkeby scripts/execute_allbase.js",
     "all1155_deploy": "hardhat run --network arbitrum_rinkeby scripts/all1155_deploy.js",
     "all1155_verify": "hardhat run --network arbitrum_rinkeby scripts/all1155_verify.js",

@@ -40,9 +40,6 @@
   "ErrandGen1_IMP": "0xA1A5b2a76f1d10992a6d60db5B0EAD7ee0bd43C4",
   "ErrandGen1_IMP_LINK": "https://testnet.arbiscan.io/address/0xA1A5b2a76f1d10992a6d60db5B0EAD7ee0bd43C4",
   "CookConst": "0x148bdF3df12E9B69707cb933332295907A517E92",
-  "CookConst_LINK": "https://testnet.arbiscan.io/address/0x148bdF3df12E9B69707cb933332295907A517E92",
-  "CommonConstGenNew": "0xe92fc764E84cEfe45cEB291350D88234Bc65Fa0d",
-  "CommonConstGenNew_LINK": "https://testnet.arbiscan.io/address/0xe92fc764E84cEfe45cEB291350D88234Bc65Fa0d",
-  "PowerPlinsGen0ERC721Today": "0xc77785b9d8131Ba4Fd06DD6C16a2568Ea391532E",
-  "PowerPlinsGen0ERC721Today_LINK": "https://testnet.arbiscan.io/address/0xc77785b9d8131Ba4Fd06DD6C16a2568Ea391532E"
+  "CookConst_LINK": "https://testnet.arbiscan.io/address/0x148bdF3df12E9B69707cb933332295907A517E92"
+
 }

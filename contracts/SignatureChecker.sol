@@ -7,15 +7,9 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 contract SignatureChecker is Ownable {
     using ECDSA for bytes32;
     address public validatorAddress;
-    bool public checkSignatureFlag;
 
-    constructor(){
-        validatorAddress = 0xC47Ac3dD8b3fCd13C21D567D641A74b7272d5f78;
-        checkSignatureFlag = true;
-    }
-
-    function setCheckSignatureFlag(bool newFlag) external onlyOwner {
-        checkSignatureFlag = newFlag;
+    constructor(address _validatorAddr){
+        validatorAddress = _validatorAddr;
     }
 
     function setValidatorAddress(address _validatorAddress) external onlyOwner{
@@ -26,8 +20,7 @@ contract SignatureChecker is Ownable {
         return signedHash.toEthSignedMessageHash().recover(signature);
     }
 
-    function checkSignature(bytes32 signedHash, bytes memory signature) external view returns (bool) {
+    function checkSignature(bytes32 signedHash, bytes memory signature) public view returns (bool) {
         return getSigner(signedHash, signature) == validatorAddress;
     }
-
 }

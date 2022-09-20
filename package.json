@@ -24,6 +24,7 @@
     "sig_methods": "hardhat run --network arbitrum_rinkeby scripts/sig_methods.js",
     "feed_deploy": "hardhat run --network arbitrum_rinkeby scripts/feed_deploy.js",
     "feed_methods": "hardhat run --network arbitrum_rinkeby scripts/feed_methods.js",
+    "common_deploy": "hardhat run --network arbitrum_rinkeby scripts/common_deploy.js",
     "verify_direct": "npx hardhat verify  --contract contracts/PowerPlinsGen0ERC721.sol:PowerPlinsGen0ERC721 --network arbitrum_mainnet --constructor-args arguments.js 0x7DC384A18b185972664c96345722D993616fd546"
   },
   "author": "",

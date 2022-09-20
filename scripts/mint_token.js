@@ -17,13 +17,9 @@ async function main(){
     const Gen1 = await ethers.getContractFactory(CONTRACT_NAME_MAP.Gen1ERC1155);
     const Gen1Contract = Gen1.attach(address.Gen1ERC1155);
 
-   let tokens= await IngredientContract.getWalletToken()
-    console.log({id:CONTRACT_NAME_MAP.IngredientsERC11155,tokens})
-    await IngredientContract.mintBatch(process.env.OWNER,[12,18,19,20,21,22,23,24,25],[30,30,30,30,30,30,30,30,10])
-    //tokens= await IngredientContract.getWalletToken()
-    //console.log({id:CONTRACT_NAME_MAP.IngredientsERC11155,tokens})
-   await BossContract.mintBatch(process.env.OWNER,[27,28],[3,3])
-   await PancakeContract.mintBatch(process.env.OWNER,[10,11,13,14,15,16,17,18,19],[30,30,30,30,30,30,30,30,10])
+    await IngredientContract.mintBatch(process.env.OWNER,[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],[30,30,20,20,20,30,40,10,10,10,10,10,12,13,13,14,30,30,30,30,30,30,30,30,10])
+   await BossContract.mintBatch(process.env.OWNER,[1,2,3,4,5,6,27,28],[3,3,3,3,3,3])
+   await PancakeContract.mintBatch(process.env.OWNER,[1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19],[15,15,15,15,15,15,15,16,17,18,19,30,30,30,30,30,30,30,30,10])
    await Gen1Contract.mintBatch(process.env.OWNER,[11,12,13,14,15,16,17,18,19],[3,3,3,3,3,3,3,3,10])
 
 

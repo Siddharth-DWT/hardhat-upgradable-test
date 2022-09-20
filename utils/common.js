@@ -36,6 +36,7 @@ const getMerkleRoot = (addresses)=>{
 
  const CONTRACT_NAME_MAP = {
     PowerPlinsGen0ERC721: "PowerPlinsGen0ERC721",
+     PowerPlinsGen0ERC721Today:"PowerPlinsGen0ERC721Today",
     BossCardERC1155: "BossCardERC1155",
     Gen1ERC1155: "Gen1ERC1155",
     IngredientsERC11155: "IngredientsERC11155",
@@ -50,7 +51,8 @@ const getMerkleRoot = (addresses)=>{
     Cook:"Cook",
     ShrineConst:"ShrineConst",
     Shrine:"Shrine",
-    Feed:"Feed"
+    Feed:"Feed",
+     CommonConstGenNew:"CommonConstGenNew"
  }
 
 

@@ -47,7 +47,7 @@ contract CommonConstGen0 is Ownable {
     }
 
 
-    function getIngredientNftId(uint8 category) private returns(uint){
+    function getIngredientNftId(uint8 category) public returns(uint){
         IngredientType memory ingredient = ingredientTypes[category];
         uint to = ingredient.tokenIds.length;
         uint num = random(1, to);

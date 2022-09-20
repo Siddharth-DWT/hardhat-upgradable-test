@@ -18,24 +18,23 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard, IERC2981 {
     mapping(address => uint) public whitelistClaimed;
 
     uint public maxWhitelistMintPerUser = 3;
-    uint public maxMintAmountPerUser;
+    uint public maxMintAmountPerUser = 100;
 
     string public uriPrefix = '';
     string public uriSuffix = '.json';
     string public hiddenMetadataUri;
 
-    uint256 public cost = 0.030 ether;
-    uint256 public presaleCost = 0.015 ether;
+    uint256 public cost;
+    uint256 public presaleCost;
 
     uint256 public maxSupply;
 
     bool public paused = false;
     bool public whitelistMintEnabled = true;
     bool public revealed = false;
-    mapping(address => bool) public whitelisted;
-    mapping(address => bool) public presaleWallets;
+
     address public beneficiary;
-    uint adminDefaultMint=90;
+    uint adminDefaultMint = 90;
 
     struct RoyaltyInfo{
         address receiver;
@@ -46,11 +45,13 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard, IERC2981 {
     constructor(
         string memory _tokenName,
         string memory _tokenSymbol,
+        uint256 _presaleCost,
         uint256 _cost,
         uint256 _maxSupply,
         string memory _hiddenMetadataUri,
         bytes32 _merkleRoot
     ) ERC721A(_tokenName, _tokenSymbol) {
+        setPresaleCost(_presaleCost);
         setCost(_cost);
         maxSupply = _maxSupply;
         setHiddenMetadataUri(_hiddenMetadataUri);
@@ -59,7 +60,7 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard, IERC2981 {
         merkleRoot = _merkleRoot;
     }
 
-    function mint(uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable nonReentrant{
+    function mint(uint256 _mintAmount, bytes32[] calldata _merkleProof) external payable nonReentrant{
         require(!paused, 'The contract is paused!');
         uint256 supply = totalSupply();
         require(_mintAmount > 0);
@@ -87,23 +88,23 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard, IERC2981 {
         require(supply + _mintAmount <= maxSupply);
         _safeMint(_to, _mintAmount);
     }
-    function setMaxWhitelistMintPerUser(uint _maxAmount) public onlyOwner{
+    function setMaxWhitelistMintPerUser(uint _maxAmount) external  onlyOwner{
         maxWhitelistMintPerUser = _maxAmount;
     }
 
-    function setMaxMintAmountPerUser(uint256 _maxMintAmountPerUser) public onlyOwner {
+    function setMaxMintAmountPerUser(uint256 _maxMintAmountPerUser) external  onlyOwner {
         maxMintAmountPerUser = _maxMintAmountPerUser;
     }
 
-    function setCost(uint256 _cost) public onlyOwner {
+    function setCost(uint256 _cost) public  onlyOwner {
         cost = _cost;
     }
 
-    function setPresaleCost(uint256 _cost) public onlyOwner {
+    function setPresaleCost(uint256 _cost) public  onlyOwner {
         presaleCost = _cost;
     }
 
-   function walletOfOwner(address _owner) public view returns (uint256[] memory) {
+    function walletOfOwner(address _owner) public view returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = _startTokenId();
@@ -112,7 +113,6 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard, IERC2981 {
 
         while (ownedTokenIndex < ownerTokenCount && currentTokenId < _currentIndex) {
             TokenOwnership memory ownership = _ownerships[currentTokenId];
-
             if (!ownership.burned) {
                 if (ownership.addr != address(0)) {
                     latestOwnerAddress = ownership.addr;
@@ -135,57 +135,51 @@ contract PowerPlinsGen0ERC721 is ERC721A, Ownable, ReentrancyGuard, IERC2981 {
         return 1;
     }
 
-    function addPresaleUser(address _user) public onlyOwner {
-        presaleWallets[_user] = true;
-    }
-
     function tokenURI(uint256 _tokenId) public view  override returns (string memory) {
         require(_exists(_tokenId), 'ERC721Metadata: URI query for nonexistent token');
-
         if (revealed == false) {
             return hiddenMetadataUri;
         }
-
         string memory currentBaseURI = _baseURI();
         return bytes(currentBaseURI).length > 0
         ? string(abi.encodePacked(currentBaseURI, _tokenId.toString(), uriSuffix))
         : '';
     }
 
-    function setRevealed(bool _state) public onlyOwner {
+    function setRevealed(bool _state) external  onlyOwner {
         revealed = _state;
     }
 
-    function setHiddenMetadataUri(string memory _hiddenMetadataUri) public onlyOwner {
+    function setHiddenMetadataUri(string memory _hiddenMetadataUri) public  onlyOwner {
         hiddenMetadataUri = _hiddenMetadataUri;
     }
 
-    function setUriPrefix(string memory _uriPrefix) public onlyOwner {
+    function setUriPrefix(string memory _uriPrefix) external  onlyOwner {
         uriPrefix = _uriPrefix;
     }
 
-    function setUriSuffix(string memory _uriSuffix) public onlyOwner {
+    function setUriSuffix(string memory _uriSuffix) external  onlyOwner {
         uriSuffix = _uriSuffix;
     }
 
 
-    function setPaused(bool _state) public onlyOwner {
+    function setPaused(bool _state) external  onlyOwner {
         paused = _state;
     }
 
-    function setMerkleRoot(bytes32 _merkleRoot) public onlyOwner {
+    function setMerkleRoot(bytes32 _merkleRoot) external  onlyOwner {
         merkleRoot = _merkleRoot;
     }
 
-    function setWhitelistMintEnabled(bool _state) public onlyOwner {
+    function setWhitelistMintEnabled(bool _state) external  onlyOwner {
         whitelistMintEnabled = _state;
     }
 
-    function setBeneficiary(address _beneficiary) public onlyOwner {
+    function setBeneficiary(address _beneficiary) external onlyOwner {
         beneficiary = _beneficiary;
     }
 
-    function setRoyaltyInfo(address _receiver, uint96 _royaltyFees) public onlyOwner {
+    function setRoyaltyInfo(address _receiver, uint96 _royaltyFees) external onlyOwner {
         require(_receiver != address(0), "Invalid parameters");
         royaltyInfos.receiver = _receiver;
         royaltyInfos.royaltyFees = _royaltyFees;

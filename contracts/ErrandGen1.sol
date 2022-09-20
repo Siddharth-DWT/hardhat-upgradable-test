@@ -82,7 +82,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
     }
 
-    function setTimeForReward(uint256 _timeForReward) public{
+    function setTimeForReward(uint256 _timeForReward) external{
         timeForReward = _timeForReward;
     }
     function indexOf(uint[] memory self, uint value) internal pure returns (int) {
@@ -104,7 +104,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         emit Staked(msg.sender, amount, _tokenIds);
     }
 
-    function unStack(uint256 _stakeId) public nonReentrant {
+    function unStack(uint256 _stakeId) external nonReentrant {
         require(indexOf(userGen1StakeIds[msg.sender],_stakeId) >=0,"Errand: not valid unstake id");
         Gen1Stake memory staker = gen1Stakes[_stakeId];
 
@@ -144,7 +144,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         return totalCount;
     }
 
-    function claimReward(uint256 _stakeId) public {
+    function claimReward(uint256 _stakeId) external {
         require(indexOf(userGen1StakeIds[msg.sender],_stakeId) >=0,"Errand: not valid stake id for claim");
         Gen1Stake memory staker = gen1Stakes[_stakeId];
         uint _numberToClaim =  numberOfRewardsToClaim(_stakeId, staker.time,1);
@@ -182,7 +182,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         return flag;
     }
 
-    function printUserGen1Claims() public  view returns (uint256[] memory, uint[] memory) {
+    function printUserGen1Claims() external  view returns (uint256[] memory, uint[] memory) {
         uint[] memory stakeIds = userGen1StakeIds[msg.sender];
         uint256[] memory claims = new uint256[](stakeIds.length);
         for(uint256 i =0; i < stakeIds.length; i++ ){
@@ -192,7 +192,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         return(stakeIds, claims);
     }
 
-    function printUserGen1Stakes() public view returns(uint[] memory,Gen1Stake[] memory){
+    function printUserGen1Stakes() external view returns(uint[] memory,Gen1Stake[] memory){
         uint[] memory stakeIds = userGen1StakeIds[msg.sender];
         Gen1Stake[] memory stakes = new Gen1Stake[](stakeIds.length);
         for(uint256 i =0; i < stakeIds.length; i++ ){

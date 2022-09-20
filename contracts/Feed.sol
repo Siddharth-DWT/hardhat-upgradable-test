@@ -126,9 +126,6 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         IBossCardERC1155(bossCardERC1155).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
         delete bossCardStakes[msg.sender];
     }
-    function getMessageHash(uint[] memory _ingredients,  uint[] memory _bossCards, uint[] memory _bossCardAmounts) public view returns(bytes32) {
-        return keccak256(abi.encodePacked(msg.sender,_ingredients,_bossCards,_bossCardAmounts));
-    }
     function reveal(uint[] memory _ingredients,  uint[] memory _bossCards, uint[] memory _bossCardAmounts, bytes memory sig) external nonReentrant {
         bytes32 message = keccak256(abi.encodePacked(msg.sender,_ingredients,_bossCards,_bossCardAmounts));
         bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, sig);
@@ -164,11 +161,11 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         delete feedStakes[msg.sender];
         emit RewardClaimed(msg.sender, ingredientNftIds,ingredientBftAmounts, _bossCards,_bossCardAmounts);
     }
-    function printUserFeeds() public view returns(FeedStake[] memory){
+    function printUserFeeds() external view returns(FeedStake[] memory){
         return feedStakes[msg.sender];
     }
 
-    function printUserBossCardStake() public view returns(BossCardStake memory) {
+    function printUserBossCardStake() external view returns(BossCardStake memory) {
         return bossCardStakes[msg.sender];
     }
 

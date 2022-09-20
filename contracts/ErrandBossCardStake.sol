@@ -31,7 +31,7 @@ contract ErrandBossCardStake is  ReentrancyGuard, Ownable{
         return this.onERC1155Received.selector;
     }
 
-    function setTimeForReward(uint256 _timeForReward) public{
+    function setTimeForReward(uint256 _timeForReward) external{
         timeForReward = _timeForReward;
     }
     function indexOf(uint[] memory self, uint value) internal pure returns (int) {
@@ -58,7 +58,7 @@ contract ErrandBossCardStake is  ReentrancyGuard, Ownable{
         delete bossStakes[msg.sender];
     }
 
-    function getBossCountClaim(address to,uint256 stakedTime) public view returns(uint){
+    function getBossCountClaim(address to,uint256 stakedTime) external view returns(uint){
         uint bossCount = 0;
         if(stakedTime ==0){
             stakedTime = bossStakes[to].time;
@@ -72,14 +72,14 @@ contract ErrandBossCardStake is  ReentrancyGuard, Ownable{
         }
         return bossCount;
     }
-    function printBossCardStake() public view returns (uint) {
+    function printBossCardStake() external view returns (uint) {
         return(bossStakes[msg.sender].tokenId);
     }
-    function printStakeBoss() public view returns (BossStake memory) {
+    function printStakeBoss() external view returns (BossStake memory) {
         return bossStakes[msg.sender];
     }
 
-    function getUserStakeBossCardId(address _account) public  view returns (uint) {
+    function getUserStakeBossCardId(address _account) external  view returns (uint) {
         return(bossStakes[_account].tokenId);
     }
 

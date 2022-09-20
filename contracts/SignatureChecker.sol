@@ -26,7 +26,7 @@ contract SignatureChecker is Ownable {
         return signedHash.toEthSignedMessageHash().recover(signature);
     }
 
-    function checkSignature(bytes32 signedHash, bytes memory signature) public view returns (bool) {
+    function checkSignature(bytes32 signedHash, bytes memory signature) external view returns (bool) {
         return getSigner(signedHash, signature) == validatorAddress;
     }
 

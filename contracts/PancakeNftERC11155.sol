@@ -35,11 +35,11 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
         _;
     }
 
-    function setURI(string memory newuri) public onlyOwner {
+    function setURI(string memory newuri) external onlyOwner {
         _uri = newuri;
     }
 
-    function setMintApprovalForAll(address operator, bool approved) public {
+    function setMintApprovalForAll(address operator, bool approved) external {
         _mintApprovals[operator] = approved;
     }
 
@@ -48,7 +48,7 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
     }
 
     // contract mint function
-    function mint(address to, uint tokenId, uint amount) public existId(tokenId){
+    function mint(address to, uint tokenId, uint amount) external existId(tokenId){
         require(
             isMintApprovedForAll(msg.sender) || owner() == msg.sender,
             "ERC1155: caller is not owner nor approved"
@@ -56,7 +56,7 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
         _mint(to, tokenId, amount, "");
     }
 
-    function mintBatch(address to, uint[] memory tokenIds, uint[] memory amounts) public existIds(tokenIds) {
+    function mintBatch(address to, uint[] memory tokenIds, uint[] memory amounts) external existIds(tokenIds) {
         require(
             isMintApprovedForAll(msg.sender) || owner() == msg.sender,
             "ERC1155: caller is not owner nor approved"
@@ -64,11 +64,11 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
         _mintBatch(to, tokenIds, amounts, "");
     }
 
-    function setTokenSize(uint _tokensCount) public onlyOwner{
+    function setTokenSize(uint _tokensCount) external onlyOwner{
         tokensCount = _tokensCount;
     }
 
-    function getWalletToken() public view returns(uint[] memory){
+    function getWalletToken() external view returns(uint[] memory){
         uint256[] memory tokens = new uint256[](tokensCount);
         for(uint256 i = 0; i < tokensCount; i++ ){
             tokens[i] =  balanceOf(msg.sender, i+1);
@@ -76,7 +76,7 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
         return(tokens);
     }
 
-    function setTokenUri(uint tokenId_, string memory uri_) public onlyOwner {
+    function setTokenUri(uint tokenId_, string memory uri_) external onlyOwner {
         require(bytes(_uris[tokenId_]).length == 0, "Cannot set uri twice");
         _uris[tokenId_] = uri_;
     }

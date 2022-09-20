@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/CommonConstGenNew.sol": {
+      "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.9;\r\n\r\nimport \"@openzeppelin/contracts/access/Ownable.sol\";\r\n\r\ncontract CommonConstGenNew is Ownable {\r\n    struct IngredientType {\r\n        uint8 from;\r\n        uint8 to;\r\n        uint8[] tokenIds;\r\n    }\r\n    mapping(uint => IngredientType) private ingredientTypes;\r\n    uint256 public nonce;\r\n    uint8 public typeCount;\r\n    uint8[] private common;\r\n    uint8[] private uncommon;\r\n    uint8[] private rare;\r\n    uint8[] private epic;\r\n    uint8[] private legendary;\r\n\r\n    constructor()  {\r\n        common = [1,2,3,4,5];\r\n        uncommon = [6,7,8];\r\n        rare = [9,10,11,12,13,14,15,16,17,18,19];\r\n        epic = [20,21,22,23,24];\r\n        legendary = [25];\r\n        ingredientTypes[1] = IngredientType({from:1,to:46, tokenIds:common});\r\n        ingredientTypes[2] = IngredientType({from:47,to:76, tokenIds:uncommon});\r\n        ingredientTypes[3] = IngredientType({from:77,to:91, tokenIds:rare});\r\n        ingredientTypes[4] = IngredientType({from:92,to:99, tokenIds:epic});\r\n        ingredientTypes[5] = IngredientType({from:100,to:100, tokenIds:legendary});\r\n        nonce = 1;\r\n        typeCount=5;\r\n    }\r\n\r\n    function random(uint8 from, uint256 to) private returns (uint8) {\r\n        uint256 randomnumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % to;\r\n        randomnumber = from + randomnumber;\r\n        nonce++;\r\n        return uint8(randomnumber);\r\n    }\r\n\r\n    function setCategory(uint8 category,uint8 from, uint8 to, uint8[] memory tokenIds) external onlyOwner{\r\n        require(category <= typeCount, \"only 5 categories exist\");\r\n        require(from <= to, \"Invalid range\");\r\n        ingredientTypes[category] = IngredientType({from:from,to:to,tokenIds:tokenIds});\r\n    }\r\n\r\n\r\n    function getIngredientNftId(uint8 category) public returns(uint){\r\n        IngredientType memory ingredient = ingredientTypes[category];\r\n        uint to = ingredient.tokenIds.length;\r\n        uint num = random(1, to);\r\n        return ingredient.tokenIds[num-1];\r\n    }\r\n\r\n    function getCategory(uint number) private view returns(uint8){\r\n        uint8 index = 0;\r\n        for(uint8 i = 1; i <= typeCount; i++) {\r\n            if(number >= ingredientTypes[i].from &&  number <= ingredientTypes[i].to) {\r\n                index = i;\r\n            }\r\n        }\r\n        return index;\r\n    }\r\n\r\n    function revealIngredientNftId() external returns(uint256){\r\n        uint8 number = random(1,100);\r\n        uint8 category = getCategory(number);\r\n        return getIngredientNftId(category);\r\n    }\r\n\r\n    function printCategory(uint8 category) external view returns(IngredientType memory){\r\n        return ingredientTypes[category];\r\n    }\r\n\r\n}"
+    },
+    "@openzeppelin/contracts/access/Ownable.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts (last updated v4.7.0) (access/Ownable.sol)\n\npragma solidity ^0.8.0;\n\nimport \"../utils/Context.sol\";\n\n/**\n * @dev Contract module which provides a basic access control mechanism, where\n * there is an account (an owner) that can be granted exclusive access to\n * specific functions.\n *\n * By default, the owner account will be the one that deploys the contract. This\n * can later be changed with {transferOwnership}.\n *\n * This module is used through inheritance. It will make available the modifier\n * `onlyOwner`, which can be applied to your functions to restrict their use to\n * the owner.\n */\nabstract contract Ownable is Context {\n    address private _owner;\n\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\n\n    /**\n     * @dev Initializes the contract setting the deployer as the initial owner.\n     */\n    constructor() {\n        _transferOwnership(_msgSender());\n    }\n\n    /**\n     * @dev Throws if called by any account other than the owner.\n     */\n    modifier onlyOwner() {\n        _checkOwner();\n        _;\n    }\n\n    /**\n     * @dev Returns the address of the current owner.\n     */\n    function owner() public view virtual returns (address) {\n        return _owner;\n    }\n\n    /**\n     * @dev Throws if the sender is not the owner.\n     */\n    function _checkOwner() internal view virtual {\n        require(owner() == _msgSender(), \"Ownable: caller is not the owner\");\n    }\n\n    /**\n     * @dev Leaves the contract without owner. It will not be possible to call\n     * `onlyOwner` functions anymore. Can only be called by the current owner.\n     *\n     * NOTE: Renouncing ownership will leave the contract without an owner,\n     * thereby removing any functionality that is only available to the owner.\n     */\n    function renounceOwnership() public virtual onlyOwner {\n        _transferOwnership(address(0));\n    }\n\n    /**\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\n     * Can only be called by the current owner.\n     */\n    function transferOwnership(address newOwner) public virtual onlyOwner {\n        require(newOwner != address(0), \"Ownable: new owner is the zero address\");\n        _transferOwnership(newOwner);\n    }\n\n    /**\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\n     * Internal function without access restriction.\n     */\n    function _transferOwnership(address newOwner) internal virtual {\n        address oldOwner = _owner;\n        _owner = newOwner;\n        emit OwnershipTransferred(oldOwner, newOwner);\n    }\n}\n"
+    },
+    "@openzeppelin/contracts/utils/Context.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)\n\npragma solidity ^0.8.0;\n\n/**\n * @dev Provides information about the current execution context, including the\n * sender of the transaction and its data. While these are generally available\n * via msg.sender and msg.data, they should not be accessed in such a direct\n * manner, since when dealing with meta-transactions the account sending and\n * paying for execution may not be the actual sender (as far as an application\n * is concerned).\n *\n * This contract is only required for intermediate, library-like contracts.\n */\nabstract contract Context {\n    function _msgSender() internal view virtual returns (address) {\n        return msg.sender;\n    }\n\n    function _msgData() internal view virtual returns (bytes calldata) {\n        return msg.data;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "storageLayout"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    }
+  }
+}

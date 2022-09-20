@@ -78,7 +78,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         totalTokenStake=0;
     }
 
-    function setTimeForReward(uint256 _timeForReward) public onlyOwner {
+    function setTimeForReward(uint256 _timeForReward) external onlyOwner {
         timeForReward = _timeForReward;
     }
     function indexOf(uint[] memory self, uint value) internal pure returns (int) {
@@ -102,7 +102,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         emit Staked(msg.sender, _tokenIds.length, _tokenIds);
     }
 
-    function unStake(uint256 _stakeId) public nonReentrant {
+    function unStake(uint256 _stakeId) external nonReentrant {
         require(indexOf(userStakeIds[msg.sender],_stakeId) >=0,"Errand: not valid unstake id");
         RecipeStaker memory recipeStake = recipeStakers[_stakeId];
 
@@ -139,7 +139,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         return totalCount;
     }
 
-    function claimReward(uint256 _stakeId) public nonReentrant {
+    function claimReward(uint256 _stakeId) external nonReentrant {
         require(indexOf(userStakeIds[msg.sender],_stakeId) >=0,"Errand: not valid unstake id");
         RecipeStaker memory staker = recipeStakers[_stakeId];
         uint256[] memory tokenIds = staker.tokenIds;
@@ -184,7 +184,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         return flag;
     }
 
-    function printUserClaims() public  view returns (uint256[] memory, uint[] memory) {
+    function printUserClaims() external  view returns (uint256[] memory, uint[] memory) {
         uint[] memory stakeIds = userStakeIds[msg.sender];
         uint256[] memory claims = new uint256[](stakeIds.length);
         for(uint256 i =0; i < stakeIds.length; i++ ){
@@ -195,7 +195,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         return(stakeIds, claims);
     }
 
-    function printUserStakes() public  view returns (uint[] memory,RecipeStaker[] memory) {
+    function printUserStakes() external  view returns (uint[] memory,RecipeStaker[] memory) {
         uint[] memory stakeIds = userStakeIds[msg.sender];
         RecipeStaker[] memory stakes = new RecipeStaker[](stakeIds.length);
         for(uint256 i =0; i < stakeIds.length; i++ ){
@@ -204,7 +204,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         return(stakeIds, stakes);
     }
 
-    function  printTotalTokenStake() public view returns(uint256){
+    function  printTotalTokenStake() external view returns(uint256){
         return totalTokenStake;
     }
 

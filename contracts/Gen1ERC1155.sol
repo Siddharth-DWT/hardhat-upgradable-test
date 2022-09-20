@@ -38,7 +38,7 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
         _;
     }
 
-    function setURI(string memory newuri) public onlyOwner {
+    function setURI(string memory newuri) external onlyOwner {
         _uri = newuri;
     }
 
@@ -47,7 +47,7 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
         _uris[tokenId_] = uri_;
     }
 
-    function setMintApprovalForAll(address operator, bool approved) public {
+    function setMintApprovalForAll(address operator, bool approved) external onlyOwner {
         _mintApprovals[operator] = approved;
     }
 

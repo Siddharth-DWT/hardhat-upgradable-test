@@ -82,7 +82,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
     }
 
-    function setTimeForReward(uint256 _timeForReward) external{
+    function setTimeForReward(uint256 _timeForReward) external onlyOwner{
         timeForReward = _timeForReward;
     }
     function indexOf(uint[] memory self, uint value) internal pure returns (int) {

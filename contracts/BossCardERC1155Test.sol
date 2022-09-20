@@ -43,7 +43,7 @@ contract BossCardERC1155Test is ERC1155, Ownable, ReentrancyGuard, Pausable {
         _uris[tokenId_] = uri_;
     }
 
-    function setMintApprovalForAll(address operator, bool approved) external {
+    function setMintApprovalForAll(address operator, bool approved) external onlyOwner{
         _mintApprovals[operator] = approved;
     }
 

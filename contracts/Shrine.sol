@@ -120,7 +120,7 @@ contract Shrine is Initializable, ERC721HolderUpgradeable,OwnableUpgradeable, Re
         return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
     }
 
-    function setTimeForReward(uint256 _timeForReward) external {
+    function setTimeForReward(uint256 _timeForReward) external onlyOwner{
         timeForReward = _timeForReward;
     }
 

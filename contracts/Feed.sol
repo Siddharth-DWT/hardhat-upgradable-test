@@ -96,7 +96,7 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
     }
 
 
-    function setTimeForReward(uint256 _timeForReward) public{
+    function setTimeForReward(uint256 _timeForReward) external onlyOwner{
         timeForReward = _timeForReward;
     }
 

@@ -39,7 +39,7 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
         _uri = newuri;
     }
 
-    function setMintApprovalForAll(address operator, bool approved) external {
+    function setMintApprovalForAll(address operator, bool approved) external onlyOwner{
         _mintApprovals[operator] = approved;
     }
 

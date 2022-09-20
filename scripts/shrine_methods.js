@@ -2,7 +2,7 @@ const {CONTRACT_NAME_MAP, approveContract, generateSignature, deployWithVerifyCo
 const address= require("../address.json")
 const {ethers} = require("hardhat");
 
-const executeBase = true, claimReward=false,successNumber=false, updateRewardTime=true;
+const executeBase = false, claimReward=false,successNumber=false, updateRewardTime=true;
 const stakeRecipe = false, stakeIngredient = false,  stakeBossCard = false, shrineConst = false;
 async function main(){
     const Contract = await ethers.getContractFactory(CONTRACT_NAME_MAP.Shrine);
@@ -16,12 +16,6 @@ async function main(){
 
 
     if(executeBase){
-        const timeReward = await DeployedContract.timeForReward()
-        console.log("timeReward",timeReward);
-        await DeployedContract.setTimeForReward(process.env.TIME_FOR_REWARD)
-        const timeReward1 = await DeployedContract.timeForReward()
-        console.log("timeReward1",timeReward1);
-
         await approveContract(CONTRACT_NAME_MAP.PowerPlinsGen0ERC721,address.PowerPlinsGen0ERC721,address.Shrine)
         await approveContract(CONTRACT_NAME_MAP.BossCardERC1155,address.BossCardERC1155,address.Shrine)
         await approveContract(CONTRACT_NAME_MAP.IngredientsERC11155,address.IngredientsERC11155,address.Shrine)
@@ -30,6 +24,8 @@ async function main(){
 
     }
     if(updateRewardTime){
+        const timeReward = await DeployedContract.timeForReward()
+        console.log("timeReward",timeReward);
         await DeployedContract.setTimeForReward(process.env.TIME_FOR_REWARD)
         const timeReward1 = await DeployedContract.timeForReward()
         console.log("timeReward1",timeReward1);
@@ -80,7 +76,7 @@ async function main(){
 
     if(stakeBossCard){
         const boostType =
-            [{id:14, key:'additive',value:2},
+            [{id:58, key:'legendary',value:20},
                 {id:38, key:'cooldown',value:4},
                 { id:59, key:'common',value:2},
                 {id:17, key:'uncommon',value:2},
@@ -100,8 +96,8 @@ async function main(){
         }*/
 
         try {
-            var response = await DeployedContract.bossCardStake(id,key,value,signature);
-            console.log("bosscard stake",response);
+            //var response = await DeployedContract.bossCardStake(id,key,value,signature);
+            //console.log("bosscard stake",response);
         }catch (e){
             console.log("error in boss stake",e)
         }

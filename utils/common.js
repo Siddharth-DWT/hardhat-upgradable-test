@@ -36,8 +36,8 @@ const getMerkleRoot = (addresses)=>{
 
  const CONTRACT_NAME_MAP = {
     PowerPlinsGen0ERC721: "PowerPlinsGen0ERC721",
-     PowerPlinsGen0ERC721Today:"PowerPlinsGen0ERC721Today",
     BossCardERC1155: "BossCardERC1155",
+    BossCardERC1155Test:"BossCardERC1155Test",
     Gen1ERC1155: "Gen1ERC1155",
     IngredientsERC11155: "IngredientsERC11155",
     PancakeNftERC11155: "PancakeNftERC11155",
@@ -202,6 +202,13 @@ function generateSignature(sender,val1,val2,val3){
 }
 
 
+function sumOf(array){
+    let result=0;
+    array.forEach((item)=>{
+        result = result + item;
+    })
+    return result
+}
 module.exports = {
     getMerkleRoot,
     CONTRACT_NAME_MAP,
@@ -213,7 +220,8 @@ module.exports = {
     verifyProxyContract,
     approveContract,
     generateSignature,
-    generateFeedRevealSignature
+    generateFeedRevealSignature,
+    sumOf
 
 }
 

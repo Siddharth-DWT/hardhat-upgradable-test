@@ -87,7 +87,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         __UUPSUpgradeable_init();
         __ERC1155Holder_init();
         stakeIdCount = 1;
-        timeForReward = 2 hours;
+        timeForReward = 24 hours;
         plainCakeCookIds=[1,2,3,4,5,6,7,8];
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155Address = _bossCard;

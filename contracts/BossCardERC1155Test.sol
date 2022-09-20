@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
+contract BossCardERC1155Test is ERC1155, Ownable, ReentrancyGuard, Pausable {
     uint public tokensCount = 110;
     mapping(address =>  bool) private _mintApprovals;
     string private _uri;

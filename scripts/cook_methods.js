@@ -20,9 +20,6 @@ async function main(){
 
     }
 
-    var response = await DeployedContract.printUserIngredientStakes()
-    console.log("response",response);
-
     if(stakeData){
         var input = [[[1,2,3,4,5,6,7,8],[1,1,1,1,1,1,1,1],1],[[1,2,3,4,5,6,7,8],[1,1,1,1,1,1,1,1],1]]
         await DeployedContract.stake(input)

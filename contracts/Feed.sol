@@ -13,7 +13,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "hardhat/console.sol";
 
 interface ICommonConst {
-    function getIngredientNftId(uint id) external returns(uint256);
+    function getIngredientNftId(uint8 id) external returns(uint256);
 }
 
 interface IPancakeERC1155{
@@ -74,7 +74,7 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         uint[] bossCardAmounts
     );
 
-    function initialize(address _pancakeERC1155, address _ingredientsERC1155, address _bossCardERC1155, address _commonConstGen0, address _signatureChecker) external initializer {
+    function initialize(address _pancakeERC1155, address _ingredientsERC1155, address _bossCardERC1155, address _commonConst, address _signatureChecker) external initializer {
         __Ownable_init();
         __ReentrancyGuard_init();
         __Pausable_init();
@@ -84,8 +84,15 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         pancakeERC1155 = _pancakeERC1155;
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155 = _bossCardERC1155;
-        commonConst = ICommonConst(_commonConstGen0);
+        commonConst = ICommonConst(_commonConst);
         signatureChecker = _signatureChecker;
+    }
+    function sumOf(uint[] memory self) private view returns (uint) {
+        uint sum = 0;
+        for(uint i = 0; i < self.length; i++){
+            sum = sum + self[i];
+        }
+        return sum;
     }
 
 
@@ -113,7 +120,6 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         bytes32 message = keccak256(abi.encodePacked(msg.sender));
         bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, _signature);
         require(isSender, "Invalid sender");
-
         bossCardStakes[msg.sender] = BossCardStake({
             tokenId: _tokenId,
             traitType: _traitType,
@@ -127,18 +133,14 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         delete bossCardStakes[msg.sender];
     }
     function reveal(uint[] memory _ingredients,  uint[] memory _bossCards, uint[] memory _bossCardAmounts, bytes memory sig) external nonReentrant {
-        bytes32 message = keccak256(abi.encodePacked(msg.sender,_ingredients,_bossCards,_bossCardAmounts));
+        uint length = sumOf(_ingredients);
+        bytes32 message = keccak256(abi.encodePacked(msg.sender,length,sumOf(_bossCards),sumOf(_bossCardAmounts)));
         bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, sig);
         require(isSender, "Invalid Sender");
-
-        uint length = 0;
-        for(uint i= 0;i<_ingredients.length;i++){
-            length = length + _ingredients[i];
-        }
         uint[] memory ingredientNftIds = new uint[](length);
         uint[] memory ingredientBftAmounts = new uint[](length);
         uint counter = 0;
-        for(uint i=0;i<_ingredients.length;i++){
+        for(uint8 i=0;i<_ingredients.length;i++){
             for(uint j=0;j<_ingredients[i];j++){
                 uint nftId = commonConst.getIngredientNftId(i+1);
                 ingredientNftIds[counter] = nftId;

@@ -26,12 +26,15 @@ contract ErrandBossCardStake is  ReentrancyGuard, Ownable{
         shinyBoost = [28,50,80];
         timeForReward = 24 hours;
     }
+    function updateContractAddress (address _bossCardERC1155) external onlyOwner{
+        bossCardERC1155 = _bossCardERC1155;
+    }
 
     function onERC1155Received(address, address, uint256, uint256, bytes memory)  virtual public returns (bytes4) {
         return this.onERC1155Received.selector;
     }
 
-    function setTimeForReward(uint256 _timeForReward) external{
+    function setTimeForReward(uint256 _timeForReward) external onlyOwner{
         timeForReward = _timeForReward;
     }
     function indexOf(uint[] memory self, uint value) internal pure returns (int) {

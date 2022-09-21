@@ -5,7 +5,7 @@ contract CookConst {
     uint256 private nonce;
 
     constructor()  {
-       nonce=1;
+        nonce=1;
     }
 
     function random(uint8 from, uint256 to) private returns (uint) {

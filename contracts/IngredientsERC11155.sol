@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
-import "hardhat/console.sol";
 
 contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownable, Pausable {
     uint public tokensCount = 25;
@@ -24,15 +23,23 @@ contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownab
         _uri = _baseUri;
     }
     modifier existId(uint _tokenid) {
-        require(_tokenid <= tokensCount, "Invalid Token Id");
+        require(_tokenid <= tokensCount, "Invalid token id");
         _;
     }
 
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
-            require(_tokenIds[i] <= tokensCount, "Invalid Token Id");
+            require(_tokenIds[i] <= tokensCount, "Invalid token id");
         }
         _;
+    }
+
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
     }
 
     function setURI(string memory newuri) external onlyOwner {
@@ -77,8 +84,8 @@ contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownab
     }
 
     function setTokenUri(uint tokenId_, string memory uri_) external onlyOwner {
-        require(bytes(_uris[tokenId_]).length == 0, "Cannot set uri twice");
         _uris[tokenId_] = uri_;
+        tokensCount++;
     }
 
     function uri(uint256 _tokenId) override public view existId(_tokenId) returns (string memory) {
@@ -91,5 +98,13 @@ contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownab
                 Strings.toString(_tokenId),".json"
             )
         );
+    }
+
+    function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
+    internal
+    whenNotPaused
+    override
+    {
+        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 }

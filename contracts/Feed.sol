@@ -107,30 +107,30 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         timeForReward = _timeForReward;
     }
 
-    function stake(uint[] memory tokenIds, uint[] memory amounts, uint calories, bytes memory signature) external whenNotPaused{
+    function stake(uint[] memory tokenIds, uint[] memory amounts, uint calories, bytes memory signature) external nonReentrant whenNotPaused{
         require(tokenIds.length != 0, "Staking: No tokenIds provided");
         bytes32 message = keccak256(abi.encodePacked(msg.sender,calories));
         bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, signature);
         require(isSender, "Staking: Invalid sender");
         IPancakeERC1155(pancakeERC1155).safeBatchTransferFrom(msg.sender, address(this), tokenIds,amounts,'');
         feedStakes[msg.sender].push(FeedStake({
-            tokenIds:tokenIds,
-            amounts:amounts,
-            calories:calories,
-            time: block.timestamp
+        tokenIds:tokenIds,
+        amounts:amounts,
+        calories:calories,
+        time: block.timestamp
         }));
         emit Staked(msg.sender, amounts, tokenIds);
     }
 
 
-    function bossCardStake(uint _tokenId, string memory _traitType, uint _value, bytes memory _signature) external{
+    function bossCardStake(uint _tokenId, string memory _traitType, uint _value, bytes memory _signature) external nonReentrant{
         bytes32 message = keccak256(abi.encodePacked(msg.sender));
         bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, _signature);
         require(isSender, "Invalid sender");
         bossCardStakes[msg.sender] = BossCardStake({
-            tokenId: _tokenId,
-            traitType: _traitType,
-            value: _value
+        tokenId: _tokenId,
+        traitType: _traitType,
+        value: _value
         });
         IBossCardERC1155(bossCardERC1155).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }

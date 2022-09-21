@@ -12,7 +12,6 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
     uint public tokensCount = 110;
     mapping(address =>  bool) private _mintApprovals;
     string private _uri;
-    mapping(uint256 => string) private _uris;
     constructor(string memory _baseUri) ERC1155(string(
             abi.encodePacked(
                 _baseUri,
@@ -23,13 +22,13 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
     }
 
     modifier existId(uint _tokenid) {
-        require(_tokenid <= tokensCount, "Invalid token Id");
+        require(_tokenid <= tokensCount, "Invalid token id");
         _;
     }
 
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
-            require(_tokenIds[i] <= tokensCount, "Invalid token Id");
+            require(_tokenIds[i] <= tokensCount, "Invalid token id");
         }
         _;
     }
@@ -38,17 +37,19 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
         _uri = newuri;
     }
 
-    function setTokenUri(uint tokenId_, string memory uri_) external onlyOwner {
-        require(bytes(_uris[tokenId_]).length == 0, "Cannot set Uri Twice");
-        _uris[tokenId_] = uri_;
-    }
-
     function setMintApprovalForAll(address operator, bool approved) external onlyOwner{
         _mintApprovals[operator] = approved;
     }
 
     function isMintApprovedForAll(address operator) public view returns (bool) {
         return _mintApprovals[operator];
+    }
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
     }
 
     // contract mint function
@@ -68,10 +69,6 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
         _mintBatch(to, tokenIds, amounts, "");
     }
 
-    function setTokenSize(uint _tokensCount) external onlyOwner{
-        tokensCount = _tokensCount;
-    }
-
     function getWalletToken() public view returns(uint[] memory){
         uint256[] memory tokens = new uint256[](tokensCount);
         for(uint256 i = 0; i < tokensCount; i++ ){
@@ -81,15 +78,20 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
     }
 
     function uri(uint256 _tokenId) override public view existId(_tokenId) returns (string memory) {
-        if(bytes(_uris[_tokenId]).length > 0){
-            return _uris[_tokenId];
-        }
         return string(
             abi.encodePacked(
                 _uri,
                 Strings.toString(_tokenId),".json"
             )
         );
+    }
+
+    function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
+    internal
+    whenNotPaused
+    override
+    {
+        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 }
 

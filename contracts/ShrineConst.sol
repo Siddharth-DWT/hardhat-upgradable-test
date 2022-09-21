@@ -7,9 +7,9 @@ contract ShrineConst {
     uint private pancakeSupply;
     uint256 public nonce;
     constructor()  {
-       get1TotalSupply = 510;
-       pancakeSupply = 18;
-       nonce=1;
+        get1TotalSupply = 510;
+        pancakeSupply = 18;
+        nonce=1;
         ceilSuccessNo = 10000;
     }
 

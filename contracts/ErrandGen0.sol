@@ -77,7 +77,7 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
         totalTokenStake=0;
     }
-    function updateContractAddress (address _powerPlinsGen0, address _ingredientsERC1155,address _bossCard, address _commonConst, address _errandBossCardStake) public onlyOwner{
+    function updateContractAddress (address _powerPlinsGen0, address _ingredientsERC1155,address _bossCard, address _commonConst, address _errandBossCardStake) external onlyOwner{
         powerPlinsGen0 = IERC721Upgradeable(_powerPlinsGen0);
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155 = _bossCard;

@@ -150,7 +150,7 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         return totalCount;
     }
 
-    function claimReward(uint256 _stakeId) external {
+    function claimReward(uint256 _stakeId) external  nonReentrant{
         require(indexOf(userGen1StakeIds[msg.sender],_stakeId) >=0,"Errand: not valid stake id for claim");
         Gen1Stake memory staker = gen1Stakes[_stakeId];
         uint _numberToClaim =  numberOfRewardsToClaim(_stakeId, staker.time,1);
@@ -159,7 +159,6 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         uint256 lastClaimTime = staker.time +  (tokenIdToRewardsClaimed[msg.sender][_stakeId] * timeForReward);
         uint bossCount = errandBossCardStake.getBossCountClaim(msg.sender,lastClaimTime);
         tokenIdToRewardsClaimed[msg.sender][_stakeId] += (_numberToClaim - bossCount);
-        //tokenIdToRewardsClaimed[msg.sender][_stakeId] += _numberToClaim;
     }
 
     function _claimReward(uint _numClaim, uint _stakeId) private {

@@ -9,7 +9,7 @@ contract SignatureChecker is Ownable {
     address public validatorAddress;
 
     constructor(){
-        validatorAddress = 0xe01a963bDD48959e467a04DD2314431f27F60276;
+        validatorAddress = msg.sender;
     }
 
     function setValidatorAddress(address _validatorAddress) external onlyOwner{

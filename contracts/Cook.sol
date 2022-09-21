@@ -87,7 +87,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         __UUPSUpgradeable_init();
         __ERC1155Holder_init();
         stakeIdCount = 1;
-        timeForReward = 24 hours;
+        timeForReward = 2 hours;
         plainCakeCookIds=[1,2,3,4,5,6,7,8];
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155Address = _bossCard;
@@ -128,9 +128,9 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
                 flag = false;
             }
             for(uint j=0;j<si.ids.length;j++){
-              if(si.ids[j] == 0 || si.amounts[j] ==0){
-                  flag= false;
-              }
+                if(si.ids[j] == 0 || si.amounts[j] ==0){
+                    flag= false;
+                }
             }
         }
         return flag;
@@ -145,9 +145,9 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
             IIngredientsERC1155(ingredientsERC1155).safeBatchTransferFrom(msg.sender, address(this), si.ids, si.amounts,'');
             userIngredientStakes[msg.sender][stakeIdCount]
             .push(StakeIngredient({
-                ids:si.ids,
-                amounts:si.amounts,
-                pancakeId:si.pancakeId
+            ids:si.ids,
+            amounts:si.amounts,
+            pancakeId:si.pancakeId
             }));
         }
         recipeStakes[msg.sender].push(stakeIdCount);
@@ -155,7 +155,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         emit Staked(msg.sender,_stakeIngredients);
     }
 
-    function bossCardStake(uint _tokenId) external{
+    function bossCardStake(uint _tokenId) external nonReentrant{
         require(bossCardStakes[msg.sender].tokenId == 0,"Boost token already stake");
         require(indexOf(cookBoosters,_tokenId) >=0,"Not valid boost token for stake");
         bossCardStakes[msg.sender].tokenId = _tokenId;
@@ -163,7 +163,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }
 
-    function bossCardWithdraw(uint _tokenId) external{
+    function bossCardWithdraw(uint _tokenId) external nonReentrant{
         require(!anyClaimInProgress(),"Claim in progress");
         IBossCardERC1155(bossCardERC1155Address).safeTransferFrom(address(this), msg.sender,_tokenId, 1,'');
         delete bossCardStakes[msg.sender];
@@ -201,7 +201,7 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         return block.timestamp > stakedTime;
     }
 
-    function claimReward(uint256 _stakeId) public {
+    function claimReward(uint256 _stakeId) external nonReentrant{
         require(canAvailClaim(_stakeId), "claimReward: stake not available for claim");
         StakeIngredient[] memory sis = userIngredientStakes[msg.sender][_stakeId];
         uint[] memory amounts = new uint[](sis.length);

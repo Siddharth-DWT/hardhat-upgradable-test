@@ -10,11 +10,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
-contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
+contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
     uint public tokensCount = 510;
     string private _uri;
-    mapping(uint256 => string) private _uris;
     mapping(address =>  bool) private _mintApprovals;
 
     constructor(string memory _baseUri) ERC1155(string(
@@ -27,24 +27,35 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
     }
 
     modifier existId(uint _tokenid) {
-        require(_tokenid <= tokensCount, "Invalid Token Id");
+        require(_tokenid <= tokensCount, "Invalid token id");
         _;
     }
 
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
-            require(_tokenIds[i] <= tokensCount, "Invalid Token Id");
+            require(_tokenIds[i] <= tokensCount, "Invalid token id");
         }
         _;
     }
 
-    function setURI(string memory newuri) external onlyOwner {
-        _uri = newuri;
+    function pause() public onlyOwner {
+        _pause();
     }
 
-    function setTokenUri(uint tokenId_, string memory uri_) external onlyOwner {
-        require(bytes(_uris[tokenId_]).length == 0, "Cannot set uri twice");
-        _uris[tokenId_] = uri_;
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
+    function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
+    internal
+    whenNotPaused
+    override
+    {
+        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
+    }
+
+    function setURI(string memory newuri) external onlyOwner {
+        _uri = newuri;
     }
 
     function setMintApprovalForAll(address operator, bool approved) external onlyOwner {
@@ -72,9 +83,6 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
         _mintBatch(to, tokenIds, amounts, "");
     }
 
-    function setTokenSize(uint _tokensCount) external onlyOwner{
-        tokensCount = _tokensCount;
-    }
     function getWalletToken() external view returns(uint[] memory){
         uint256[] memory tokens = new uint256[](tokensCount);
         for(uint256 i = 0; i < tokensCount; i++ ){
@@ -84,9 +92,6 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
     }
 
     function uri(uint256 _tokenId) override public view existId(_tokenId) returns (string memory) {
-        if(bytes(_uris[_tokenId]).length > 0){
-            return _uris[_tokenId];
-        }
         return string(
             abi.encodePacked(
                 _uri,

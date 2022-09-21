@@ -83,12 +83,22 @@ contract Shrine is Initializable, ERC721HolderUpgradeable,OwnableUpgradeable, Re
     uint[] private epic;
     uint[] private legendary;
 
+    /* ========== EVENTS ========== */
+    event Staked(address indexed user, uint256 tokenId);
+    event UnStaked(address indexed user, uint256 tokenId);
+    event RewardClaimed(
+        address indexed user,
+        uint randomId,
+        uint successNumber,
+        uint pancakeClaimId,
+        uint gen1ClaimId
+    );
+
     function initialize(address _powerPlinsGen0, address _ingredientsERC1155, address _bossCardERC1155, address _gen1ERC1155, address _pancakeERC1155, address _shrineConst, address _signatureChecker) external initializer {
         __ERC721Holder_init();
         __Ownable_init();
         __ReentrancyGuard_init();
         __UUPSUpgradeable_init();
-        //__ERC1155Holder_init();
         ceilSuccessNo = 10000;
         timeForReward = 24 hours;
         cooldownBoost = [37,63,97,38,94,98];
@@ -125,7 +135,7 @@ contract Shrine is Initializable, ERC721HolderUpgradeable,OwnableUpgradeable, Re
         timeForReward = _timeForReward;
     }
 
-    function stakeRecipe(uint _tokenId, uint _boostValue, bytes calldata _signature) external {
+    function stakeRecipe(uint _tokenId, uint _boostValue, bytes calldata _signature) external nonReentrant {
         require(_tokenId >= 0, "Staking: No tokenIds provided");
         bytes32 message = keccak256(abi.encodePacked(msg.sender,_tokenId,_boostValue));
         bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, _signature);
@@ -144,7 +154,7 @@ contract Shrine is Initializable, ERC721HolderUpgradeable,OwnableUpgradeable, Re
         emit UnStaked(msg.sender, _tokenId);
     }
 
-    function stakeIngredients(uint[] memory _tokenIds, uint[] memory _amounts) external {
+    function stakeIngredients(uint[] memory _tokenIds, uint[] memory _amounts) external nonReentrant{
         require(recipeStake[msg.sender].tokenId > 0, "stake: First stake recipe Nft!");
         uint countAmount = 0;
         for(uint i=0; i < _amounts.length; i++){
@@ -159,7 +169,7 @@ contract Shrine is Initializable, ERC721HolderUpgradeable,OwnableUpgradeable, Re
         IngredientStakes[msg.sender].stakeTime = block.timestamp;
     }
 
-    function bossCardStake(uint _tokenId, string memory _traitType, uint _value, bytes calldata _signature) external {
+    function bossCardStake(uint _tokenId, string memory _traitType, uint _value, bytes calldata _signature) external nonReentrant{
         require(
             bossCardStakes[msg.sender].tokenId ==0,
             "Boost token already stake"
@@ -256,7 +266,7 @@ contract Shrine is Initializable, ERC721HolderUpgradeable,OwnableUpgradeable, Re
     }
     //Claim rewards for IngredientsERC1155
 
-    function claimRewards(bytes calldata _signature) external{
+    function claimRewards(bytes calldata _signature) external nonReentrant{
         uint256[] memory tokenIds = IngredientStakes[msg.sender].tokenIds;
         uint256[] memory amounts = IngredientStakes[msg.sender].amounts;
         uint256 stakeTime = IngredientStakes[msg.sender].stakeTime;
@@ -310,13 +320,4 @@ contract Shrine is Initializable, ERC721HolderUpgradeable,OwnableUpgradeable, Re
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
-    event Staked(address indexed user, uint256 tokenId);
-    event UnStaked(address indexed user, uint256 tokenId);
-    event RewardClaimed(
-        address indexed user,
-        uint randomId,
-        uint successNumber,
-        uint pancakeClaimId,
-        uint gen1ClaimId
-    );
 }

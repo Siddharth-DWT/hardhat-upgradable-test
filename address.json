@@ -25,10 +25,10 @@
   "Cook_LINK": "https://testnet.arbiscan.io/address/0xc662Bad1eF211045e28BeE1254BE06c163aDBf14",
   "Cook_IMP": "0xd8dB8433391a7eD57C5768854D7743BE600bF6aA",
   "Cook_IMP_LINK": "https://testnet.arbiscan.io/address/0xd8dB8433391a7eD57C5768854D7743BE600bF6aA",
-  "Feed": "0x5715C7E097992699C7F062e55bF05CDf92F7eC3D",
-  "Feed_LINK": "https://testnet.arbiscan.io/address/0x5715C7E097992699C7F062e55bF05CDf92F7eC3D",
-  "Feed_IMP": "0x4026f93cc29CB8F8a99e4ce662C75Fda23D515DC",
-  "Feed_IMP_LINK": "https://testnet.arbiscan.io/address/0x4026f93cc29CB8F8a99e4ce662C75Fda23D515DC",
+  "Feed": "0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
+  "Feed_LINK": "https://testnet.arbiscan.io/address/0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
+  "Feed_IMP": "0x835aBeB5C542695c2A0de74068F244c019caDb7B",
+  "Feed_IMP_LINK": "https://testnet.arbiscan.io/address/0x835aBeB5C542695c2A0de74068F244c019caDb7B",
   "ErrandBossCardStake": "0x085EBab7E68B6746136f0454F67a43c9469E0201",
   "ErrandBossCardStake_LINK": "https://testnet.arbiscan.io/address/0x085EBab7E68B6746136f0454F67a43c9469E0201",
   "ErrandGen0": "0x59FA76e74019006A9c77cf71024056b308134720",
@@ -46,5 +46,7 @@
   "BossCardERC1155Test": "0x21200FFb8D962Ea85587c7E26EB3FCd6dA331e87",
   "BossCardERC1155Test_LINK": "https://testnet.arbiscan.io/address/0x21200FFb8D962Ea85587c7E26EB3FCd6dA331e87",
   "PowerPlinsGen0ERC721New": "0xF785e60558f83a6fCeFc3Ce698Cb54987Cce05a9",
-  "PowerPlinsGen0ERC721New_LINK": "https://testnet.arbiscan.io/address/0xF785e60558f83a6fCeFc3Ce698Cb54987Cce05a9"
+  "PowerPlinsGen0ERC721New_LINK": "https://testnet.arbiscan.io/address/0xF785e60558f83a6fCeFc3Ce698Cb54987Cce05a9",
+  "IngredientDrop": "0xfDC97e44d039710792DC1984c594385E771a500b",
+  "IngredientDrop_LINK": "https://testnet.arbiscan.io/address/0xfDC97e44d039710792DC1984c594385E771a500b"
 }

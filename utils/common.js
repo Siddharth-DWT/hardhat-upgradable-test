@@ -53,7 +53,7 @@ const getMerkleRoot = (addresses)=>{
     ShrineConst:"ShrineConst",
     Shrine:"Shrine",
     Feed:"Feed",
-     CommonConstGenNew:"CommonConstGenNew"
+     IngredientDrop:"IngredientDrop"
  }
 
 
@@ -125,7 +125,8 @@ async function verifyProxyContract(contractName,address,params){
     console.log("res-----",res2);
 }
 
-async function approveContract(contractName,contractAddress, approvalAddress, isMint){
+
+async function approveContract(contractName,contractAddress, approvalAddress, isMint, approvalFrom = "approvalFrom"){
     const Contract = await ethers.getContractFactory(contractName);
     const DeployedContract = Contract.attach(contractAddress);
     if(isMint){
@@ -133,8 +134,9 @@ async function approveContract(contractName,contractAddress, approvalAddress, is
     }else {
         await DeployedContract.setApprovalForAll(approvalAddress, true)
     }
-    console.log(`address ${approvalAddress} ${isMint?'mint':''} approved on ${contractName} `)
+    console.log(`address ${approvalAddress} of ${approvalFrom} ${isMint?'mint':''} approved on ${contractName} `)
 }
+
 
 function getHash(title, num, arr, num2) {
     let args = []

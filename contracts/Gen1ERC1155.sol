@@ -27,13 +27,13 @@ contract Gen1ERC1155 is ERC1155, Ownable, ReentrancyGuard {
     }
 
     modifier existId(uint _tokenid) {
-        require(_tokenid <= tokensCount, "Invalid token id");
+        require(_tokenid <= tokensCount, "Invalid Token Id");
         _;
     }
 
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
-            require(_tokenIds[i] <= tokensCount, "Invalid token id");
+            require(_tokenIds[i] <= tokensCount, "Invalid Token Id");
         }
         _;
     }

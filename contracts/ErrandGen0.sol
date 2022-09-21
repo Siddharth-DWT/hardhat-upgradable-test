@@ -77,6 +77,13 @@ contract ErrandGen0 is Initializable, ERC1155HolderUpgradeable, ReentrancyGuardU
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
         totalTokenStake=0;
     }
+    function updateContractAddress (address _powerPlinsGen0, address _ingredientsERC1155,address _bossCard, address _commonConst, address _errandBossCardStake) public onlyOwner{
+        powerPlinsGen0 = IERC721Upgradeable(_powerPlinsGen0);
+        ingredientsERC1155 = _ingredientsERC1155;
+        bossCardERC1155 = _bossCard;
+        commonConst = ICommonConst(_commonConst);
+        errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
+    }
 
     function setTimeForReward(uint256 _timeForReward) external onlyOwner {
         timeForReward = _timeForReward;

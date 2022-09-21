@@ -24,13 +24,13 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
     }
 
     modifier existId(uint _tokenid) {
-        require(_tokenid <= tokensCount, "Invalid token id");
+        require(_tokenid <= tokensCount, "Invalid Token Id");
         _;
     }
 
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
-            require(_tokenIds[i] <= tokensCount, "Invalid token id");
+            require(_tokenIds[i] <= tokensCount, "Invalid Token Id");
         }
         _;
     }
@@ -77,7 +77,7 @@ contract PancakeNftERC11155 is ERC1155, ERC1155Burnable,ReentrancyGuard, Ownable
     }
 
     function setTokenUri(uint tokenId_, string memory uri_) external onlyOwner {
-        require(bytes(_uris[tokenId_]).length == 0, "Cannot set uri twice");
+        require(bytes(_uris[tokenId_]).length == 0, "Cannot Set Uri Twice");
         _uris[tokenId_] = uri_;
     }
 

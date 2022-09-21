@@ -81,6 +81,12 @@ contract ErrandGen1 is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeab
         totalTokenStake=0;
         errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
     }
+    function updateContractAddress (address _powerPlinsGen1, address _ingredientsERC1155, address _commonConstGen1, address _errandBossCardStake) external onlyOwner{
+        powerPlinsGen1 = _powerPlinsGen1;
+        ingredientsERC1155 = _ingredientsERC1155;
+        commonConst = ICommonConst(_commonConstGen1);
+        errandBossCardStake = IErrandBossCardStake(_errandBossCardStake);
+    }
 
     function setTimeForReward(uint256 _timeForReward) external onlyOwner{
         timeForReward = _timeForReward;

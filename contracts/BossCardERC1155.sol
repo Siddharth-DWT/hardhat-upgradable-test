@@ -23,13 +23,13 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
     }
 
     modifier existId(uint _tokenid) {
-        require(_tokenid <= tokensCount, "Invalid token id");
+        require(_tokenid <= tokensCount, "Invalid token Id");
         _;
     }
 
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
-            require(_tokenIds[i] <= tokensCount, "Invalid token id");
+            require(_tokenIds[i] <= tokensCount, "Invalid token Id");
         }
         _;
     }
@@ -39,7 +39,7 @@ contract BossCardERC1155 is ERC1155, Ownable, ReentrancyGuard, Pausable {
     }
 
     function setTokenUri(uint tokenId_, string memory uri_) external onlyOwner {
-        require(bytes(_uris[tokenId_]).length == 0, "Cannot set uri twice");
+        require(bytes(_uris[tokenId_]).length == 0, "Cannot set Uri Twice");
         _uris[tokenId_] = uri_;
     }
 

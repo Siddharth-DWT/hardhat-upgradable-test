@@ -36,6 +36,7 @@ const getMerkleRoot = (addresses)=>{
 
  const CONTRACT_NAME_MAP = {
     PowerPlinsGen0ERC721: "PowerPlinsGen0ERC721",
+    PowerPlinsGen0ERC721New: "PowerPlinsGen0ERC721New",
     BossCardERC1155: "BossCardERC1155",
     BossCardERC1155Test:"BossCardERC1155Test",
     Gen1ERC1155: "Gen1ERC1155",

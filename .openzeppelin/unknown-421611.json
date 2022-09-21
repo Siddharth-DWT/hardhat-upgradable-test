@@ -5,6 +5,41 @@
       "address": "0x5715C7E097992699C7F062e55bF05CDf92F7eC3D",
       "txHash": "0x58c1e27e5139240469f5ca89ab48d1f16643c75eecba74fac6e6a17c1ae6ad89",
       "kind": "uups"
+    },
+    {
+      "address": "0xc662Bad1eF211045e28BeE1254BE06c163aDBf14",
+      "txHash": "0x39d65677557f39b5c06ee53f4ffc4dea2a4b630d97e050f2d440342b0b3c77be",
+      "kind": "uups"
+    },
+    {
+      "address": "0xaf2d1e5480E689F3819bC219004A06d227d97Bb3",
+      "txHash": "0x3c6f976b17a46e70478236be3b412f330295d30f1838a9d24e540db1b7ad0c2c",
+      "kind": "uups"
+    },
+    {
+      "address": "0xCDEfE69DC6fA7168c9d0f08f957FD629deB3312B",
+      "txHash": "0xfbc9c21f0844174bb0e0c5e89cc0852a9fcaccf0bc5dd0dcf08d9da01d49602f",
+      "kind": "uups"
+    },
+    {
+      "address": "0x63AC33Ed6a3c94acb17ED04BB7c404d078204723",
+      "txHash": "0x11ab18e8641cafa48d1cbc3ae32a8b1732c067bdbb4276aab1679443abf30903",
+      "kind": "uups"
+    },
+    {
+      "address": "0xa7F5e48103541759fdF03a82e28b66dF479F4d0e",
+      "txHash": "0x7cb7644de5c1b09da0765f0ee3e0ae077014003358356671419fd902f35878f4",
+      "kind": "uups"
+    },
+    {
+      "address": "0x59FA76e74019006A9c77cf71024056b308134720",
+      "txHash": "0xb29ce356c4a92c311d16d12781b461fcbefae4f3ef2ec1e0ae4037a06927fe60",
+      "kind": "uups"
+    },
+    {
+      "address": "0x487d7F14B031E86218aD66bA8Fcaee10958895FE",
+      "txHash": "0xdfddb346d19778b34589bdfe574f5495e48fc3cbcfe1bd4de6c9e1cb4e1c5d54",
+      "kind": "uups"
     }
   ],
   "impls": {
@@ -285,6 +320,1649 @@
               }
             ],
             "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "3ff63811db57b86130702741f0416f5627a32429ea6d0164fd64c4945d27dbf3": {
+      "address": "0xd8dB8433391a7eD57C5768854D7743BE600bF6aA",
+      "txHash": "0x686ceeb587a70fed2b5fdb11b757f0e685ac2517aa56a5484dc357c674bfc7d1",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\introspection\\ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1155ReceiverUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155ReceiverUpgradeable.sol:31"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1155HolderUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155HolderUpgradeable.sol:48"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "252",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "label": "_paused",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_bool",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\PausableUpgradeable.sol:29"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "302",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\PausableUpgradeable.sol:116"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "351",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1967UpgradeUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:211"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "401",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "UUPSUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:107"
+          },
+          {
+            "label": "ingredientsERC1155",
+            "offset": 0,
+            "slot": "451",
+            "type": "t_address",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:34"
+          },
+          {
+            "label": "bossCardERC1155Address",
+            "offset": 0,
+            "slot": "452",
+            "type": "t_address",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:35"
+          },
+          {
+            "label": "pancakeERC1155",
+            "offset": 0,
+            "slot": "453",
+            "type": "t_address",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:36"
+          },
+          {
+            "label": "cookConst",
+            "offset": 0,
+            "slot": "454",
+            "type": "t_contract(ICookConst)3459",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:37"
+          },
+          {
+            "label": "stakeIdCount",
+            "offset": 0,
+            "slot": "455",
+            "type": "t_uint256",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:39"
+          },
+          {
+            "label": "timeForReward",
+            "offset": 0,
+            "slot": "456",
+            "type": "t_uint256",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:40"
+          },
+          {
+            "label": "plainCakeCookIds",
+            "offset": 0,
+            "slot": "457",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:41"
+          },
+          {
+            "label": "legendaryIngredientId",
+            "offset": 0,
+            "slot": "458",
+            "type": "t_uint256",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:42"
+          },
+          {
+            "label": "plainPancakeId",
+            "offset": 0,
+            "slot": "459",
+            "type": "t_uint8",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:43"
+          },
+          {
+            "label": "userIngredientStakes",
+            "offset": 0,
+            "slot": "460",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_array(t_struct(StakeIngredient)3500_storage)dyn_storage))",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:51"
+          },
+          {
+            "label": "userIngredientStakesTime",
+            "offset": 0,
+            "slot": "461",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:52"
+          },
+          {
+            "label": "recipeStakes",
+            "offset": 0,
+            "slot": "462",
+            "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:53"
+          },
+          {
+            "label": "legendaryTimeBoost",
+            "offset": 0,
+            "slot": "463",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:55"
+          },
+          {
+            "label": "shinyTimeBoost",
+            "offset": 0,
+            "slot": "464",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:56"
+          },
+          {
+            "label": "legendaryChanceBoost",
+            "offset": 0,
+            "slot": "465",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:57"
+          },
+          {
+            "label": "shinyChanceBoost",
+            "offset": 0,
+            "slot": "466",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:58"
+          },
+          {
+            "label": "cookBoosters",
+            "offset": 0,
+            "slot": "467",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:59"
+          },
+          {
+            "label": "bossCardStakes",
+            "offset": 0,
+            "slot": "468",
+            "type": "t_mapping(t_address,t_struct(BossCardStake)3539_storage)",
+            "contract": "Cook",
+            "src": "contracts\\Cook.sol:66"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_struct(StakeIngredient)3500_storage)dyn_storage": {
+            "label": "struct Cook.StakeIngredient[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(ICookConst)3459": {
+            "label": "contract ICookConst",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+            "label": "mapping(address => uint256[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_uint256,t_array(t_struct(StakeIngredient)3500_storage)dyn_storage))": {
+            "label": "mapping(address => mapping(uint256 => struct Cook.StakeIngredient[]))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_uint256,t_uint256))": {
+            "label": "mapping(address => mapping(uint256 => uint256))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(BossCardStake)3539_storage)": {
+            "label": "mapping(address => struct Cook.BossCardStake)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_array(t_struct(StakeIngredient)3500_storage)dyn_storage)": {
+            "label": "mapping(uint256 => struct Cook.StakeIngredient[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(BossCardStake)3539_storage": {
+            "label": "struct Cook.BossCardStake",
+            "members": [
+              {
+                "label": "tokenId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "time",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(StakeIngredient)3500_storage": {
+            "label": "struct Cook.StakeIngredient",
+            "members": [
+              {
+                "label": "ids",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "amounts",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "pancakeId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "5cfeaef483c3af5bdcfc5abaf90caa05fd309e5afa13c50190ab8d73a4aa7de1": {
+      "address": "0xD0375C6ec28dA27358a4f39eFeA67f0b1f5B91FC",
+      "txHash": "0xa1b76cd7b11a66dd917ab21346b30e1354bd1509d18afd5557cbfb2ea76a0ce8",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC721HolderUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\utils\\ERC721HolderUpgradeable.sol:40"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1967UpgradeUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:211"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "UUPSUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:107"
+          },
+          {
+            "label": "ceilSuccessNo",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_uint256",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:42"
+          },
+          {
+            "label": "timeForReward",
+            "offset": 0,
+            "slot": "302",
+            "type": "t_uint256",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:43"
+          },
+          {
+            "label": "powerPlinsGen0",
+            "offset": 0,
+            "slot": "303",
+            "type": "t_contract(IERC721Upgradeable)1000",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:45"
+          },
+          {
+            "label": "ingredientsERC1155",
+            "offset": 0,
+            "slot": "304",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:46"
+          },
+          {
+            "label": "bossCardERC1155",
+            "offset": 0,
+            "slot": "305",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:47"
+          },
+          {
+            "label": "gen1ERC1155",
+            "offset": 0,
+            "slot": "306",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:49"
+          },
+          {
+            "label": "pancakeERC1155",
+            "offset": 0,
+            "slot": "307",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:50"
+          },
+          {
+            "label": "shrineConst",
+            "offset": 0,
+            "slot": "308",
+            "type": "t_contract(IShrineConst)1515",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:51"
+          },
+          {
+            "label": "signatureChecker",
+            "offset": 0,
+            "slot": "309",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:52"
+          },
+          {
+            "label": "recipeStake",
+            "offset": 0,
+            "slot": "310",
+            "type": "t_mapping(t_address,t_struct(RecipeStake)1552_storage)",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:60"
+          },
+          {
+            "label": "IngredientStakes",
+            "offset": 0,
+            "slot": "311",
+            "type": "t_mapping(t_address,t_struct(IngredientStake)1566_storage)",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:67"
+          },
+          {
+            "label": "cooldownBoost",
+            "offset": 0,
+            "slot": "312",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:70"
+          },
+          {
+            "label": "bossCardStakes",
+            "offset": 0,
+            "slot": "313",
+            "type": "t_mapping(t_address,t_struct(BossCardStake)1581_storage)",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:77"
+          },
+          {
+            "label": "common",
+            "offset": 0,
+            "slot": "314",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:79"
+          },
+          {
+            "label": "uncommon",
+            "offset": 0,
+            "slot": "315",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:80"
+          },
+          {
+            "label": "rare",
+            "offset": 0,
+            "slot": "316",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:81"
+          },
+          {
+            "label": "epic",
+            "offset": 0,
+            "slot": "317",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:82"
+          },
+          {
+            "label": "legendary",
+            "offset": 0,
+            "slot": "318",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:83"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IERC721Upgradeable)1000": {
+            "label": "contract IERC721Upgradeable",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IShrineConst)1515": {
+            "label": "contract IShrineConst",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_struct(BossCardStake)1581_storage)": {
+            "label": "mapping(address => struct Shrine.BossCardStake)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(IngredientStake)1566_storage)": {
+            "label": "mapping(address => struct Shrine.IngredientStake)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(RecipeStake)1552_storage)": {
+            "label": "mapping(address => struct Shrine.RecipeStake)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(BossCardStake)1581_storage": {
+            "label": "struct Shrine.BossCardStake",
+            "members": [
+              {
+                "label": "tokenId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "traitType",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "value",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_struct(IngredientStake)1566_storage": {
+            "label": "struct Shrine.IngredientStake",
+            "members": [
+              {
+                "label": "tokenIds",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "amounts",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "stakeTime",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_struct(RecipeStake)1552_storage": {
+            "label": "struct Shrine.RecipeStake",
+            "members": [
+              {
+                "label": "tokenId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "time",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "boostValue",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "7a867c195c310383576b16b7955645803e8e46b504cbce7c80da184349fa5d8b": {
+      "address": "0xBca2F7E6e53D3663a6633D28902D305E96629b66",
+      "txHash": "0x141d0c626d26c5e8131fad251f43bb67a448db1fd1e302a580c00513c895044a",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\introspection\\ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1155ReceiverUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155ReceiverUpgradeable.sol:31"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1155HolderUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155HolderUpgradeable.sol:48"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "252",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1967UpgradeUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:211"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "351",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "UUPSUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:107"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "401",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC721HolderUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\utils\\ERC721HolderUpgradeable.sol:40"
+          },
+          {
+            "label": "commonConst",
+            "offset": 0,
+            "slot": "451",
+            "type": "t_contract(ICommonConst)4760",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:34"
+          },
+          {
+            "label": "errandBossCardStake",
+            "offset": 0,
+            "slot": "452",
+            "type": "t_contract(IErrandBossCardStake)4777",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:35"
+          },
+          {
+            "label": "powerPlinsGen0",
+            "offset": 0,
+            "slot": "453",
+            "type": "t_contract(IERC721Upgradeable)2675",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:36"
+          },
+          {
+            "label": "bossCardERC1155",
+            "offset": 0,
+            "slot": "454",
+            "type": "t_address",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:37"
+          },
+          {
+            "label": "ingredientsERC1155",
+            "offset": 0,
+            "slot": "455",
+            "type": "t_address",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:38"
+          },
+          {
+            "label": "recipeStakers",
+            "offset": 0,
+            "slot": "456",
+            "type": "t_mapping(t_uint256,t_struct(RecipeStaker)4808_storage)",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:44"
+          },
+          {
+            "label": "userStakeIds",
+            "offset": 0,
+            "slot": "457",
+            "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:45"
+          },
+          {
+            "label": "tokenIdToRewardsClaimed",
+            "offset": 0,
+            "slot": "458",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:47"
+          },
+          {
+            "label": "stakeIdCount",
+            "offset": 0,
+            "slot": "459",
+            "type": "t_uint256",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:48"
+          },
+          {
+            "label": "timeForReward",
+            "offset": 0,
+            "slot": "460",
+            "type": "t_uint256",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:49"
+          },
+          {
+            "label": "totalTokenStake",
+            "offset": 0,
+            "slot": "461",
+            "type": "t_uint256",
+            "contract": "ErrandGen0",
+            "src": "contracts\\ErrandGen0.sol:50"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(ICommonConst)4760": {
+            "label": "contract ICommonConst",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IERC721Upgradeable)2675": {
+            "label": "contract IERC721Upgradeable",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IErrandBossCardStake)4777": {
+            "label": "contract IErrandBossCardStake",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+            "label": "mapping(address => uint256[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_uint256,t_uint256))": {
+            "label": "mapping(address => mapping(uint256 => uint256))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(RecipeStaker)4808_storage)": {
+            "label": "mapping(uint256 => struct ErrandGen0.RecipeStaker)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(RecipeStaker)4808_storage": {
+            "label": "struct ErrandGen0.RecipeStaker",
+            "members": [
+              {
+                "label": "tokenIds",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "time",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "385c875ae63f2944876a30c3849650ad11da8e6691c05ac8c13db7569aad8437": {
+      "address": "0x0e89291291116FB59894119B8b6f6B00aAd885ae",
+      "txHash": "0x2b718f9d4098c07dd7eddf00a7fd992a273da235dc4acb7f042704e87cea4e42",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\introspection\\ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1155ReceiverUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155ReceiverUpgradeable.sol:31"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1155HolderUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155HolderUpgradeable.sol:48"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "252",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "label": "_paused",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_bool",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\PausableUpgradeable.sol:29"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "302",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\PausableUpgradeable.sol:116"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "351",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1967UpgradeUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:211"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "401",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "UUPSUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:107"
+          },
+          {
+            "label": "stakeIdCount",
+            "offset": 0,
+            "slot": "451",
+            "type": "t_uint256",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:36"
+          },
+          {
+            "label": "timeForReward",
+            "offset": 0,
+            "slot": "452",
+            "type": "t_uint256",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:37"
+          },
+          {
+            "label": "powerPlinsGen1",
+            "offset": 0,
+            "slot": "453",
+            "type": "t_address",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:38"
+          },
+          {
+            "label": "ingredientsERC1155",
+            "offset": 0,
+            "slot": "454",
+            "type": "t_address",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:39"
+          },
+          {
+            "label": "commonConst",
+            "offset": 0,
+            "slot": "455",
+            "type": "t_contract(ICommonConst)5773",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:40"
+          },
+          {
+            "label": "errandBossCardStake",
+            "offset": 0,
+            "slot": "456",
+            "type": "t_contract(IErrandBossCardStake)5838",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:41"
+          },
+          {
+            "label": "gen1Stakes",
+            "offset": 0,
+            "slot": "457",
+            "type": "t_mapping(t_uint256,t_struct(Gen1Stake)5872_storage)",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:49"
+          },
+          {
+            "label": "userGen1StakeIds",
+            "offset": 0,
+            "slot": "458",
+            "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:50"
+          },
+          {
+            "label": "tokenIdToRewardsClaimed",
+            "offset": 0,
+            "slot": "459",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:52"
+          },
+          {
+            "label": "totalTokenStake",
+            "offset": 0,
+            "slot": "460",
+            "type": "t_uint256",
+            "contract": "ErrandGen1",
+            "src": "contracts\\ErrandGen1.sol:53"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(ICommonConst)5773": {
+            "label": "contract ICommonConst",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IErrandBossCardStake)5838": {
+            "label": "contract IErrandBossCardStake",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+            "label": "mapping(address => uint256[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_uint256,t_uint256))": {
+            "label": "mapping(address => mapping(uint256 => uint256))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(Gen1Stake)5872_storage)": {
+            "label": "mapping(uint256 => struct ErrandGen1.Gen1Stake)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(Gen1Stake)5872_storage": {
+            "label": "struct ErrandGen1.Gen1Stake",
+            "members": [
+              {
+                "label": "stakeId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "tokenIds",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "time",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "5f0ddc94b249495a973a9917c1592ba662f27f2a2e304964005f201760df315f": {
+      "address": "0x0Da02d1dEAAE489f3c49A925E562C0660431D874",
+      "txHash": "0xdb34f5e962f60eed251a4384c78a3e48f8ce5083f9b9e19df41cbfa777196f48",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC721HolderUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\utils\\ERC721HolderUpgradeable.sol:40"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1967UpgradeUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:211"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "UUPSUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:107"
+          },
+          {
+            "label": "ceilSuccessNo",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_uint256",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:42"
+          },
+          {
+            "label": "timeForReward",
+            "offset": 0,
+            "slot": "302",
+            "type": "t_uint256",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:43"
+          },
+          {
+            "label": "powerPlinsGen0",
+            "offset": 0,
+            "slot": "303",
+            "type": "t_contract(IERC721Upgradeable)1000",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:45"
+          },
+          {
+            "label": "ingredientsERC1155",
+            "offset": 0,
+            "slot": "304",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:46"
+          },
+          {
+            "label": "bossCardERC1155",
+            "offset": 0,
+            "slot": "305",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:47"
+          },
+          {
+            "label": "gen1ERC1155",
+            "offset": 0,
+            "slot": "306",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:49"
+          },
+          {
+            "label": "pancakeERC1155",
+            "offset": 0,
+            "slot": "307",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:50"
+          },
+          {
+            "label": "shrineConst",
+            "offset": 0,
+            "slot": "308",
+            "type": "t_contract(IShrineConst)1515",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:51"
+          },
+          {
+            "label": "signatureChecker",
+            "offset": 0,
+            "slot": "309",
+            "type": "t_address",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:52"
+          },
+          {
+            "label": "recipeStake",
+            "offset": 0,
+            "slot": "310",
+            "type": "t_mapping(t_address,t_struct(RecipeStake)1552_storage)",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:60"
+          },
+          {
+            "label": "IngredientStakes",
+            "offset": 0,
+            "slot": "311",
+            "type": "t_mapping(t_address,t_struct(IngredientStake)1566_storage)",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:67"
+          },
+          {
+            "label": "cooldownBoost",
+            "offset": 0,
+            "slot": "312",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:70"
+          },
+          {
+            "label": "bossCardStakes",
+            "offset": 0,
+            "slot": "313",
+            "type": "t_mapping(t_address,t_struct(BossCardStake)1581_storage)",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:77"
+          },
+          {
+            "label": "common",
+            "offset": 0,
+            "slot": "314",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:79"
+          },
+          {
+            "label": "uncommon",
+            "offset": 0,
+            "slot": "315",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:80"
+          },
+          {
+            "label": "rare",
+            "offset": 0,
+            "slot": "316",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:81"
+          },
+          {
+            "label": "epic",
+            "offset": 0,
+            "slot": "317",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:82"
+          },
+          {
+            "label": "legendary",
+            "offset": 0,
+            "slot": "318",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "Shrine",
+            "src": "contracts\\Shrine.sol:83"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IERC721Upgradeable)1000": {
+            "label": "contract IERC721Upgradeable",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IShrineConst)1515": {
+            "label": "contract IShrineConst",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_struct(BossCardStake)1581_storage)": {
+            "label": "mapping(address => struct Shrine.BossCardStake)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(IngredientStake)1566_storage)": {
+            "label": "mapping(address => struct Shrine.IngredientStake)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(RecipeStake)1552_storage)": {
+            "label": "mapping(address => struct Shrine.RecipeStake)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(BossCardStake)1581_storage": {
+            "label": "struct Shrine.BossCardStake",
+            "members": [
+              {
+                "label": "tokenId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "traitType",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "value",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_struct(IngredientStake)1566_storage": {
+            "label": "struct Shrine.IngredientStake",
+            "members": [
+              {
+                "label": "tokenIds",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "amounts",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "stakeTime",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_struct(RecipeStake)1552_storage": {
+            "label": "struct Shrine.RecipeStake",
+            "members": [
+              {
+                "label": "tokenId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "time",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "boostValue",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
           },
           "t_uint256": {
             "label": "uint256",

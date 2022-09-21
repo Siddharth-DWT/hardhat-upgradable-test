@@ -24,13 +24,13 @@ contract IngredientsERC11155 is ERC1155, ERC1155Burnable, ReentrancyGuard, Ownab
         _uri = _baseUri;
     }
     modifier existId(uint _tokenid) {
-        require(_tokenid <= tokensCount, "Invalid token id");
+        require(_tokenid <= tokensCount, "Invalid Token Id");
         _;
     }
 
     modifier existIds(uint[] memory _tokenIds) {
         for(uint i=0; i < _tokenIds.length; i++){
-            require(_tokenIds[i] <= tokensCount, "Invalid token id");
+            require(_tokenIds[i] <= tokensCount, "Invalid Token Id");
         }
         _;
     }

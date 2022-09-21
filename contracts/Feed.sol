@@ -87,7 +87,14 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         commonConst = ICommonConst(_commonConst);
         signatureChecker = _signatureChecker;
     }
-    function sumOf(uint[] memory self) private view returns (uint) {
+    function updateContractAddress (address _pancakeERC1155, address _ingredientsERC1155, address _bossCardERC1155, address _commonConst, address _signatureChecker) external onlyOwner{
+        pancakeERC1155 = _pancakeERC1155;
+        ingredientsERC1155 = _ingredientsERC1155;
+        bossCardERC1155 = _bossCardERC1155;
+        commonConst = ICommonConst(_commonConst);
+        signatureChecker = _signatureChecker;
+    }
+    function sumOf(uint[] memory self) private pure returns (uint) {
         uint sum = 0;
         for(uint i = 0; i < self.length; i++){
             sum = sum + self[i];

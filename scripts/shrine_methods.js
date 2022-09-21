@@ -3,7 +3,7 @@ const address= require("../address.json")
 const {ethers} = require("hardhat");
 
 const executeBase = false, claimReward=false,successNumber=false, updateRewardTime=true;
-const stakeRecipe = false, stakeIngredient = false,  stakeBossCard = false, shrineConst = false;
+const stakeRecipe = false, stakeIngredient = true,  stakeBossCard = false, shrineConst = false;
 async function main(){
     const Contract = await ethers.getContractFactory(CONTRACT_NAME_MAP.Shrine);
     const DeployedContract = Contract.attach(address.Shrine);
@@ -30,26 +30,29 @@ async function main(){
         const timeReward1 = await DeployedContract.timeForReward()
         console.log("timeReward1",timeReward1);
     }
-    if(stakeRecipe){
-        const  printUserRecipeStake = await DeployedContract.printUserRecipeStake()
+    let printUserRecipeStake = await DeployedContract.printUserRecipeStake()
+    console.log("printUserRecipeStake.tokenId",printUserRecipeStake?.tokenId)
+    const tokenId = printUserRecipeStake?.tokenId
+    if(stakeRecipe && !parseInt(tokenId)){
+       /* const  printUserRecipeStake = await DeployedContract.printUserRecipeStake()
         console.log("printUserRecipeStake.tokenId",printUserRecipeStake?.tokenId)
         const tokenId = printUserRecipeStake?.tokenId
         if(parseInt(tokenId)){
             const unStakeRecipe = await DeployedContract.unStakeRecipe(tokenId)
             console.log({unStakeRecipe})
-        }
+        }*/
         const gen0Tokens = await PowerPlinsGen0ERC721Deploy.walletOfOwner(process.env.OWNER);
-        console.log("gen0Tokens---",gen0Tokens);
-        const id = String(18 || gen0Tokens[0]);
+        console.log("gen0Tokens[0]---",gen0Tokens[0]);
+        const id = String(gen0Tokens[0]);
         const value = String(6);
         const {signature} = generateSignature(process.env.OWNER,id,value);
         console.log({signature})
 
-        //const response = await DeployedContract.stakeRecipe(id,value,signature);
-        //console.log("ShrineDeploy stake",response);
+        const response = await DeployedContract.stakeRecipe(id,value,signature);
+        console.log("ShrineDeploy stake",response);
     }
-    /*var response = await DeployedContract.printUserIngredientStakes()
-    console.log("response",response);*/
+    printUserRecipeStake = await DeployedContract.printUserRecipeStake()
+    console.log("printUserRecipeStake.tokenId",printUserRecipeStake?.tokenId)
 
     if(stakeIngredient){
         try {

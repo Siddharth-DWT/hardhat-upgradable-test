@@ -101,10 +101,18 @@ contract Cook is Initializable, OwnableUpgradeable, ERC1155HolderUpgradeable,Ree
         shinyChanceBoost = [34,74,84,90];
         cookBoosters=[1,23,53,2,24,54,33,73,83,89,34,74,84,90];
     }
+    function updateContractAddress (address _ingredientsERC1155, address _bossCard, address _pancakeERC1155, address _cookConst) external onlyOwner{
+        ingredientsERC1155 = _ingredientsERC1155;
+        pancakeERC1155 = _pancakeERC1155;
+        bossCardERC1155Address = _bossCard;
+        cookConst = ICookConst(_cookConst);
+    }
+
     function indexOf(uint[] memory self, uint value) internal pure returns (int) {
         for (uint i = 0; i < self.length; i++)if (self[i] == value) return int(i);
         return -1;
     }
+
 
     function isValidStake(StakeIngredient[] memory _stakeIngredients) internal view returns (bool){
         bool flag = true;

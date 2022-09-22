@@ -9,8 +9,7 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-//import "./SignatureChecker.sol";
-import "hardhat/console.sol";
+
 
 interface ICommonConst {
     function getIngredientNftId(uint8 id) external returns(uint256);

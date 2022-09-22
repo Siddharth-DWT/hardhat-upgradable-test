@@ -39,7 +39,6 @@ interface ISignatureChecker {
 }
 
 contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable {
-    uint256 public timeForReward;
     address private pancakeERC1155;
     address private ingredientsERC1155;
     address private bossCardERC1155;
@@ -79,7 +78,6 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         __Pausable_init();
         __UUPSUpgradeable_init();
         __ERC1155Holder_init();
-        timeForReward = 24 hours;
         pancakeERC1155 = _pancakeERC1155;
         ingredientsERC1155 = _ingredientsERC1155;
         bossCardERC1155 = _bossCardERC1155;
@@ -99,11 +97,6 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
             sum = sum + self[i];
         }
         return sum;
-    }
-
-
-    function setTimeForReward(uint256 _timeForReward) external onlyOwner{
-        timeForReward = _timeForReward;
     }
 
     function stake(uint[] memory tokenIds, uint[] memory amounts, uint calories, bytes memory signature) external nonReentrant whenNotPaused{
@@ -178,6 +171,5 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
-
 
 }

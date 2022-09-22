@@ -53,7 +53,7 @@ const getMerkleRoot = (addresses)=>{
     ShrineConst:"ShrineConst",
     Shrine:"Shrine",
     Feed:"Feed",
-     IngredientDrop:"IngredientDrop"
+    IngredientDrop:"IngredientDrop"
  }
 
 
@@ -178,8 +178,9 @@ function generateFeedRevealSignature(sender,val1,val2,val3){
 }
 
 function generateSignature(sender,val1,val2,val3){
-    console.log({sender,val1,val2,val3})
-    const privateKey = process.env.PRI_KEY
+    //console.log({sender,val1,val2,val3})
+    const privateKey = process.env.SIGNATURE_VALIDATOR_PRI_KEY
+    console.log("privateKey",privateKey);
     let message;
     if(sender && val1 && val2 && val3){
         message = Web3.utils.soliditySha3(sender,val1,val2,val3);

@@ -120,9 +120,9 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         bool isSender = ISignatureChecker(signatureChecker).checkSignature(message, _signature);
         require(isSender, "Invalid sender");
         bossCardStakes[msg.sender] = BossCardStake({
-        tokenId: _tokenId,
-        traitType: _traitType,
-        value: _value
+            tokenId: _tokenId,
+            traitType: _traitType,
+            value: _value
         });
         IBossCardERC1155(bossCardERC1155).safeTransferFrom(msg.sender, address(this), _tokenId, 1,'');
     }

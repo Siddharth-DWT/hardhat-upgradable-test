@@ -89,6 +89,7 @@ async function main(){
         const {id,key,value} = boostType[0]
         const bossTokens = await BossCardERC1155Deploy.getWalletToken();
         console.log("bossTokens---",bossTokens);
+
         const {message,signature} = generateSignature(process.env.OWNER,id,key,value)
         console.log("signature--->",signature)
         /*try {

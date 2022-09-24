@@ -3,7 +3,7 @@ const address= require("../address.json")
 const {ethers} = require("hardhat");
 const {parse} = require("dotenv");
 const executeBase = false;
-const stakePancake = false, stakeBossCard=false,revealReward=true;
+const stakePancake = false, stakeBossCard=true,revealReward=true;
 async function main(){
     const Contract = await ethers.getContractFactory(CONTRACT_NAME_MAP.Feed);
     const DeployedContract = Contract.attach(address.Feed);
@@ -58,13 +58,29 @@ async function main(){
 
     }
     if(stakeBossCard){
-        //const input = [[[1,2,3,4,5,6,7,8],[1,1,1,1,1,1,1,1],1],[[1,2,3,4,5,6,7,8],[1,1,1,1,1,1,1,1],1]]
-        await DeployedContract.stake(1)
-        console.log("stake done1");
-        const printUserFeeds = await DeployedContract.printUserFeeds()
-        console.log("printUserFeeds",printUserFeeds);
-        const printUserBossCardStake = await DeployedContract.printUserBossCardStake()
-        console.log("printUserBossCardStake",printUserBossCardStake);
+        const boostType =
+            [{id:58, key:'legendary',value:20},
+                {id:38, key:'cooldown',value:4},
+                { id:59, key:'common',value:2},
+                {id:17, key:'uncommon',value:2},
+                {id:11, key:'rare',value:3},
+                {id:5, key:'epic',value:5},
+                {id:57, key:'legendary',value:10}]
+        const {id,key,value} = boostType[0]
+        const bossTokens = await DeployedBossContract.getWalletToken();
+        console.log("bossTokens---",bossTokens);
+
+        const {message,signature} = generateSignature(process.env.OWNER)
+        console.log("signature--->",signature)
+        try {
+            const unstake = await DeployedContract.bossCardStake(id,key,value,signature)
+            console.log("unstake------",unstake)
+        }catch (e){
+            console.log("error in unstake",e)
+        }
+
+        var response = await DeployedContract.printUserBossCardStake()
+        console.log("bosscard stake",response);
 
     }
 

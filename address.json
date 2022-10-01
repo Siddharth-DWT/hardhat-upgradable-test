@@ -48,5 +48,9 @@
   "PowerPlinsGen0ERC721New": "0xF785e60558f83a6fCeFc3Ce698Cb54987Cce05a9",
   "PowerPlinsGen0ERC721New_LINK": "https://testnet.arbiscan.io/address/0xF785e60558f83a6fCeFc3Ce698Cb54987Cce05a9",
   "IngredientDrop": "0xCa0Cc9d87897B397547B228839f74b0b72C1F69e",
-  "IngredientDrop_LINK": "https://testnet.arbiscan.io/address/0xCa0Cc9d87897B397547B228839f74b0b72C1F69e"
+  "IngredientDrop_LINK": "https://testnet.arbiscan.io/address/0xCa0Cc9d87897B397547B228839f74b0b72C1F69e",
+  "FeedV1": "0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
+  "FeedV1_LINK": "https://testnet.arbiscan.io/address/0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
+  "FeedV1_IMP": "0x59eEc2Eb74B26c8083E60b221299bD88729c2145",
+  "FeedV1_IMP_LINK": "https://testnet.arbiscan.io/address/0x59eEc2Eb74B26c8083E60b221299bD88729c2145"
 }

@@ -3,10 +3,12 @@ const address= require("../address.json")
 const {ethers} = require("hardhat");
 const {parse} = require("dotenv");
 const executeBase = false;
-const stakePancake = false, stakeBossCard=true,revealReward=true;
+const stakePancake = false, stakeBossCard=false,revealReward=false, upgradeContract=true,getUserFeeds=true;
+const accountArr = [""];//put address here
+
 async function main(){
-    const Contract = await ethers.getContractFactory(CONTRACT_NAME_MAP.Feed);
-    const DeployedContract = Contract.attach(address.Feed);
+    const Contract = await ethers.getContractFactory(CONTRACT_NAME_MAP.FeedV1);
+    const DeployedContract = Contract.attach(address.FeedV1);
 
     const BossCardERC1155 = await ethers.getContractFactory(CONTRACT_NAME_MAP.BossCardERC1155);
     const DeployedBossContract = BossCardERC1155.attach(address.BossCardERC1155);
@@ -14,14 +16,19 @@ async function main(){
     const PancakeNftERC11155 = await ethers.getContractFactory(CONTRACT_NAME_MAP.PancakeNftERC11155);
     const DeployedPancakeContract = PancakeNftERC11155.attach(address.PancakeNftERC11155);
 
-
     const IngredientERC11155 = await ethers.getContractFactory(CONTRACT_NAME_MAP.IngredientsERC11155);
     const DeployedIngredientContract = IngredientERC11155.attach(address.IngredientsERC11155);
 
     if(executeBase){
-        await approveContract(CONTRACT_NAME_MAP.PancakeNftERC11155,address.PancakeNftERC11155,address.Feed)
-        await approveContract(CONTRACT_NAME_MAP.IngredientsERC11155,address.IngredientsERC11155,address.Feed, true)
-        await approveContract(CONTRACT_NAME_MAP.BossCardERC1155,address.BossCardERC1155,address.Feed, true)
+        await approveContract(CONTRACT_NAME_MAP.PancakeNftERC11155,address.PancakeNftERC11155,address.FeedV1)
+        await approveContract(CONTRACT_NAME_MAP.IngredientsERC11155,address.IngredientsERC11155,address.FeedV1, true)
+        await approveContract(CONTRACT_NAME_MAP.BossCardERC1155,address.BossCardERC1155,address.FeedV1, true)
+    }
+
+    if(!upgradeContract){
+        const {PancakeNftERC11155,IngredientsERC11155,BossCardERC1155,CommonConstGen0,SignatureChecker} = address;
+        await DeployedContract.updateContractAddress(PancakeNftERC11155,IngredientsERC11155,BossCardERC1155,CommonConstGen0,SignatureChecker)
+        console.log("contract address updated");
     }
 
     if(stakePancake){
@@ -33,6 +40,12 @@ async function main(){
         console.log("pancake stake done1");
     }
 
+    if(getUserFeeds){
+        for(i=0;i<accountArr.length;i++){
+            var getUserFeed = await DeployedContract.getUserFeeds(accountArr[i])
+            console.log("getUserFeeds: ", getUserFeed);
+        }
+    }
 
     if(revealReward){
         var ingredientTokens = await DeployedIngredientContract.getWalletToken()

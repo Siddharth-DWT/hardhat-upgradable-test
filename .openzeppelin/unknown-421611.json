@@ -52,13 +52,12 @@
       "kind": "uups"
     },
     {
-      "address": "0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
-      "txHash": "0x9947d649718ab033c27ca702acec377ef813df960383c9cec0caf504fbff382e",
+      "address": "0x054Dc0071cCb6bfFC90f4630BFf749454Cf07cCc",
+      "txHash": "0x1af1af22293fa66e965a3908754d4389382bdfc0037edfe2fcea8547fc5276f3",
       "kind": "uups"
     },
     {
-      "address": "0x054Dc0071cCb6bfFC90f4630BFf749454Cf07cCc",
-      "txHash": "0x1af1af22293fa66e965a3908754d4389382bdfc0037edfe2fcea8547fc5276f3",
+      "address": "0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
       "kind": "uups"
     }
   ],
@@ -2815,6 +2814,286 @@
           },
           "t_struct(FeedStake)10575_storage": {
             "label": "struct Feed.FeedStake",
+            "members": [
+              {
+                "label": "tokenIds",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "amounts",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "calories",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "time",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "d8b98b5b3a30ceefdd503828d04e6d531ea4085acbd7d1207af32c1168a97b4f": {
+      "address": "0x59eEc2Eb74B26c8083E60b221299bD88729c2145",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\introspection\\ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1155ReceiverUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155ReceiverUpgradeable.sol:31"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1155HolderUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155HolderUpgradeable.sol:48"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "252",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "label": "_paused",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_bool",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\PausableUpgradeable.sol:29"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "302",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\PausableUpgradeable.sol:116"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "351",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC1967UpgradeUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:211"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "401",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "UUPSUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:107"
+          },
+          {
+            "label": "pancakeERC1155",
+            "offset": 0,
+            "slot": "451",
+            "type": "t_address",
+            "contract": "FeedV1",
+            "src": "contracts\\feed_upgradable.sol:41"
+          },
+          {
+            "label": "ingredientsERC1155",
+            "offset": 0,
+            "slot": "452",
+            "type": "t_address",
+            "contract": "FeedV1",
+            "src": "contracts\\feed_upgradable.sol:42"
+          },
+          {
+            "label": "bossCardERC1155",
+            "offset": 0,
+            "slot": "453",
+            "type": "t_address",
+            "contract": "FeedV1",
+            "src": "contracts\\feed_upgradable.sol:43"
+          },
+          {
+            "label": "commonConst",
+            "offset": 0,
+            "slot": "454",
+            "type": "t_contract(ICommonConst)1803",
+            "contract": "FeedV1",
+            "src": "contracts\\feed_upgradable.sol:44"
+          },
+          {
+            "label": "signatureChecker",
+            "offset": 0,
+            "slot": "455",
+            "type": "t_address",
+            "contract": "FeedV1",
+            "src": "contracts\\feed_upgradable.sol:45"
+          },
+          {
+            "label": "feedStakes",
+            "offset": 0,
+            "slot": "456",
+            "type": "t_mapping(t_address,t_array(t_struct(FeedStake)1964_storage)dyn_storage)",
+            "contract": "FeedV1",
+            "src": "contracts\\feed_upgradable.sol:53"
+          },
+          {
+            "label": "bossCardStakes",
+            "offset": 0,
+            "slot": "457",
+            "type": "t_mapping(t_address,t_struct(BossCardStake)1977_storage)",
+            "contract": "FeedV1",
+            "src": "contracts\\feed_upgradable.sol:61"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_struct(FeedStake)1964_storage)dyn_storage": {
+            "label": "struct FeedV1.FeedStake[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(ICommonConst)1803": {
+            "label": "contract ICommonConst",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_array(t_struct(FeedStake)1964_storage)dyn_storage)": {
+            "label": "mapping(address => struct FeedV1.FeedStake[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(BossCardStake)1977_storage)": {
+            "label": "mapping(address => struct FeedV1.BossCardStake)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(BossCardStake)1977_storage": {
+            "label": "struct FeedV1.BossCardStake",
+            "members": [
+              {
+                "label": "tokenId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "traitType",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "value",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_struct(FeedStake)1964_storage": {
+            "label": "struct FeedV1.FeedStake",
             "members": [
               {
                 "label": "tokenIds",

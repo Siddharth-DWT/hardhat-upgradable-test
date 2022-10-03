@@ -171,7 +171,7 @@ contract FeedV1 is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, R
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
-    function getUserFeeds(address _account) external view returns(FeedStake[] memory){
+    function getUserFeeds(address _account) external view returns(FeedStake[] memory) {
         return feedStakes[_account];
     }
 }

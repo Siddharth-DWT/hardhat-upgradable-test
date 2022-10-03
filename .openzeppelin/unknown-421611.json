@@ -2976,7 +2976,7 @@
             "slot": "451",
             "type": "t_address",
             "contract": "FeedV1",
-            "src": "contracts\\feed_upgradable.sol:41"
+            "src": "contracts\\FeedV1.sol:40"
           },
           {
             "label": "ingredientsERC1155",
@@ -2984,7 +2984,7 @@
             "slot": "452",
             "type": "t_address",
             "contract": "FeedV1",
-            "src": "contracts\\feed_upgradable.sol:42"
+            "src": "contracts\\FeedV1.sol:41"
           },
           {
             "label": "bossCardERC1155",
@@ -2992,7 +2992,7 @@
             "slot": "453",
             "type": "t_address",
             "contract": "FeedV1",
-            "src": "contracts\\feed_upgradable.sol:43"
+            "src": "contracts\\FeedV1.sol:42"
           },
           {
             "label": "commonConst",
@@ -3000,7 +3000,7 @@
             "slot": "454",
             "type": "t_contract(ICommonConst)1803",
             "contract": "FeedV1",
-            "src": "contracts\\feed_upgradable.sol:44"
+            "src": "contracts\\FeedV1.sol:43"
           },
           {
             "label": "signatureChecker",
@@ -3008,7 +3008,7 @@
             "slot": "455",
             "type": "t_address",
             "contract": "FeedV1",
-            "src": "contracts\\feed_upgradable.sol:45"
+            "src": "contracts\\FeedV1.sol:44"
           },
           {
             "label": "feedStakes",
@@ -3016,7 +3016,7 @@
             "slot": "456",
             "type": "t_mapping(t_address,t_array(t_struct(FeedStake)1964_storage)dyn_storage)",
             "contract": "FeedV1",
-            "src": "contracts\\feed_upgradable.sol:53"
+            "src": "contracts\\FeedV1.sol:52"
           },
           {
             "label": "bossCardStakes",
@@ -3024,7 +3024,7 @@
             "slot": "457",
             "type": "t_mapping(t_address,t_struct(BossCardStake)1977_storage)",
             "contract": "FeedV1",
-            "src": "contracts\\feed_upgradable.sol:61"
+            "src": "contracts\\FeedV1.sol:60"
           }
         ],
         "types": {

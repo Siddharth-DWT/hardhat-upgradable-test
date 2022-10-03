@@ -101,7 +101,7 @@ async function deployProxyContract(contractName, params){
 
 }
 
-async function deployWithUpgradeContract(contractName, proxyAddr){
+async function deployWithUpgradeContract(contractName, proxyAddr,params){
     console.log(`Deploying ${contractName}...`);
     const Contract = await ethers.getContractFactory(contractName);
 
@@ -118,8 +118,8 @@ async function deployWithUpgradeContract(contractName, proxyAddr){
     const implementationAddress = await upgrades.erc1967.getImplementationAddress(deployedContract.address)
     console.log(implementationAddress," getImplementationAddress")
     console.log(await upgrades.erc1967.getAdminAddress(deployedContract.address)," getAdminAddress")
-
-    await verifyContract(contractName,implementationAddress,params)
+   
+    //await verifyContract(contractName,implementationAddress,params)
     await writeAddress(contractName,deployedContract.address)
     await writeAddress(contractName+"_IMP",implementationAddress)
 }

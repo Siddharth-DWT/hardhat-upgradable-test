@@ -3,7 +3,7 @@ const address= require("../address.json")
 const {ethers} = require("hardhat");
 const {parse} = require("dotenv");
 const executeBase = false;
-const stakePancake = false, stakeBossCard=true,revealReward=true;
+const stakePancake = false, stakeBossCard=false,revealReward=true;
 async function main(){
     const Contract = await ethers.getContractFactory(CONTRACT_NAME_MAP.Feed);
     const DeployedContract = Contract.attach(address.Feed);
@@ -41,13 +41,14 @@ async function main(){
             count = count + parseInt(item)
         })
         console.log("count before",count)
-        let input1 = [1,0,0,0,0],input2 = [1,1],input3 = [0,0];
-        //console.log("sumOf(input1),sumOf(input2),sumOf(input3)",sumOf(input1),sumOf(input2),sumOf(input3))
+        let input1 = [1,0,0,0,0],input2 = [1,2],input3 = [1,0];
+
         const {signature,message} = generateSignature(process.env.OWNER,sumOf(input1),sumOf(input2),sumOf(input3));
-        //console.log({signature})
+       // console.log({signature})
         //input1 = [10,12,13,14,15]
+        console.log("sumOf(input1),sumOf(input2),sumOf(input3)",sumOf(input1),sumOf(input2),sumOf(input3))
         const response = await DeployedContract.reveal(input1,input2,input3,signature)
-        //console.log("reveal done",response);
+        console.log("reveal done",response);
         var ingredientTokens = await DeployedIngredientContract.getWalletToken()
         //console.log("ingredientTokens",ingredientTokens)
         var count = 0;

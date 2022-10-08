@@ -1,8 +1,8 @@
 const { ethers, upgrades,} = require("hardhat");
 const hardhat = require("hardhat");
 
-const {MerkleTree} = require('merkletreejs');
-const keccak256 = require('keccak256');
+// const {MerkleTree} = require('merkletreejs');
+// const keccak256 = require('keccak256');
 
 const promisify = require('util').promisify;
 const fs = require('fs');
@@ -10,7 +10,6 @@ const address = require("../address.json");
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 const Web3 = require('web3');
-const proxyForceImport = true;
 
 const scan_link=  "https://testnet.arbiscan.io/address/"
 
@@ -25,37 +24,11 @@ const writeAddress = async (key,address) =>{
     );
 }
 
-const getMerkleRoot = (addresses)=>{
-    addresses = JSON.parse(addresses)
-    const leaves = addresses.map(x => keccak256(x))
-    const tree = new MerkleTree(leaves, keccak256, { sortPairs: true })
-    const buf2hex = x => '0x' + x.toString('hex')
-    const root = buf2hex(tree.getRoot());
-    console.log(buf2hex(tree.getRoot()))
-    return root;
-}
-
  const CONTRACT_NAME_MAP = {
-    PowerPlinsGen0ERC721: "PowerPlinsGen0ERC721",
-    PowerPlinsGen0ERC721New: "PowerPlinsGen0ERC721New",
-    BossCardERC1155: "BossCardERC1155",
-    BossCardERC1155Test:"BossCardERC1155Test",
-    Gen1ERC1155: "Gen1ERC1155",
-    IngredientsERC11155: "IngredientsERC11155",
-    PancakeNftERC11155: "PancakeNftERC11155",
-    SignatureChecker:"SignatureChecker",
-    CommonConstGen0:"CommonConstGen0",
-    CommonConstGen1:"CommonConstGen1",
-    ErrandBossCardStake:"ErrandBossCardStake",
-    ErrandGen0:"ErrandGen0",
-    ErrandGen1:"ErrandGen1",
-    CookConst:"CookConst",
-    Cook:"Cook",
-    ShrineConst:"ShrineConst",
-    Shrine:"Shrine",
-    Feed:"Feed",
-    IngredientDrop:"IngredientDrop",
-    FeedV1:"FeedV1"
+    Collection:"Collection",
+    NFTMarketResell:"NFTMarketResell",
+    n2DMarket:"n2DMarket",
+    N2DNFT:"N2DNFT"
  }
 
 
@@ -84,46 +57,6 @@ async function deployWithVerifyContract(contractName,params, notVerify){
 
 }
 
-async function deployProxyContract(contractName, params){
-    console.log(`Deploying ${contractName}...`);
-    const Contract = await ethers.getContractFactory(contractName);
-    const deployedContract = await upgrades.deployProxy(Contract,[...params]);
-    await deployedContract.deployTransaction.wait(10);
-    console.log(deployedContract.address,` ${contractName}(proxy) address`)
-    const implementationAddress = await upgrades.erc1967.getImplementationAddress(deployedContract.address)
-    console.log(implementationAddress," getImplementationAddress")
-    console.log(await upgrades.erc1967.getAdminAddress(deployedContract.address)," getAdminAddress")
-
-    await writeAddress(contractName,deployedContract.address)
-    await writeAddress(contractName+"_IMP",implementationAddress)
-
-    //console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
-
-}
-
-async function deployWithUpgradeContract(contractName, proxyAddr,params){
-    console.log(`Deploying ${contractName}...`);
-    const Contract = await ethers.getContractFactory(contractName);
-
-    if(!proxyForceImport){
-        const deployment = await upgrades.forceImport(proxyAddr, Contract);
-        console.log("Proxy imported from:", deployment.address);
-    }
-
-    const deployedContract = await upgrades.upgradeProxy(proxyAddr,Contract);
-    await deployedContract.deployTransaction.wait(10);
-    console.log(`Upgraded ${contractName}...`);
-
-    console.log(deployedContract.address,` ${contractName}(proxy) address`)
-    const implementationAddress = await upgrades.erc1967.getImplementationAddress(deployedContract.address)
-    console.log(implementationAddress," getImplementationAddress")
-    console.log(await upgrades.erc1967.getAdminAddress(deployedContract.address)," getAdminAddress")
-   
-    //await verifyContract(contractName,implementationAddress,params)
-    await writeAddress(contractName,deployedContract.address)
-    await writeAddress(contractName+"_IMP",implementationAddress)
-}
-
 async function verifyContract(contractName,address,params){
     console.log("contractName,address,params",contractName,address,params)
     console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
@@ -138,20 +71,6 @@ async function verifyContract(contractName,address,params){
         console.log("error",e)
     }
 }
-
-async function verifyProxyContract(contractName,address,params){
-    console.log("contractName,address,params",contractName,address,params)
-    console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
-
-    const Contract = await ethers.getContractFactory(contractName);
-    const DeployedContract = Contract.attach(address);
-
-    const res1 = await DeployedContract.ingredientsERC1155()
-    const res2 = await DeployedContract.bossCardERC1155Address()
-    console.log("res-----",res1);
-    console.log("res-----",res2);
-}
-
 
 async function approveContract(contractName,contractAddress, approvalAddress, isMint, approvalFrom = "approvalFrom"){
     const Contract = await ethers.getContractFactory(contractName);
@@ -184,77 +103,14 @@ function getArguments(arr){
     })
     return args;
 }
-function generateFeedRevealSignature(sender,val1,val2,val3){
-    console.log({sender,val1,val2,val3})
-    const privateKey = process.env.PRI_KEY
-   /* let message = Web3.utils.soliditySha3(sender,
-    ...getArguments(val1),
-    ...getArguments(val1),
-    ...getArguments(val3))*/
-    const web3 = new Web3('');
 
-    let message = web3.utils.keccak256(web3.eth.abi.encodeParameters(['address','uint', 'uint','uint'], [sender,val1,val2,val3]))
-
-    const {signature} = web3.eth.accounts.sign(
-        message,
-        privateKey
-    );
-    console.log("---signature---", signature)
-    return {message,signature}
-
-}
-
-function generateSignature(sender,val1,val2,val3){
-    //console.log({sender,val1,val2,val3})
-    const privateKey = process.env.SIGNATURE_VALIDATOR_PRI_KEY
-    console.log("privateKey",privateKey);
-    let message;
-    if(sender && val1 && val2 && val3){
-        message = Web3.utils.soliditySha3(sender,val1,val2,val3);
-    }
-    else if(sender && val1 && val2){
-        message = Web3.utils.soliditySha3(sender, val1,val2);
-    }
-    else if(sender && val1){
-        message = Web3.utils.soliditySha3(sender, val1);
-    }
-    else if(sender){
-        message = Web3.utils.soliditySha3(sender);
-    }
-    const web3 = new Web3('');
-
-    const {signature} = web3.eth.accounts.sign(
-        message,
-        privateKey
-    );
-    console.log("---signature---", signature)
-    return {message,signature}
-
-}
-
-
-function sumOf(array){
-    let result=0;
-    array.forEach((item)=>{
-        result = result + item;
-    })
-    return result
-}
 module.exports = {
-    getMerkleRoot,
     CONTRACT_NAME_MAP,
     scan_link,
     writeAddress,
     deployWithVerifyContract,
     verifyContract,
-    deployProxyContract,
-    verifyProxyContract,
-    approveContract,
-    generateSignature,
-    generateFeedRevealSignature,
-    sumOf,
-    deployWithUpgradeContract
-
+    approveContract
 }
 
 

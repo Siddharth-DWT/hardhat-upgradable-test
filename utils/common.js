@@ -10,8 +10,15 @@ const address = require("../address.json");
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 const Web3 = require('web3');
-
-const scan_link=  "https://testnet.arbiscan.io/address/"
+var scan_link;
+if(process.env.DEPLOY_ENV === 'arbitrum_goerli'){
+    scan_link=  "https://goerli.arbiscan.io/address/"
+}
+else if(process.env.DEPLOY_ENV === 'arbitrum_rinkeby'){
+    scan_link=  "https://testnet.arbiscan.io/address/"
+}else{
+    scan_link=  "https://arbiscan.io/address/"
+}
 
 const writeAddress = async (key,address) =>{
     const link = scan_link+address;
@@ -36,7 +43,6 @@ const getMerkleRoot = (addresses)=>{
 
  const CONTRACT_NAME_MAP = {
     PowerPlinsGen0ERC721: "PowerPlinsGen0ERC721",
-    PowerPlinsGen0ERC721New: "PowerPlinsGen0ERC721New",
     BossCardERC1155: "BossCardERC1155",
     BossCardERC1155Test:"BossCardERC1155Test",
     Gen1ERC1155: "Gen1ERC1155",

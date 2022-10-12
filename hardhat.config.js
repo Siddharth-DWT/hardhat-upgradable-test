@@ -26,8 +26,8 @@ module.exports = {
       url: `https://rinkeby.arbitrum.io/rpc`,
       accounts: [process.env.PRI_KEY]
     },
-    arbitrum_gorli: {
-      url: `https://goerli-rollup.arbitrum.io/rpc/`,
+    arbitrum_goerli: {
+      url: `https://goerli-rollup.arbitrum.io/rpc`,
       accounts: [process.env.PRI_KEY]
     },
     arbitrumOne: {
@@ -43,7 +43,7 @@ module.exports = {
   },
   customChains: [
     {
-      network: "arbitrum_gorli",
+      network: "arbitrum_goerli",
       chainId: 421613,
       urls: {
         apiURL: "https://api-rinkeby.etherscan.io/api",

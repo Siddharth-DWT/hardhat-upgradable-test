@@ -51,7 +51,7 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
         uint calories;
         uint256  time;
     }
-    mapping(address => FeedStake[]) feedStakes;
+    mapping(address => FeedStake[]) public feedStakes;
 
     //bosscard info
     struct BossCardStake{
@@ -165,6 +165,7 @@ contract Feed is Initializable, OwnableUpgradeable,ERC1155HolderUpgradeable, Ree
     function printUserFeeds() external view returns(FeedStake[] memory){
         return feedStakes[msg.sender];
     }
+
 
     function printUserBossCardStake() external view returns(BossCardStake memory) {
         return bossCardStakes[msg.sender];

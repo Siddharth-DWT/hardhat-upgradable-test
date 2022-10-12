@@ -25,7 +25,7 @@
   "Cook_LINK": "https://testnet.arbiscan.io/address/0xc662Bad1eF211045e28BeE1254BE06c163aDBf14",
   "Cook_IMP": "0xd8dB8433391a7eD57C5768854D7743BE600bF6aA",
   "Cook_IMP_LINK": "https://testnet.arbiscan.io/address/0xd8dB8433391a7eD57C5768854D7743BE600bF6aA",
-  "Feed": "0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
+  "Feed": "0x0BE89004FdCA450d0F505E47303E5ED6078217C4",
   "Feed_LINK": "https://testnet.arbiscan.io/address/0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
   "Feed_IMP": "0x835aBeB5C542695c2A0de74068F244c019caDb7B",
   "Feed_IMP_LINK": "https://testnet.arbiscan.io/address/0x835aBeB5C542695c2A0de74068F244c019caDb7B",
@@ -52,5 +52,9 @@
   "FeedV1": "0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
   "FeedV1_LINK": "https://testnet.arbiscan.io/address/0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
   "FeedV1_IMP": "0x59eEc2Eb74B26c8083E60b221299bD88729c2145",
-  "FeedV1_IMP_LINK": "https://testnet.arbiscan.io/address/0x59eEc2Eb74B26c8083E60b221299bD88729c2145"
+  "FeedV1_IMP_LINK": "https://testnet.arbiscan.io/address/0x59eEc2Eb74B26c8083E60b221299bD88729c2145",
+  "FeedV2": "0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
+  "FeedV2_LINK": "https://testnet.arbiscan.io/address/0xb3d3D60a0f9a72099A207bbF5a22944dE30BEA33",
+  "FeedV2_IMP": "0x0aF30002e418a195B6f27931AFd87f29027e3F2D",
+  "FeedV2_IMP_LINK": "https://testnet.arbiscan.io/address/0x0aF30002e418a195B6f27931AFd87f29027e3F2D"
 }

@@ -55,7 +55,8 @@ const getMerkleRoot = (addresses)=>{
     Shrine:"Shrine",
     Feed:"Feed",
     IngredientDrop:"IngredientDrop",
-    FeedV1:"FeedV1"
+    FeedV1:"FeedV1",
+    FeedV2:"FeedV2"
  }
 
 
@@ -118,7 +119,7 @@ async function deployWithUpgradeContract(contractName, proxyAddr,params){
     const implementationAddress = await upgrades.erc1967.getImplementationAddress(deployedContract.address)
     console.log(implementationAddress," getImplementationAddress")
     console.log(await upgrades.erc1967.getAdminAddress(deployedContract.address)," getAdminAddress")
-   
+
     //await verifyContract(contractName,implementationAddress,params)
     await writeAddress(contractName,deployedContract.address)
     await writeAddress(contractName+"_IMP",implementationAddress)
@@ -184,25 +185,6 @@ function getArguments(arr){
     })
     return args;
 }
-function generateFeedRevealSignature(sender,val1,val2,val3){
-    console.log({sender,val1,val2,val3})
-    const privateKey = process.env.PRI_KEY
-   /* let message = Web3.utils.soliditySha3(sender,
-    ...getArguments(val1),
-    ...getArguments(val1),
-    ...getArguments(val3))*/
-    const web3 = new Web3('');
-
-    let message = web3.utils.keccak256(web3.eth.abi.encodeParameters(['address','uint', 'uint','uint'], [sender,val1,val2,val3]))
-
-    const {signature} = web3.eth.accounts.sign(
-        message,
-        privateKey
-    );
-    console.log("---signature---", signature)
-    return {message,signature}
-
-}
 
 function generateSignature(sender,val1,val2,val3){
     //console.log({sender,val1,val2,val3})
@@ -251,7 +233,6 @@ module.exports = {
     verifyProxyContract,
     approveContract,
     generateSignature,
-    generateFeedRevealSignature,
     sumOf,
     deployWithUpgradeContract
 

@@ -10,6 +10,7 @@ const address = require("../address.json");
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 const Web3 = require('web3');
+const proxyForceImport = true;
 
 const scan_link=  "https://testnet.arbiscan.io/address/"
 
@@ -53,7 +54,10 @@ const getMerkleRoot = (addresses)=>{
     ShrineConst:"ShrineConst",
     Shrine:"Shrine",
     Feed:"Feed",
-    IngredientDrop:"IngredientDrop"
+    IngredientDrop:"IngredientDrop",
+    FeedV1:"FeedV1",
+    FeedV2:"FeedV2",
+    
  }
 
 
@@ -98,6 +102,30 @@ async function deployProxyContract(contractName, params){
     //console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
 
 }
+
+async function deployWithUpgradeContract(contractName, proxyAddr,params){
+    console.log(`Deploying ${contractName}...`);
+    const Contract = await ethers.getContractFactory(contractName);
+
+    if(!proxyForceImport){
+        const deployment = await upgrades.forceImport(proxyAddr, Contract);
+        console.log("Proxy imported from:", deployment.address);
+    }
+
+    const deployedContract = await upgrades.upgradeProxy(proxyAddr,Contract);
+    await deployedContract.deployTransaction.wait(10);
+    console.log(`Upgraded ${contractName}...`);
+
+    console.log(deployedContract.address,` ${contractName}(proxy) address`)
+    const implementationAddress = await upgrades.erc1967.getImplementationAddress(deployedContract.address)
+    console.log(implementationAddress," getImplementationAddress")
+    console.log(await upgrades.erc1967.getAdminAddress(deployedContract.address)," getAdminAddress")
+
+    //await verifyContract(contractName,implementationAddress,params)
+    await writeAddress(contractName,deployedContract.address)
+    await writeAddress(contractName+"_IMP",implementationAddress)
+}
+
 async function verifyContract(contractName,address,params){
     console.log("contractName,address,params",contractName,address,params)
     console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
@@ -112,6 +140,7 @@ async function verifyContract(contractName,address,params){
         console.log("error",e)
     }
 }
+
 async function verifyProxyContract(contractName,address,params){
     console.log("contractName,address,params",contractName,address,params)
     console.log(`Verifying ${contractName} on ${process.env.DEPLOY_ENV}...`);
@@ -156,25 +185,6 @@ function getArguments(arr){
         args[index] = {t: 'uint256', v: num}
     })
     return args;
-}
-function generateFeedRevealSignature(sender,val1,val2,val3){
-    console.log({sender,val1,val2,val3})
-    const privateKey = process.env.PRI_KEY
-   /* let message = Web3.utils.soliditySha3(sender,
-    ...getArguments(val1),
-    ...getArguments(val1),
-    ...getArguments(val3))*/
-    const web3 = new Web3('');
-
-    let message = web3.utils.keccak256(web3.eth.abi.encodeParameters(['address','uint', 'uint','uint'], [sender,val1,val2,val3]))
-
-    const {signature} = web3.eth.accounts.sign(
-        message,
-        privateKey
-    );
-    console.log("---signature---", signature)
-    return {message,signature}
-
 }
 
 function generateSignature(sender,val1,val2,val3){
@@ -224,9 +234,8 @@ module.exports = {
     verifyProxyContract,
     approveContract,
     generateSignature,
-    generateFeedRevealSignature,
-    sumOf
+    sumOf,
+    deployWithUpgradeContract
 
 }
-
 

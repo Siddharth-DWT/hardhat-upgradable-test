@@ -25,7 +25,8 @@
     "sig_methods": "hardhat run --network arbitrum_rinkeby scripts/sig_methods.js",
     "feed_deploy": "hardhat run --network arbitrum_rinkeby scripts/feed_deploy.js",
     "feed_methods": "hardhat run --network arbitrum_rinkeby scripts/feed_methods.js",
-    "ingredient_drop": "hardhat run --network arbitrum_rinkeby scripts/ingredient_drop.js"
+    "ingredient_drop": "hardhat run --network arbitrum_rinkeby scripts/ingredient_drop.js",
+    "feed_upgradable": "hardhat run --network arbitrum_gorli scripts/feed_upgradable.js"
 
   },
   "author": "",

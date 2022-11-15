@@ -2,8 +2,10 @@ const {CONTRACT_NAME_MAP, approveContract, generateSignature, deployWithVerifyCo
 const address= require("../address.json")
 const {ethers} = require("hardhat");
 
-const executeBase = false, claimReward=false,successNumber=false, updateRewardTime=true;
-const stakeRecipe = false, stakeIngredient = true,  stakeBossCard = false, shrineConst = false;
+const executeBase = false, claimReward=false,successNumber=false, updateRewardTime=false;
+const stakeRecipe = false, stakeIngredient = false,  stakeBossCard = false, shrineConst = false;
+const updateContractAddr = false;
+
 async function main(){
     const Contract = await ethers.getContractFactory(CONTRACT_NAME_MAP.Shrine);
     const DeployedContract = Contract.attach(address.Shrine);
@@ -21,8 +23,13 @@ async function main(){
         await approveContract(CONTRACT_NAME_MAP.IngredientsERC11155,address.IngredientsERC11155,address.Shrine)
         await approveContract(CONTRACT_NAME_MAP.PancakeNftERC11155,address.PancakeNftERC11155,address.Shrine, true)
         await approveContract(CONTRACT_NAME_MAP.Gen1ERC1155,address.Gen1ERC1155,address.Shrine, true)
-
     }
+
+    if(updateContractAddr){
+        const response = await DeployedContract.updateContractAddress(address.PowerPlinsGen0ERC721,address.IngredientsERC11155,address.BossCardERC1155,address.Gen1ERC1155,address.PancakeNftERC11155,address.ShrineConst,address.SignatureChecker);
+        console.log("updating contract",response);
+    }
+
     if(updateRewardTime){
         const timeReward = await DeployedContract.timeForReward()
         console.log("timeReward",timeReward);
@@ -119,7 +126,7 @@ async function main(){
         console.log("getClaimSuccessNumber3 done", getClaimSuccessNumber3);
     }
     if(shrineConst){
-        await deployWithVerifyContract(CONTRACT_NAME_MAP.ShrineConst,[])
+        //await deployWithVerifyContract(CONTRACT_NAME_MAP.ShrineConst,[])
         const ShrineConstContract = await ethers.getContractFactory(CONTRACT_NAME_MAP.ShrineConst);
         const ShrineConstContractChecker = ShrineConstContract.attach(address.ShrineConst);
 

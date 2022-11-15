@@ -4,10 +4,13 @@ pragma solidity ^0.8.9;
 contract ShrineConst {
     uint private ceilSuccessNo;
     uint private get1TotalSupply;
+    uint private get2TotalSupply;
     uint private pancakeSupply;
     uint256 public nonce;
+
     constructor()  {
         get1TotalSupply = 510;
+        get2TotalSupply = 509;
         pancakeSupply = 18;
         nonce=1;
         ceilSuccessNo = 10000;
@@ -32,7 +35,7 @@ contract ShrineConst {
     }
 
     function revealGen1NftId() external returns(uint256){
-        uint num = random(1,get1TotalSupply);
+        uint num = random(1,get2TotalSupply);  
         return num;
     }
 

@@ -21,18 +21,17 @@
     "mint_token": "hardhat run --network arbitrum_rinkeby scripts/mint_token.js",
     "mint_aproval": "hardhat run --network arbitrum_rinkeby scripts/mint_aproval.js",
     "shrine_deploy": "hardhat run --network arbitrum_rinkeby scripts/shrine_deploy.js",
-    "shrine_methods": "hardhat run --network arbitrum_rinkeby scripts/shrine_methods.js",
+    "shrine_methods": "hardhat run --network arbitrum_gorli scripts/shrine_methods.js",
     "sig_methods": "hardhat run --network arbitrum_rinkeby scripts/sig_methods.js",
     "feed_deploy": "hardhat run --network arbitrum_rinkeby scripts/feed_deploy.js",
     "feed_methods": "hardhat run --network arbitrum_rinkeby scripts/feed_methods.js",
     "ingredient_drop": "hardhat run --network arbitrum_rinkeby scripts/ingredient_drop.js"
-
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
-    "@nomiclabs/hardhat-etherscan": "^3.0.0",
+    "@nomiclabs/hardhat-etherscan": "^3.1.2",
     "@openzeppelin/hardhat-upgrades": "1.20.0",
     "ethers": "^5.5.2",
     "hardhat": "^2.9.9"

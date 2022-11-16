@@ -69,7 +69,6 @@ async function main(){
         }catch (e){
             console.log("error in ingredeints stake",e);
         }
-
     }
     if(successNumber){
         const printUserBossCardStake = await DeployedContract.printUserBossCardStake();

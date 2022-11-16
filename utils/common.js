@@ -10,6 +10,8 @@ const address = require("../address.json");
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 const Web3 = require('web3');
+const proxyForceImport = true;
+
 var scan_link;
 if(process.env.DEPLOY_ENV === 'arbitrum_goerli'){
     scan_link=  "https://goerli.arbiscan.io/address/"
@@ -59,6 +61,7 @@ const getMerkleRoot = (addresses)=>{
     ShrineConst:"ShrineConst",
     Shrine:"Shrine",
     Feed:"Feed",
+    Event:"Event",
     IngredientDrop:"IngredientDrop"
  }
 
@@ -219,6 +222,30 @@ function sumOf(array){
     })
     return result
 }
+
+async function deployWithUpgradeContract(contractName, proxyAddr){
+    console.log(`Deploying ${contractName}...`);
+    const Contract = await ethers.getContractFactory(contractName);
+
+    if(!proxyForceImport){
+        const deployment = await upgrades.forceImport(proxyAddr, Contract);
+        console.log("Proxy imported from:", deployment.address);
+    }
+
+    const deployedContract = await upgrades.upgradeProxy(proxyAddr,Contract);
+    await deployedContract.deployTransaction.wait(10);
+    console.log(`Upgraded ${contractName}...`);
+
+    console.log(deployedContract.address,` ${contractName}(proxy) address`)
+    const implementationAddress = await upgrades.erc1967.getImplementationAddress(deployedContract.address)
+    console.log(implementationAddress," getImplementationAddress")
+    console.log(await upgrades.erc1967.getAdminAddress(deployedContract.address)," getAdminAddress")
+
+    await verifyContract(contractName,implementationAddress,params)
+    await writeAddress(contractName,deployedContract.address)
+    await writeAddress(contractName+"_IMP",implementationAddress)
+}
+
 module.exports = {
     getMerkleRoot,
     CONTRACT_NAME_MAP,

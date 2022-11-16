@@ -10,9 +10,9 @@
     "deploy_const": "hardhat run --network arbitrum_goerli scripts/deploy_const.js",
     "execute_allbase": "hardhat run --network arbitrum_goerli scripts/execute_allbase.js",
     "all1155_deploy": "hardhat run --network arbitrum_goerli scripts/all1155_deploy.js",
+    "all1155_verify": "hardhat run --network arbitrum_goerli scripts/all1155_verify.js",
     "common_deploy": "hardhat run --network arbitrum_goerli scripts/common_deploy.js",
     "bosstest_deploy": "hardhat run --network arbitrum_goerli scripts/bosstest_deploy.js",
-    "all1155_verify": "hardhat run --network arbitrum_goerli scripts/all1155_verify.js",
     "errand_deploy": "hardhat run --network arbitrum_goerli scripts/errand_deploy.js",
     "errand_verify": "hardhat run --network arbitrum_goerli scripts/errand_verify.js",
     "errand_methods": "hardhat run --network arbitrum_goerli scripts/errand_methods.js",
@@ -25,8 +25,11 @@
     "shrine_methods": "hardhat run --network arbitrum_goerli scripts/shrine_methods.js",
     "sig_methods": "hardhat run --network arbitrum_goerli scripts/sig_methods.js",
     "feed_deploy": "hardhat run --network arbitrum_goerli scripts/feed_deploy.js",
-    "feed_methods": "hardhat run --network arbitrum_rinkeby scripts/feed_methods.js",
-    "ingredient_drop": "hardhat run --network arbitrum_rinkeby scripts/ingredient_drop.js"
+    "feed_methods": "hardhat run --network arbitrum_goerli scripts/feed_methods.js",
+    "ingredient_drop": "hardhat run --network arbitrum_goerli scripts/ingredient_drop.js",
+    "event_deploy": "hardhat run --network arbitrum_goerli scripts/event_deploy.js",
+    "event_methods": "hardhat run --network arbitrum_goerli scripts/event_methods.js"
+
 
   },
   "author": "",

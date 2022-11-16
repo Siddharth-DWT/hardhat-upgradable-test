@@ -1,6 +1,6 @@
 {
   "PowerPlinsGen0ERC721": "0x8409566dCB4049C226550b965196456387b1490a",
-  "PowerPlinsGen0ERC721_LINK": "https://testnet.arbiscan.io/address/0x8409566dCB4049C226550b965196456387b1490a",
+  "PowerPlinsGen0ERC721_LINK": "https://goerli.arbiscan.io/address/0x8409566dCB4049C226550b965196456387b1490a",
   "BossCardERC1155": "0x5D66DD3DDCD3f85E7F60DC80F86cbc2F0B2aB4CF",
   "BossCardERC1155_LINK": "https://goerli.arbiscan.io/address/0x5D66DD3DDCD3f85E7F60DC80F86cbc2F0B2aB4CF",
   "Gen1ERC1155": "0xA7BDC0748fB13C5c68624f7C14400Afd8DC62D90",
@@ -40,5 +40,10 @@
   "Feed": "0x810f6fFa35511E42007378ADE6dC155Ae42327b6",
   "Feed_LINK": "https://goerli.arbiscan.io/address/0x810f6fFa35511E42007378ADE6dC155Ae42327b6",
   "Feed_IMP": "0xa10b263Ad286F70959EEbd01DB903be7d2a00dBA",
-  "Feed_IMP_LINK": "https://goerli.arbiscan.io/address/0xa10b263Ad286F70959EEbd01DB903be7d2a00dBA"
+  "Feed_IMP_LINK": "https://goerli.arbiscan.io/address/0xa10b263Ad286F70959EEbd01DB903be7d2a00dBA",
+  "Legions": "0x9202aE6BAcE44Ae2826A7918f62e51db570fF163",
+  "Event": "0x928d67Bf0a114DBA680b6768F34eBa7Eb2559be7",
+  "Event_LINK": "https://goerli.arbiscan.io/address/0x928d67Bf0a114DBA680b6768F34eBa7Eb2559be7",
+  "Event_IMP": "0x4BcdCd4A55dFdCad1B2ea07fb158caD707a1EAAe",
+  "Event_IMP_LINK": "https://goerli.arbiscan.io/address/0x4BcdCd4A55dFdCad1B2ea07fb158caD707a1EAAe"
 }
